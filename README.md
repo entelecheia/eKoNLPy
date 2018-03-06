@@ -26,7 +26,9 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 
     $ git clone https://github.com/entelecheia/eKoNLPy.git
 
-    $ pip install eKoNLPy
+    $ cd eKoNLPy
+
+    $ pip install .
 
 ## Requires
 

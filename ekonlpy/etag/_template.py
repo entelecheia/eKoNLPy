@@ -81,7 +81,7 @@ class ExTagger:
             return tokens_new
 
         for i in range(self.max_tokens, 1, -1):
-            tokens = ctagger(tokens, 5,
+            tokens = ctagger(tokens, i,
                                 self.nochk_tags, self.chk_tags, self.skip_chk_tags,
                                 self.skip_tags, self.dictionary)
         tokens = ctagger(tokens, 2,
