@@ -4,7 +4,7 @@ from ekonlpy.data.tagset import mecab_tags as tagset
 from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags
 from ekonlpy.dictionary import TermDictionary
 from ekonlpy.utils import installpath
-from ekonlpy.utils import load_dictionary
+from ekonlpy.utils import load_dictionary, loadtxt
 
 
 class Mecab:
@@ -19,9 +19,14 @@ class Mecab:
         self.nouns_tags = nouns_tags
         self.stop_tags = stop_tags
         self.sent_tags = sent_tags
+        self.stopwords = self._load_stopwords()
 
     def _load_ext_tagger(self):
         return ExTagger(self._dictionary)
+
+    def _load_stopwords(self):
+        directory = '%s/data/dictionary/' % installpath
+        return loadtxt('%s/STOPWORDS.txt' % directory)
 
     def _load_default_dictionary(self):
         directory = '%s/data/dictionary/' % installpath

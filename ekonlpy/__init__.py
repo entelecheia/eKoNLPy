@@ -5,7 +5,7 @@ __license__ = 'GPL v3'
 __copyright__ = 'Copyright 2018 entelecheia'
 
 from . import tag
-from . import custom_tag
+from . import etag
 from .dictionary import TermDictionary
 from .utils import installpath
 from .utils import load_dictionary
