@@ -1,0 +1,2 @@
+# eKoNLPy
+extended KoNLPy
