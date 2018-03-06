@@ -30,5 +30,4 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 
 ## Requires
 
-- JPype >= 0.6.1
 - KoNLPy >= 0.4.4
