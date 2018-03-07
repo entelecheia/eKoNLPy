@@ -29,5 +29,12 @@ class TermDictionary:
             if word in words:
                 return tag
 
+    def check_tag(self, word, tag):
+        for tg, words in self._pos2words.items():
+            if word in words:
+                tag = tg
+                break
+        return tag
+
     def is_tag(self, word, tag):
         return word in self._pos2words.get(tag, {})

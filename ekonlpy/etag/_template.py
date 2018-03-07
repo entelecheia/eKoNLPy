@@ -1,4 +1,4 @@
-from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags
+from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags
 
 
 class ExTagger:
@@ -9,6 +9,7 @@ class ExTagger:
         self.chk_tags = chk_tags
         self.skip_chk_tags = skip_chk_tags
         self.skip_tags = set(skip_tags)
+        self.nouns_tags = nouns_tags
 
     def add_nochk_tags(self, template):
         if type(template) == dict:
@@ -66,7 +67,7 @@ class ExTagger:
                             new_word += tokens_org[i - n + j + 1][0]
                     dict_tag = term_dict.get_tags(new_word.lower())
                     if dict_tag:
-                        new_tag = dict_tag if chk_dic[tmp_tags] == 'NNG' else chk_dic[tmp_tags]
+                        new_tag = dict_tag if skgrm_dic[tmp_tags] == 'NNG' else skgrm_dic[tmp_tags]
                         tokens_new.append((new_word, new_tag))
                         i += n
                         continue
@@ -80,6 +81,8 @@ class ExTagger:
 
             return tokens_new
 
+        tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
+                  for w, t in tokens]
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
                                 self.nochk_tags, self.chk_tags, self.skip_chk_tags,
