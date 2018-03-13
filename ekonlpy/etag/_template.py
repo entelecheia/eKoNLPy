@@ -38,7 +38,7 @@ class ExTagger:
                 tmp_tags = []
                 for j in range(n):
                     tmp_tags.append('NNG'
-                                    if tokens_org[i - n + j + 1][1] == 'NNP'
+                                    if tokens_org[i - n + j + 1][1] in ['NNP', 'UNKNOWN']
                                     else tokens_org[i - n + j + 1][1])
                 tmp_tags = tuple(tmp_tags)
 
@@ -85,10 +85,10 @@ class ExTagger:
                   for w, t in tokens]
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
-                                self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                                self.skip_tags, self.dictionary)
+                             self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+                             self.skip_tags, self.dictionary)
         tokens = ctagger(tokens, 2,
-                            self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                            self.skip_tags, self.dictionary)
+                         self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+                         self.skip_tags, self.dictionary)
 
         return tokens
