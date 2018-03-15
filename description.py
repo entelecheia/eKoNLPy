@@ -1,5 +1,5 @@
 __title__ = 'eKoNLPy'
-__version__ = '0.0.4'
+__version__ = '0.0.7'
 __author__ = 'entelecheia'
 __license__ = 'GPL v3'
 __copyright__ = 'Copyright 2018 entelecheia'
