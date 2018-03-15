@@ -12,5 +12,5 @@ setup(
     install_requires=["konlpy>=0.4.4"],
     keywords=['KoNLPy wrapping customization'],
     packages=find_packages(),
-    package_data={'ekonlpy': ['data/*/*.txt']}
+    package_data={'ekonlpy': ['data/*/*.txt', 'data/*/*.csv']}
 )
