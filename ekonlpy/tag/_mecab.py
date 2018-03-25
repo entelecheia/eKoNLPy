@@ -31,7 +31,7 @@ class Mecab:
     def _load_default_dictionary(self):
         directory = '%s/data/dictionary/' % installpath
         self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/CUST_TERMS.txt' % directory, rewrite=True), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary('%s/CUST_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/ENTITY_LIST.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/FINIST_LIST.txt' % directory), 'NNP')
 
