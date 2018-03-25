@@ -44,7 +44,7 @@ mecab_tags = {
     'SN': '어근'
 }
 
-nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'SL', 'XR', 'UNKNOWN']
+nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'XR', 'UNKNOWN']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
 sent_tags = ['NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN', 'XR', 'UNKNOWN', 'MAG', 'MM']
 
@@ -68,8 +68,10 @@ chk_tags = {
     ('IC', 'IC'): 'NNG',
     ('IC', 'NNG'): 'NNG',
     ('IC', 'NNG', 'NNG'): 'NNG',
+    ('IC', 'VV', 'EC', 'NNG'): 'NNG',
     ('JKG', 'NNG'): 'NNG',
     ('JKS', 'NNG', 'NNG'): 'NNG',
+    ('JX', 'NNG'): 'NNG',
     ('MAG', 'MAG', 'VV+EC'): 'NNG',
     ('MAG', 'NNG'): 'NNG',
     ('MAJ', 'MAG', 'IC'): 'NNG',
@@ -106,6 +108,7 @@ chk_tags = {
     ('NNG', 'SN', 'NNG'): 'NNG',
     ('NNG', 'SY', 'SN'): 'NNG',
     ('NNG', 'VCP', 'EC+VX+ETM', 'NNG'): 'NNG',
+    ('NNG', 'VV'): 'NNG',
     ('NNG', 'VV+ETM', 'NNG'): 'NNG',
     ('NNG', 'XPN'): 'NNG',
     ('NNG+JX', 'NP'): 'NNG',
