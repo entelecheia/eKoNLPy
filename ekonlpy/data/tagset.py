@@ -46,7 +46,8 @@ mecab_tags = {
 
 nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'XR', 'UNKNOWN']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN', 'XR', 'UNKNOWN', 'MAG', 'MM']
+sent_tags = ['NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN', 'XR']
+# , 'UNKNOWN', 'MAG', 'MM']
 
 skip_tags = ['SC', 'SN', 'SY']
 
