@@ -3,6 +3,14 @@ extended (economic) KoNLPy
 
 Python Korean NLP package for economic analysis
 
+KoNLPy의 Mecab tagger를 기반으로 경제관련 전문용어, 금융기관, 기업명 등을 하나의 명사로 분류하도록 후처리 기능을 추가.
+
+통화정책(Monetary Policy)의 어조(Hawkish/Dovish)를 판단할 수 있는 Sentiment Analysis 기능 포함.
+
+금융/경제분야에 적합한 감성사전 추가 예정.
+
+Supervised learning에 기반한 금융/경제분야 Sentiment Analysis 기능도 추가 예정.
+
 
 # Usage
 
