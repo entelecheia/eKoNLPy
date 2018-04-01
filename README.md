@@ -14,7 +14,7 @@ Supervised learning에 기반한 금융/경제분야 Sentiment Analysis 기능�
 
 # Usage
 
-### Part of speech tagging
+## Part of speech tagging
 
 KoNLPy와 동일하게 Mecab.pos(phrase)를 입력합니다.
 먼저 KoNLPy의 Mecab 형태소 분석기로 처리한 후,
@@ -35,7 +35,7 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
     mecab = Mecab()
     mecab.add_dictionary('금통위', 'NNG')
 
-### Sentiment analysis
+## Sentiment analysis
 
 To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class
 
