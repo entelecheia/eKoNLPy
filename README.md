@@ -35,6 +35,34 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 
 ### Sentiment analysis
 
+To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class
+
+
+    from ekonlpy.sentiment import MPKO
+    mpko = MPKO()
+    tokens = mpko.tokenize(text)
+    ngrams = mpko.ngramize(tokens)
+    score = mpko.get_score(ngrams)
+
+
+``MPKO`` is a subclass for ``ekonlpy.sentiment.base.BaseDict``. ``BaseDict`` can be inherited by implmenting ``init_dict`` to initialize ``_posset`` and ``_negset`` for the dictionary
+to calculate 'positive' or 'negative' scores for terms.
+
+Similarly, to use the Harvard IV-4 dictionary for general english sentiment analysis:
+
+
+    from ekonlpy.sentiment import HIV4
+    lm = HIV4()
+    tokens = lm.tokenize(text)
+    score = lm.get_score(tokens)
+
+Similarly, to use the Loughran and McDonald dictionary for financial domain sentiment analysis:
+
+
+    from ekonlpy.sentiment import LM
+    lm = LM()
+    tokens = lm.tokenize(text)
+    score = lm.get_score(tokens)
 
 ## Install
 

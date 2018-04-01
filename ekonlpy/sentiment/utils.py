@@ -4,6 +4,7 @@ This module contains methods to tokenize sentences.
 import abc
 import re
 import nltk
+import os
 from ekonlpy.tag import Mecab
 from ekonlpy.sentiment.base import LEXICON_PATH
 
