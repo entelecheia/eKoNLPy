@@ -48,19 +48,26 @@ nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'XR', 'UNKNOWN']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
 sent_tags = ['NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN', 'XR']
 # , 'UNKNOWN', 'MAG', 'MM']
+# ('못', 'MAG')
 
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
-    ('NNG', 'XSN'): 'NNG',
+    # ('NNG', 'XSN'): 'NNG',
     ('VX', 'NNG'): 'NNG',
     ('XPN', 'XR', 'XSN'): 'NNG'
+}
+
+suffix_tags = {
+    'VA': ('용', '적'),
+    'NNG': ('계', '률', '분', '성', '율', '자', '치', '화')
 }
 
 skip_chk_tags = {
     ('MM', 'SC', 'NNG', 'SC', 'NR'): 'NNG',
     ('NNG', 'SC', 'NNG'): 'NNG',
     ('NNG', 'SY', 'NNG'): 'NNG',
+    ('NNG', 'SY', 'NNG', 'XSN'): 'NNG',
     ('SN', 'NNBC', 'NNG'): 'NNG',
     ('SN', 'NNBC', 'VV'): 'NNG'
 }
@@ -103,7 +110,9 @@ chk_tags = {
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'MAG', 'NNG'): 'NNG',
+    ('NNG', 'NNG+JX', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
     ('NNG', 'SL'): 'NNG',
     ('NNG', 'SL', 'SN'): 'NNG',
@@ -114,6 +123,7 @@ chk_tags = {
     ('NNG', 'VV', 'EC'): 'NNG',
     ('NNG', 'VV+ETM', 'NNG'): 'NNG',
     ('NNG', 'XPN'): 'NNG',
+    ('NNG', 'XSN'): 'NNG',
     ('NNG+JX', 'NP'): 'NNG',
     ('NP', 'VV+ETM', 'NNG'): 'NNG',
     ('NR', 'NNBC'): 'NNG',
@@ -135,10 +145,12 @@ chk_tags = {
     ('VV+EC', 'IC'): 'NNG',
     ('VV+EC', 'MAG'): 'NNG',
     ('VV+ETM', 'NNG'): 'NNG',
+    ('VX', 'NNG'): 'NNG',
     ('VX', 'EC', 'NNG'): 'NNG',
     ('XPN', 'MAG'): 'NNG',
     ('XPN', 'NNG'): 'NNG',
     ('XPN', 'NNG', 'NNG'): 'NNG',
     ('XPN', 'XR'): 'NNG',
+    ('XPN', 'XR', 'XSN'): 'NNG',
     ('XSN', 'NNG'): 'NNG'
 }

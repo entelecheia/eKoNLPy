@@ -1,4 +1,4 @@
-from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags
+from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags, suffix_tags
 
 
 class ExTagger:
@@ -6,6 +6,7 @@ class ExTagger:
         self.dictionary = dictionary
         self.max_tokens = max_tokens
         self.nochk_tags = nochk_tags
+        self.suffix_tags = suffix_tags
         self.chk_tags = chk_tags
         self.skip_chk_tags = skip_chk_tags
         self.skip_tags = set(skip_tags)
@@ -28,7 +29,7 @@ class ExTagger:
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
-        def ctagger(tokens, n, nochk_dic, chk_dic, skgrm_dic, skip_tags, term_dict):
+        def ctagger(tokens, n, nochk_dic, chk_dic, skgrm_dic, skip_tags, suffix_tags, term_dict):
             # tokens_org = [(p[0], 'NNG' if p[1] == 'NNP' else p[1]) for p in tokens]
             tokens_org = tokens
             tokens_new = []
@@ -42,15 +43,7 @@ class ExTagger:
                                     else tokens_org[i - n + j + 1][1])
                 tmp_tags = tuple(tmp_tags)
 
-                if tmp_tags in nochk_dic.keys():
-                    new_word = ''
-                    for j in range(n):
-                        new_word += tokens_org[i - n + j + 1][0]
-                    new_tag = nochk_dic[tmp_tags]
-                    tokens_new.append((new_word, new_tag))
-                    i += n
-                    continue
-                elif tmp_tags in chk_dic.keys():
+                if tmp_tags in chk_dic.keys():
                     new_word = ''
                     for j in range(n):
                         new_word += tokens_org[i - n + j + 1][0]
@@ -72,6 +65,24 @@ class ExTagger:
                         i += n
                         continue
 
+                if n == 2 and tmp_tags == ('NNG', 'XSN'):
+                    print(tokens_org[i - n + 1][0] , tokens_org[i - n + 2][0])
+                    for new_tag in suffix_tags.keys():
+                        if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
+                            new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
+                            tokens_new.append((new_word, new_tag))
+                            i += n
+                            continue
+
+                if tmp_tags in nochk_dic.keys():
+                    new_word = ''
+                    for j in range(n):
+                        new_word += tokens_org[i - n + j + 1][0]
+                    new_tag = nochk_dic[tmp_tags]
+                    tokens_new.append((new_word, new_tag))
+                    i += n
+                    continue
+
                 tokens_new.append(tokens_org[i - n + 1])
 
                 if i == len(tokens_org) - 1:
@@ -86,9 +97,9 @@ class ExTagger:
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
                              self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                             self.skip_tags, self.dictionary)
+                             self.skip_tags, self.suffix_tags, self.dictionary)
         tokens = ctagger(tokens, 2,
                          self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                         self.skip_tags, self.dictionary)
+                         self.skip_tags, self.suffix_tags, self.dictionary)
 
         return tokens
