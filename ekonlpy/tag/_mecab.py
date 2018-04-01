@@ -64,28 +64,3 @@ class Mecab:
         if not (tag in self.tagset):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.load_dictionary(fname, tag)
-
-    def ngrams(self, tokens, ngram, include_unigram=True):
-        def getNgram(tokens, pos, gram):  # uni:gram=1  bi:gram=2 tri:gram=3
-            if pos < 0:
-                return None
-            if pos + gram > len(tokens):
-                return None
-            token = tokens[pos]
-            for i in range(1, gram):
-                token = token + "@$" + tokens[pos + i]
-            return token
-
-        if ngram == 1:
-            ngrms = tokens if include_unigram else []
-        else:
-            ngrms = []
-            s = 1 if include_unigram else 2
-            for pos in range(len(tokens)):
-                for gram in range(s, ngram + 1):
-                    token = getNgram(tokens, pos, gram)
-                    if token is None:
-                        continue
-                    ngrms.append(token)
-
-        return ngrms

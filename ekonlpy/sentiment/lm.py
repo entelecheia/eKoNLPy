@@ -1,5 +1,6 @@
 import pandas as pd
 from ekonlpy.sentiment.base import LEXICON_PATH, BaseDict
+from ekonlpy.sentiment.utils import Tokenizer
 
 
 class LM(BaseDict):
@@ -14,7 +15,10 @@ class LM(BaseDict):
 
     PATH = '%s/LM.csv' % LEXICON_PATH
 
-    def init_dict(self):
+    def init_tokenizer(self):
+        self._tokenizer = Tokenizer()
+
+    def init_dict(self, kind=None):
         data = pd.read_csv(self.PATH, low_memory=False)
         for category in ['Positive', 'Negative']:
             terms = data['Word'][data[category] > 0]

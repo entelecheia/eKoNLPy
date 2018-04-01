@@ -1,5 +1,6 @@
 import pandas as pd
 from ekonlpy.sentiment.base import LEXICON_PATH, BaseDict
+from ekonlpy.sentiment.utils import Tokenizer
 
 
 class HIV4(BaseDict):
@@ -12,7 +13,10 @@ class HIV4(BaseDict):
 
     PATH = '%s/HIV-4.csv' % LEXICON_PATH
 
-    def init_dict(self):
+    def init_tokenizer(self):
+        self._tokenizer = Tokenizer()
+
+    def init_dict(self, kind=None):
         data = pd.read_csv(self.PATH, low_memory=False)
         for category in ['Positiv', 'Negativ']:
             terms = data['Entry'][data[category] == category]
