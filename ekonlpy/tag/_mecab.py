@@ -39,6 +39,7 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/FINIST_LIST.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/CUST_ADJS.txt' % directory), 'VA')
         self._dictionary.add_dictionary(load_dictionary('%s/CUST_ADVS.txt' % directory), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)

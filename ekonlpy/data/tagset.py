@@ -33,17 +33,17 @@ mecab_tags = {
     'XSV': '동사 파생 접미사',
     'XSA': '형용사 파생 접미사',
     'XR': '어근',
-    'SF': '어근',
-    'SE': '어근',
-    'SSO': '어근',
-    'SSC': '어근',
-    'SC': '어근',
-    'SY': '어근',
-    'SH': '어근',
-    'SL': '어근',
-    'SN': '어근'
+    'SF': '마침표, 물음표, 느낌표',
+    'SE': '줄임표 …',
+    'SSO': '여는 괄호 (, [',
+    'SSC': '닫는 괄호 ), ]',
+    'SC': '구분자 , · / :',
+    'SY': '기타 기호',
+    'SH': '한자',
+    'SL': '외국어',
+    'SN': '숫자'
 }
-
+#SL: (?<=\n)[A-Za-z\s-\d]+\n
 nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN', 'VV+ETN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
