@@ -44,7 +44,7 @@ mecab_tags = {
     'SN': '숫자'
 }
 #SL: (?<=\n)[A-Za-z\s-\d]+\n
-nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN', 'VV+ETN']
+nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
 sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VX', 'VCN']
@@ -147,6 +147,7 @@ chk_tags = {
     ('NNG', 'NNG', 'NR'): 'NNG',
     ('NNG', 'NNG', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'XSN'): 'NNG',
+    ('NNG', 'NNG', 'NNG', 'XSN', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'XSN', 'VV'): 'NNG',
     ('NNG', 'NNG+JX', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
