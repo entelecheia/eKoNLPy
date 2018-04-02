@@ -66,7 +66,7 @@ class ExTagger:
                         continue
 
                 if n == 2 and tmp_tags == ('NNG', 'XSN'):
-                    print(tokens_org[i - n + 1][0] , tokens_org[i - n + 2][0])
+                    print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
                     for new_tag in suffix_tags.keys():
                         if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
                             new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
@@ -92,7 +92,8 @@ class ExTagger:
 
             return tokens_new
 
-        tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
+        # tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
+        tokens = [(w, self.dictionary.check_tag(w, t))
                   for w, t in tokens]
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
