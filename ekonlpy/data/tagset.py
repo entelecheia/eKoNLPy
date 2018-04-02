@@ -44,9 +44,11 @@ mecab_tags = {
     'SN': '어근'
 }
 
-nouns_tags = ['NNG', 'NNP', 'NNG+JX', 'XR', 'UNKNOWN']
+nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN', 'VV+ETN', 'XR']
+topic_tags = ['NNG', 'NNG+JX', 'UNKNOWN', 'XR']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN', 'XR']
+sent_tags = ['MAG', 'NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VV+ETN', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN',
+             'XR']
 # , 'UNKNOWN', 'MAG', 'MM']
 # ('못', 'MAG')
 
@@ -109,6 +111,7 @@ chk_tags = {
     ('NNG', 'NNB', 'NNG'): 'NNG',
     ('NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'IC'): 'NNG',
+    ('NNG', 'NNG', 'JC'): 'NNG',
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NR'): 'NNG',
@@ -118,19 +121,23 @@ chk_tags = {
     ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
     ('NNG', 'SL'): 'NNG',
+    ('NNG', 'SL', 'NNG'): 'NNG',
     ('NNG', 'SL', 'SN'): 'NNG',
     ('NNG', 'SN', 'NNG'): 'NNG',
     ('NNG', 'SY', 'SN'): 'NNG',
     ('NNG', 'VCP', 'EC+VX+ETM', 'NNG'): 'NNG',
+    ('NNG', 'VCP+EP', 'NNG'): 'NNG',
     ('NNG', 'VV'): 'NNG',
     ('NNG', 'VV', 'EC'): 'NNG',
     ('NNG', 'VV+EC', 'NNG'): 'NNG',
     ('NNG', 'VV+ETM', 'NNG'): 'NNG',
+    ('NNG', 'VV+ETN'): 'NNG',
     ('NNG', 'XPN'): 'NNG',
     ('NNG', 'XSN'): 'NNG',
     ('NNG', 'XSN', 'JKB+JX', 'NNG'): 'NNG',
     ('NNG', 'XSV+EC', 'MM', 'NNG'): 'NNG',
     ('NNG+JX', 'NP'): 'NNG',
+    ('NP', 'IC', 'NNG'): 'NNG',
     ('NP', 'VV+ETM', 'NNG'): 'NNG',
     ('NP+JKG', 'NNG'): 'NNG',
     ('NR', 'NNBC'): 'NNG',
@@ -138,9 +145,13 @@ chk_tags = {
     ('NR', 'NNG'): 'NNG',
     ('NR', 'NNG', 'NNG'): 'NNG',
     ('SL', 'NNG'): 'NNG',
+    ('SL', 'NNG', 'NNG'): 'NNG',
+    ('SL', 'NNG', 'NNG', 'NNG'): 'NNG',
+    ('SL', 'NNG', 'SL'): 'NNG',
     ('SL', 'SC', 'SL'): 'SL',
     ('SL', 'SN'): 'SL',
     ('SL', 'SN', 'NNG'): 'NNG',
+    ('SL', 'SY', 'NNG'): 'NNG',
     ('SL', 'SY', 'SL'): 'SL',
     ('SN', 'SY', 'NNG'): 'NNG',
     ('SSO', 'NNG', 'SSC'): 'NNG',

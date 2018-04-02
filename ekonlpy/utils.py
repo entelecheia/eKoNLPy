@@ -7,7 +7,7 @@ def load_dictionary(fname, encoding='utf-8', rewrite=False):
     words = set()
     try:
         with open(fname, encoding=encoding) as f:
-            words_ = {line.strip() for line in f}
+            words_ = {line.strip().lower() for line in f}
             words.update(words_)
         if rewrite:
             with open(fname, 'w') as f:

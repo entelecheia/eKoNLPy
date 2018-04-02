@@ -29,7 +29,7 @@ class ExTagger:
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
-        def ctagger(tokens, n, nochk_dic, chk_dic, skgrm_dic, skip_tags, suffix_tags, term_dict):
+        def ctagger(tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, skip_tags, suffix_tags, term_dict):
             # tokens_org = [(p[0], 'NNG' if p[1] == 'NNP' else p[1]) for p in tokens]
             tokens_org = tokens
             tokens_new = []
@@ -39,7 +39,7 @@ class ExTagger:
                 tmp_tags = []
                 for j in range(n):
                     tmp_tags.append('NNG'
-                                    if tokens_org[i - n + j + 1][1] in ['NNP', 'UNKNOWN']
+                                    if tokens_org[i - n + j + 1][1] in nouns_tags
                                     else tokens_org[i - n + j + 1][1])
                 tmp_tags = tuple(tmp_tags)
 
@@ -53,7 +53,8 @@ class ExTagger:
                         tokens_new.append((new_word, new_tag))
                         i += n
                         continue
-                elif tmp_tags in skgrm_dic.keys():
+
+                if tmp_tags in skgrm_dic.keys():
                     new_word = ''
                     for j in range(n):
                         if tmp_tags[j] not in skip_tags:
@@ -66,7 +67,7 @@ class ExTagger:
                         continue
 
                 if n == 2 and tmp_tags == ('NNG', 'XSN'):
-                    print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
+                    # print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
                     for new_tag in suffix_tags.keys():
                         if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
                             new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
@@ -97,10 +98,10 @@ class ExTagger:
                   for w, t in tokens]
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
-                             self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+                             self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
                              self.skip_tags, self.suffix_tags, self.dictionary)
         tokens = ctagger(tokens, 2,
-                         self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+                         self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
                          self.skip_tags, self.suffix_tags, self.dictionary)
 
         return tokens

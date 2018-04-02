@@ -1,7 +1,7 @@
 from konlpy.tag import Mecab as KoNLPyMecab
 from ekonlpy.etag import ExTagger
 from ekonlpy.data.tagset import mecab_tags as tagset
-from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags
+from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags
 from ekonlpy.dictionary import TermDictionary
 from ekonlpy.utils import installpath
 from ekonlpy.utils import load_dictionary, loadtxt
@@ -17,6 +17,7 @@ class Mecab:
         self.extagger = self._load_ext_tagger()
         self.tagset = tagset
         self.nouns_tags = nouns_tags
+        self.topic_tags = topic_tags
         self.stop_tags = stop_tags
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
@@ -44,11 +45,12 @@ class Mecab:
 
     def nouns(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        return [w for w, t in tagged if t in self.nouns_tags]
+        return [w for w, t in tagged if t in self.topic_tags and w.lower() not in self.stopwords]
 
     def sent_words(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        return [w for w, t in tagged if t in self.sent_tags]
+        return ['{}/{}'.format(w.lower(), t.split('+')[0]) for w, t in tagged
+                if t in self.sent_tags and w.lower() not in self.stopwords]
 
     def morphs(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
