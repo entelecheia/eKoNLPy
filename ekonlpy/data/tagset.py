@@ -101,6 +101,8 @@ chk_tags = {
     ('MAJ', 'MAG', 'NNG'): 'NNG',
     ('MM', 'NNG'): 'NNG',
     ('MM', 'NNG', 'NNG'): 'NNG',
+    ('MM', 'NNG', 'NNG', 'NNG'): 'NNG',
+    ('MM', 'NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('MM', 'NNG', 'XSN'): 'NNG',
     ('NNB', 'NNG'): 'NNG',
     ('NNB', 'NNG', 'JKS', 'NNG'): 'NNG',
