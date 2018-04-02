@@ -44,20 +44,30 @@ mecab_tags = {
     'SN': '어근'
 }
 
-nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN', 'VV+ETN', 'XR']
-topic_tags = ['NNG', 'NNG+JX', 'UNKNOWN', 'XR']
+nouns_tags = ['NNG', 'NNG+JX', 'NNP', 'UNKNOWN', 'VV+ETN']
+topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'NNG+JX', 'VV', 'VA', 'VV+ETM', 'VV+ETN', 'VX+ETM', 'VV+EP', 'VA+ETM', 'VA+EC', 'VX', 'VCN',
-             'XR']
-# , 'UNKNOWN', 'MAG', 'MM']
-# ('못', 'MAG')
-
+sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VX', 'VCN']
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
-    # ('NNG', 'XSN'): 'NNG',
     ('VX', 'NNG'): 'NNG',
     ('XPN', 'XR', 'XSN'): 'NNG'
+}
+
+xse_tags = {
+    ('NNG', 'VCP'): 'VV',
+    ('NNG', 'XSA'): 'VA',
+    ('NNG', 'XSA+ETM'): 'VA',
+    ('NNG', 'XSV'): 'VV',
+    ('NNG', 'XSV+ETM'): 'VV',
+    ('NNG', 'XSV+EC'): 'VV',
+    ('NNG', 'XSV+EF'): 'VV',
+    ('NNG', 'XSV+EP'): 'VV',
+    ('NNG', 'XSV+EP+EC'): 'VV',
+    ('XR', 'XSA'): 'VA',
+    ('XR', 'XSA+ETM'): 'VA',
+    ('XR', 'XSV'): 'VV'
 }
 
 suffix_tags = {
@@ -82,7 +92,7 @@ chk_tags = {
     ('JKG', 'NNG'): 'NNG',
     ('JKS', 'NNG', 'NNG'): 'NNG',
     ('JX', 'NNG'): 'NNG',
-    ('MAG', 'MAG', 'VV+EC'): 'NNG',
+    ('MAG', 'MAG', 'VV'): 'NNG',
     ('MAG', 'NNG'): 'NNG',
     ('MAJ', 'MAG', 'IC'): 'NNG',
     ('MAJ', 'MAG', 'NNG'): 'NNG',
@@ -91,10 +101,12 @@ chk_tags = {
     ('MM', 'NNG', 'XSN'): 'NNG',
     ('NNB', 'NNG'): 'NNG',
     ('NNB', 'NNG', 'JKS', 'NNG'): 'NNG',
+    ('NNBC', 'NNG'): 'NNG',
     ('NNB+JX', 'NNG'): 'NNG',
     ('NNG', 'IC', 'NNG'): 'NNG',
     ('NNG', 'JKB'): 'NNG',
     ('NNG', 'JKB', 'MM', 'NNG'): 'NNG',
+    ('NNG', 'JKB', 'NNG'): 'NNG',
     ('NNG', 'JKB+JX', 'NNG'): 'NNG',
     ('NNG', 'JKG'): 'NNG',
     ('NNG', 'JKO'): 'NNG',
@@ -104,6 +116,9 @@ chk_tags = {
     ('NNG', 'JX'): 'NNG',
     ('NNG', 'MAG'): 'NNG',
     ('NNG', 'MAG', 'NNG'): 'NNG',
+    ('NNG', 'MAG', 'VV'): 'NNG',
+    ('NNG', 'MAG', 'VV', 'NNG'): 'NNG',
+    ('NNG', 'MAG', 'VV', 'VV'): 'NNG',
     ('NNG', 'MAG', 'VV+EC'): 'NNG',
     ('NNG', 'MAG', 'VV+EC', 'VV+ETM'): 'NNG',
     ('NNG', 'MAG', 'VV+ETM', 'NNG'): 'NNG',
@@ -120,24 +135,31 @@ chk_tags = {
     ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
+    ('NNG', 'NP'): 'NNG',
     ('NNG', 'SL'): 'NNG',
     ('NNG', 'SL', 'NNG'): 'NNG',
     ('NNG', 'SL', 'SN'): 'NNG',
     ('NNG', 'SN', 'NNG'): 'NNG',
     ('NNG', 'SY', 'SN'): 'NNG',
+    ('NNG', 'VCP', 'EC', 'NNG'): 'NNG',
     ('NNG', 'VCP', 'EC+VX+ETM', 'NNG'): 'NNG',
+    ('NNG', 'VCP', 'NNG'): 'NNG',
     ('NNG', 'VCP+EP', 'NNG'): 'NNG',
     ('NNG', 'VV'): 'NNG',
     ('NNG', 'VV', 'EC'): 'NNG',
+    ('NNG', 'VV', 'NNG'): 'NNG',
     ('NNG', 'VV+EC', 'NNG'): 'NNG',
     ('NNG', 'VV+ETM', 'NNG'): 'NNG',
     ('NNG', 'VV+ETN'): 'NNG',
     ('NNG', 'XPN'): 'NNG',
     ('NNG', 'XSN'): 'NNG',
+    ('NNG', 'XSN', 'JKB', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'JKB+JX', 'NNG'): 'NNG',
+    ('NNG', 'XSV', 'MM', 'NNG'): 'NNG',
     ('NNG', 'XSV+EC', 'MM', 'NNG'): 'NNG',
     ('NNG+JX', 'NP'): 'NNG',
     ('NP', 'IC', 'NNG'): 'NNG',
+    ('NP', 'VV', 'NNG'): 'NNG',
     ('NP', 'VV+ETM', 'NNG'): 'NNG',
     ('NP+JKG', 'NNG'): 'NNG',
     ('NR', 'NNBC'): 'NNG',
@@ -153,16 +175,23 @@ chk_tags = {
     ('SL', 'SN', 'NNG'): 'NNG',
     ('SL', 'SY', 'NNG'): 'NNG',
     ('SL', 'SY', 'SL'): 'SL',
+    ('SN', 'NNBC', 'NNG'): 'NNG',
+    ('SN', 'NNG'): 'NNG',
     ('SN', 'SY', 'NNG'): 'NNG',
     ('SSO', 'NNG', 'SSC'): 'NNG',
     ('VV', 'EC'): 'NNG',
     ('VV', 'EC', 'NNG'): 'NNG',
     ('VV', 'EC', 'VX', 'NNG'): 'NNG',
     ('VV', 'EP'): 'NNG',
+    ('VV', 'IC'): 'NNG',
     ('VV', 'IC', 'NNG'): 'NNG',
+    ('VV', 'MAG'): 'NNG',
+    ('VV', 'NNG'): 'NNG',
+    ('VV', 'NNG', 'NNG'): 'NNG',
     ('VV+EC', 'IC'): 'NNG',
     ('VV+EC', 'MAG'): 'NNG',
     ('VV+ETM', 'NNG'): 'NNG',
+    ('VV+ETM', 'NNG', 'NNG'): 'NNG',
     ('VX', 'NNG'): 'NNG',
     ('VX', 'EC', 'NNG'): 'NNG',
     ('XPN', 'MAG'): 'NNG',
@@ -170,5 +199,6 @@ chk_tags = {
     ('XPN', 'NNG', 'NNG'): 'NNG',
     ('XPN', 'XR'): 'NNG',
     ('XPN', 'XR', 'XSN'): 'NNG',
+    ('XR', 'NNG'): 'NNG',
     ('XSN', 'NNG'): 'NNG'
 }

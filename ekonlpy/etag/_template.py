@@ -1,4 +1,4 @@
-from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags, suffix_tags
+from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags, suffix_tags, xse_tags
 
 
 class ExTagger:
@@ -11,6 +11,7 @@ class ExTagger:
         self.skip_chk_tags = skip_chk_tags
         self.skip_tags = set(skip_tags)
         self.nouns_tags = nouns_tags
+        self.xse_tags = xse_tags
 
     def add_nochk_tags(self, template):
         if type(template) == dict:
@@ -29,7 +30,7 @@ class ExTagger:
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
-        def ctagger(tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, skip_tags, suffix_tags, term_dict):
+        def ctagger(tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, xse_tags, skip_tags, suffix_tags, term_dict):
             # tokens_org = [(p[0], 'NNG' if p[1] == 'NNP' else p[1]) for p in tokens]
             tokens_org = tokens
             tokens_new = []
@@ -84,6 +85,13 @@ class ExTagger:
                     i += n
                     continue
 
+                if n == 2 and tmp_tags in xse_tags.keys():
+                    new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0][0]
+                    new_tag = xse_tags[tmp_tags]
+                    tokens_new.append((new_word, new_tag))
+                    i += n
+                    continue
+
                 tokens_new.append(tokens_org[i - n + 1])
 
                 if i == len(tokens_org) - 1:
@@ -99,9 +107,9 @@ class ExTagger:
         for i in range(self.max_tokens, 1, -1):
             tokens = ctagger(tokens, i,
                              self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                             self.skip_tags, self.suffix_tags, self.dictionary)
+                             self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
         tokens = ctagger(tokens, 2,
                          self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                         self.skip_tags, self.suffix_tags, self.dictionary)
+                         self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
 
         return tokens

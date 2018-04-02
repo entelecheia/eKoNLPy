@@ -34,6 +34,7 @@ class TermDictionary:
             if word in words:
                 tag = tg
                 break
+        tag = tag.split('+')[0]
         return tag
 
     def is_tag(self, word, tag):
