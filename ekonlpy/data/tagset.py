@@ -72,7 +72,7 @@ xse_tags = {
 
 suffix_tags = {
     'VA': ['적'],
-    'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형')
+    'NNG': ('감', '권', '계', '력', '률', '별', '분', '상', '성', '용', '율', '자', '치', '화', '형')
 }
 
 skip_chk_tags = {
@@ -117,6 +117,7 @@ chk_tags = {
     ('NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'JKS', 'VV'): 'NNG',
     ('NNG', 'JX'): 'NNG',
+    ('NNG', 'JX', 'NNG'): 'NNG',
     ('NNG', 'MAG'): 'NNG',
     ('NNG', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'MAG', 'VV'): 'NNG',
@@ -133,6 +134,7 @@ chk_tags = {
     ('NNG', 'NNG', 'JC'): 'NNG',
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NR'): 'NNG',
