@@ -108,12 +108,13 @@ class ExTagger:
         # tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
         tokens = [(w, self.dictionary.check_tag(w, t))
                   for w, t in tokens]
-        for i in range(self.max_tokens, 1, -1):
-            tokens = ctagger(tokens, i,
-                             self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                             self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
-        tokens = ctagger(tokens, 2,
-                         self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                         self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
+        for x in range(2):
+            for i in range(self.max_tokens-x, 1, -1):
+                tokens = ctagger(tokens, i,
+                                 self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+                                 self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
+        # tokens = ctagger(tokens, 2,
+        #                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
+        #                  self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
 
         return tokens
