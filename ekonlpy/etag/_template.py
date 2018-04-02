@@ -86,11 +86,12 @@ class ExTagger:
                     continue
 
                 if n == 2 and tmp_tags in xse_tags.keys():
-                    new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0][0]
-                    new_tag = xse_tags[tmp_tags]
-                    tokens_new.append((new_word, new_tag))
-                    i += n
-                    continue
+                    if tokens_org[i - n + 2][0][0] not in ['라']:
+                        new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0][0]
+                        new_tag = xse_tags[tmp_tags]
+                        tokens_new.append((new_word, new_tag))
+                        i += n
+                        continue
 
                 tokens_new.append(tokens_org[i - n + 1])
 

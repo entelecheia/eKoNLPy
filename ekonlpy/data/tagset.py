@@ -72,7 +72,7 @@ xse_tags = {
 
 suffix_tags = {
     'VA': ['적'],
-    'NNG': ('감', '권, ''계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형')
+    'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형')
 }
 
 skip_chk_tags = {
@@ -88,6 +88,8 @@ chk_tags = {
     ('IC', 'IC'): 'NNG',
     ('IC', 'NNG'): 'NNG',
     ('IC', 'NNG', 'NNG'): 'NNG',
+    ('IC', 'NNG', 'NNG', 'NNG'): 'NNG',
+    ('IC', 'NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('IC', 'VV', 'EC', 'NNG'): 'NNG',
     ('JKG', 'NNG'): 'NNG',
     ('JKS', 'NNG', 'NNG'): 'NNG',
@@ -101,6 +103,7 @@ chk_tags = {
     ('MM', 'NNG', 'XSN'): 'NNG',
     ('NNB', 'NNG'): 'NNG',
     ('NNB', 'NNG', 'JKS', 'NNG'): 'NNG',
+    ('NNBC', 'MAG', 'VV'): 'NNG',
     ('NNBC', 'NNG'): 'NNG',
     ('NNB+JX', 'NNG'): 'NNG',
     ('NNG', 'IC', 'NNG'): 'NNG',
@@ -129,6 +132,8 @@ chk_tags = {
     ('NNG', 'NNG', 'JC'): 'NNG',
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NR'): 'NNG',
     ('NNG', 'NNG', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'NNG+JX', 'MAG', 'NNG'): 'NNG',
@@ -136,6 +141,7 @@ chk_tags = {
     ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
     ('NNG', 'NP'): 'NNG',
+    ('NNG', 'NR'): 'NNG',
     ('NNG', 'SL'): 'NNG',
     ('NNG', 'SL', 'NNG'): 'NNG',
     ('NNG', 'SL', 'SN'): 'NNG',
@@ -147,6 +153,7 @@ chk_tags = {
     ('NNG', 'VCP+EP', 'NNG'): 'NNG',
     ('NNG', 'VV'): 'NNG',
     ('NNG', 'VV', 'EC'): 'NNG',
+    ('NNG', 'VV', 'NNB'): 'NNG',
     ('NNG', 'VV', 'NNG'): 'NNG',
     ('NNG', 'VV+EC', 'NNG'): 'NNG',
     ('NNG', 'VV+ETM', 'NNG'): 'NNG',
@@ -179,6 +186,8 @@ chk_tags = {
     ('SN', 'NNG'): 'NNG',
     ('SN', 'SY', 'NNG'): 'NNG',
     ('SSO', 'NNG', 'SSC'): 'NNG',
+    ('VCP', 'EC', 'NNG'): 'NNG',
+    ('VCP', 'EC', 'NNG', 'NNG'): 'NNG',
     ('VV', 'EC'): 'NNG',
     ('VV', 'EC', 'NNG'): 'NNG',
     ('VV', 'EC', 'VX', 'NNG'): 'NNG',
@@ -186,6 +195,7 @@ chk_tags = {
     ('VV', 'IC'): 'NNG',
     ('VV', 'IC', 'NNG'): 'NNG',
     ('VV', 'MAG'): 'NNG',
+    ('VV', 'NNB'): 'NNG',
     ('VV', 'NNG'): 'NNG',
     ('VV', 'NNG', 'NNG'): 'NNG',
     ('VV+EC', 'IC'): 'NNG',
