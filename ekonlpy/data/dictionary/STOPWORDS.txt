@@ -1,6 +1,3 @@
-ㆍ
-'ll
-'ve
 a
 a's
 abaft
@@ -895,6 +892,9 @@ yourself
 yourselves
 z
 zero
+ㆍ
+ㆍ
+對
 가
 간
 같
@@ -928,6 +928,7 @@ zero
 둘
 뒤
 드
+들
 등
 등등
 때
