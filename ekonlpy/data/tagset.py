@@ -125,6 +125,7 @@ chk_tags = {
     ('NNG', 'MAG', 'VV+EC'): 'NNG',
     ('NNG', 'MAG', 'VV+EC', 'VV+ETM'): 'NNG',
     ('NNG', 'MAG', 'VV+ETM', 'NNG'): 'NNG',
+    ('NNG', 'MM'): 'NNG',
     ('NNG', 'NNB'): 'NNG',
     ('NNG', 'NNB', 'NNG'): 'NNG',
     ('NNG', 'NNG'): 'NNG',
