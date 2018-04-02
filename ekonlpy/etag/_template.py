@@ -70,11 +70,14 @@ class ExTagger:
                 if n == 2 and tmp_tags == ('NNG', 'XSN'):
                     # print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
                     for new_tag in suffix_tags.keys():
+                        # print(len(tokens_org), i - n + 2)
                         if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
-                            new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
-                            tokens_new.append((new_word, new_tag))
-                            i += n
-                            continue
+                            break
+                    if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
+                        new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
+                        tokens_new.append((new_word, new_tag))
+                        i += n
+                        continue
 
                 if tmp_tags in nochk_dic.keys():
                     new_word = ''
