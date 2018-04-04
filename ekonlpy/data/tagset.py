@@ -6,7 +6,9 @@ mecab_tags = {
     'NR': '수사',
     'NP': '대명사',
     'VV': '동사',
+    'VVX': '파생동사 (추가)',
     'VA': '형용사',
+    'VAX': '파생형용사 (추가)',
     'VX': '보조 용언',
     'VCP': '긍정 지정사',
     'VCN': '부정 지정사',
@@ -48,7 +50,7 @@ mecab_tags = {
 nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VX', 'VCN']
+sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN']
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
@@ -57,18 +59,18 @@ nochk_tags = {
 }
 
 xse_tags = {
-    ('NNG', 'VCP'): 'VV',
-    ('NNG', 'XSA'): 'VA',
-    ('NNG', 'XSA+ETM'): 'VA',
-    ('NNG', 'XSV'): 'VV',
-    ('NNG', 'XSV+ETM'): 'VV',
-    ('NNG', 'XSV+EC'): 'VV',
-    ('NNG', 'XSV+EF'): 'VV',
-    ('NNG', 'XSV+EP'): 'VV',
-    ('NNG', 'XSV+EP+EC'): 'VV',
-    ('XR', 'XSA'): 'VA',
-    ('XR', 'XSA+ETM'): 'VA',
-    ('XR', 'XSV'): 'VV'
+    ('NNG', 'VCP'): 'VVX',
+    ('NNG', 'XSA'): 'VAX',
+    ('NNG', 'XSA+ETM'): 'VAX',
+    ('NNG', 'XSV'): 'VVX',
+    ('NNG', 'XSV+ETM'): 'VVX',
+    ('NNG', 'XSV+EC'): 'VVX',
+    ('NNG', 'XSV+EF'): 'VVX',
+    ('NNG', 'XSV+EP'): 'VVX',
+    ('NNG', 'XSV+EP+EC'): 'VVX',
+    ('XR', 'XSA'): 'VAX',
+    ('XR', 'XSA+ETM'): 'VAX',
+    ('XR', 'XSV'): 'VVX'
 }
 
 xsn_sfx_tag = ('NNG', 'XSN')
@@ -96,6 +98,7 @@ chk_tags = {
     ('IC', 'NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('IC', 'VV', 'EC', 'NNG'): 'NNG',
     ('JKG', 'NNG'): 'NNG',
+    ('JKS', 'NNG'): 'NNG',
     ('JKS', 'NNG', 'NNG'): 'NNG',
     ('JX', 'NNG'): 'NNG',
     ('MAG', 'MAG', 'VV'): 'NNG',
@@ -149,6 +152,7 @@ chk_tags = {
     ('NNG', 'NNG', 'JC'): 'NNG',
     ('NNG', 'NNG', 'JKG'): 'NNG',
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'JX', 'MM'): 'NNG',
     ('NNG', 'NNG', 'JX', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'MAG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
@@ -160,6 +164,7 @@ chk_tags = {
     ('NNG', 'NNG', 'NNG', 'XSN', 'VV'): 'NNG',
     ('NNG', 'NNG', 'NR'): 'NNG',
     ('NNG', 'NNG', 'VA', 'IC'): 'NNG',
+    ('NNG', 'NNG', 'VA', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'VV', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
@@ -175,6 +180,7 @@ chk_tags = {
     ('NNG', 'VCP', 'EC', 'NNG'): 'NNG',
     ('NNG', 'VCP', 'EC+VX+ETM', 'NNG'): 'NNG',
     ('NNG', 'VCP', 'NNG'): 'NNG',
+    ('NNG', 'VCP', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'VCP+EP', 'NNG'): 'NNG',
     ('NNG', 'VV'): 'NNG',
     ('NNG', 'VV', 'EC'): 'NNG',
@@ -187,6 +193,7 @@ chk_tags = {
     ('NNG', 'XSN'): 'NNG',
     ('NNG', 'XSN', 'JC'): 'NNG',
     ('NNG', 'XSN', 'JC', 'NNG'): 'NNG',
+    ('NNG', 'XSN', 'JKB', 'MM', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'JKB', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'JKB+JX', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'MM', 'NNG'): 'NNG',
@@ -196,6 +203,7 @@ chk_tags = {
     ('NNG', 'XSN', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'MM', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'MM', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'XSV', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSV+EC', 'MM', 'NNG'): 'NNG',
@@ -211,6 +219,7 @@ chk_tags = {
     ('NR', 'NNBC', 'NNG'): 'NNG',
     ('NR', 'NNG'): 'NNG',
     ('NR', 'NNG', 'NNG'): 'NNG',
+    ('NR', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('SL', 'NNG'): 'NNG',
     ('SL', 'NNG', 'NNG'): 'NNG',
     ('SL', 'NNG', 'NNG', 'NNG'): 'NNG',
@@ -237,6 +246,7 @@ chk_tags = {
     ('VV', 'NNB'): 'NNG',
     ('VV', 'NNG'): 'NNG',
     ('VV', 'NNG', 'NNG'): 'NNG',
+    ('VV', 'NP', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('VV+EC', 'IC'): 'NNG',
     ('VV+EC', 'MAG'): 'NNG',
     ('VV+ETM', 'NNG'): 'NNG',
