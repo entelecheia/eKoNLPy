@@ -43,7 +43,8 @@ mecab_tags = {
     'SL': '외국어',
     'SN': '숫자'
 }
-#SL: (?<=\n)[A-Za-z\s-\d]+\n
+# 'NNX': '파생 명사',
+# SL: (?<=\n)[A-Za-z\s-\d]+\n
 nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
@@ -70,11 +71,13 @@ xse_tags = {
     ('XR', 'XSV'): 'VV'
 }
 
+xsn_sfx_tag = ('NNG', 'XSN')
 suffix_tags = {
     'VA': ['적'],
-    'NNG': ('감', '권', '계', '력', '률', '별', '분', '상', '성', '용', '율', '자', '치', '화', '형'),
+    'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형'),
     'NNBC': ['당']
 }
+# 'NNX': ('상'),
 
 skip_chk_tags = {
     ('MM', 'SC', 'NNG', 'SC', 'NR'): 'NNG',
@@ -142,6 +145,7 @@ chk_tags = {
     ('NNG', 'NNG', 'JC'): 'NNG',
     ('NNG', 'NNG', 'JKG'): 'NNG',
     ('NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'JX', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'JKS', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'NNG', 'NNG'): 'NNG',
@@ -190,6 +194,8 @@ chk_tags = {
     ('NNG+JX', 'NP'): 'NNG',
     ('NP', 'IC', 'NNG'): 'NNG',
     ('NP', 'JKB', 'NNG'): 'NNG',
+    ('NP', 'NNG'): 'NNG',
+    ('NP', 'NNG', 'NNG'): 'NNG',
     ('NP', 'VV', 'NNG'): 'NNG',
     ('NP', 'VV+ETM', 'NNG'): 'NNG',
     ('NP+JKG', 'NNG'): 'NNG',

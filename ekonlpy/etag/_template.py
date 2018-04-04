@@ -1,4 +1,5 @@
-from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags, suffix_tags, xse_tags
+from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, nouns_tags, suffix_tags, xse_tags, \
+    xsn_sfx_tag
 
 
 class ExTagger:
@@ -30,7 +31,8 @@ class ExTagger:
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
-        def ctagger(tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, xse_tags, skip_tags, suffix_tags, term_dict):
+        def ctagger(passes, tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, xse_tags, skip_tags, suffix_tags,
+                    term_dict):
             # tokens_org = [(p[0], 'NNG' if p[1] == 'NNP' else p[1]) for p in tokens]
             tokens_org = tokens
             tokens_new = []
@@ -67,7 +69,7 @@ class ExTagger:
                         i += n
                         continue
 
-                if n == 2 and tmp_tags == ('NNG', 'XSN'):
+                if passes > 0 and n == 2 and tmp_tags == xsn_sfx_tag:
                     # print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
                     for new_tag in suffix_tags.keys():
                         # print(len(tokens_org), i - n + 2)
@@ -79,16 +81,16 @@ class ExTagger:
                         i += n
                         continue
 
-                if tmp_tags in nochk_dic.keys():
-                    new_word = ''
-                    for j in range(n):
-                        new_word += tokens_org[i - n + j + 1][0]
-                    new_tag = nochk_dic[tmp_tags]
-                    tokens_new.append((new_word, new_tag))
-                    i += n
-                    continue
+                # if tmp_tags in nochk_dic.keys():
+                #     new_word = ''
+                #     for j in range(n):
+                #         new_word += tokens_org[i - n + j + 1][0]
+                #     new_tag = nochk_dic[tmp_tags]
+                #     tokens_new.append((new_word, new_tag))
+                #     i += n
+                #     continue
 
-                if n == 2 and tmp_tags in xse_tags.keys():
+                if passes > 0 and n == 2 and tmp_tags in xse_tags.keys():
                     if tokens_org[i - n + 2][0][0] not in ['라']:
                         new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0][0]
                         new_tag = xse_tags[tmp_tags]
@@ -109,8 +111,8 @@ class ExTagger:
         tokens = [(w, self.dictionary.check_tag(w, t))
                   for w, t in tokens]
         for x in range(2):
-            for i in range(self.max_tokens-x, 1, -1):
-                tokens = ctagger(tokens, i,
+            for i in range(self.max_tokens - x, 1, -1):
+                tokens = ctagger(x, tokens, i,
                                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
                                  self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
         # tokens = ctagger(tokens, 2,
