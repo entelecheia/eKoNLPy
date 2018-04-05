@@ -3,7 +3,7 @@ from ekonlpy.data.tagset import nochk_tags, chk_tags, skip_chk_tags, skip_tags, 
 
 
 class ExTagger:
-    def __init__(self, dictionary, max_tokens=5):
+    def __init__(self, dictionary, max_tokens=6):
         self.dictionary = dictionary
         self.max_tokens = max_tokens
         self.nochk_tags = nochk_tags
