@@ -47,12 +47,12 @@ class Mecab:
 
     def nouns(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        return [w.lower() for w, t in tagged if t in self.topic_tags and w.lower() not in self.stopwords]
+        return [w.lower() for w, t in tagged if t in self.topic_tags and w.lower()]
 
     def sent_words(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         return ['{}/{}'.format(w.lower(), t.split('+')[0]) for w, t in tagged
-                if t in self.sent_tags and w.lower() not in self.stopwords]
+                if t in self.sent_tags and w.lower()]
 
     def morphs(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
