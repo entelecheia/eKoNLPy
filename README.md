@@ -43,8 +43,7 @@ To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` c
     from ekonlpy.sentiment import MPKO
     mpko = MPKO()
     tokens = mpko.tokenize(text)
-    ngrams = mpko.ngramize(tokens)
-    score = mpko.get_score(ngrams)
+    score = mpko.get_score(tokens)
 
 
 ``MPKO`` is a subclass for ``ekonlpy.sentiment.base.BaseDict``. ``BaseDict`` can be inherited by implmenting ``init_dict`` to initialize ``_posset`` and ``_negset`` for the dictionary

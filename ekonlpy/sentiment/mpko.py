@@ -11,15 +11,12 @@ class MPKO(BaseDict):
     ``Positive`` means ``hawkish`` and ``Negative`` means ``dovish``.
     '''
 
-    KINDS = {0: 'MPS_polarities_bi_pt_w5.csv',
-             1: 'MPS_polarities_GB3Y2_5gram.csv',
-             2: 'MPS_polarities_GB3Y_5gram.csv',
-             3: 'MPS_polarities_call2_5gram.csv',
-             4: 'MPS_polarities_call_5gram.csv'
+    KINDS = {0: 'mp_polarities_w2c3_w5.csv',
+             1: 'mp_polarities_call_7gram.csv'
              }
 
-    def init_tokenizer(self):
-        self._tokenizer = MPTokenizer()
+    def init_tokenizer(self, kind=None):
+        self._tokenizer = MPTokenizer(kind)
 
     def init_dict(self, kind=None):
         kind = kind if kind in self.KINDS.keys() else 0
@@ -32,7 +29,10 @@ class MPKO(BaseDict):
                 if w == 'word':
                     continue
                 p = float(word[1].strip())
-                if len(w) > 1 and p > 0:
-                    self._posdict[w] = p
-                elif len(w) > 1 and p < 0:
-                    self._negdict[w] = p
+                s = float(word[2].strip())
+                if len(w) > 1:
+                    self._poldict[w] = s
+                    if p > 0:
+                        self._posdict[w] = 1
+                    elif p < 0:
+                        self._negdict[w] = -1

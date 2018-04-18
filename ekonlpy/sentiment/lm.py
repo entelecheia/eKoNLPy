@@ -15,7 +15,7 @@ class LM(BaseDict):
 
     PATH = '%s/LM.csv' % LEXICON_PATH
 
-    def init_tokenizer(self):
+    def init_tokenizer(self, kind=None):
         self._tokenizer = Tokenizer()
 
     def init_dict(self, kind=None):
