@@ -42,7 +42,7 @@ class MPTokenizer(BaseTokenizer):
     The default tokenizer for MPKO sub class, which yields 5-gram tokens.
     The output of the tokenizer is tagged by Mecab.
     '''
-    KINDS = {0: 3,
+    KINDS = {0: 4,
              1: 7
              }
     FILES = {'stopwords': ['mp_sent_stopwords.txt'],
@@ -113,19 +113,36 @@ class MPTokenizer(BaseTokenizer):
                     if tokens[pos + i] not in token:
                         if 'VV' in tokens[pos + i] or 'VVX' in tokens[pos + i]:
                             check_verb = True
-                        token = token + self._delimiter + tokens[pos + i]
+                        token += self._delimiter + tokens[pos + i]
                 if len(token.split(self._delimiter)) == gram and check_verb:
                     return token
+                else:
+                    return None
+            elif 'VA' in token or 'VAX' in token:
+                if tokens[pos + 1] in startwords:
+                    token = token + self._delimiter + tokens[pos + 1]
+                    for i in range(2, gram):
+                        if tokens[pos + i] not in token:
+                            if 'VV' in tokens[pos + i] or 'VVX' in tokens[pos + i]:
+                                check_verb = True
+                            token += self._delimiter + tokens[pos + i]
+                    if len(token.split(self._delimiter)) == gram and check_verb:
+                        return token
+                    else:
+                        return None
                 else:
                     return None
             else:
                 return None
         else:
-            for i in range(1, gram):
-                if tokens[pos + i] not in token:
-                    token = token + self._delimiter + tokens[pos + i]
-            if len(token.split(self._delimiter)) == gram:
-                return token
+            if 'VA' in token or 'VAX' in token or 'NNG' in token:
+                for i in range(1, gram):
+                    if tokens[pos + i] not in token:
+                        token += self._delimiter + tokens[pos + i]
+                if len(token.split(self._delimiter)) == gram and 'NNG' in token and 'VV' in token:
+                    return token
+                else:
+                    return None
             else:
                 return None
 
