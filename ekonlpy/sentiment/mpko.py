@@ -11,8 +11,8 @@ class MPKO(BaseDict):
     ``Positive`` means ``hawkish`` and ``Negative`` means ``dovish``.
     '''
 
-    KINDS = {0: 'mp_polarities_w2c4_w5.csv',
-             1: 'mp_polarities_call_7gram.csv'
+    KINDS = {0: 'mp_polarities_call_5gram.csv',
+             1: 'mp_polarities_w2c5_w5.csv'
              }
 
     def init_tokenizer(self, kind=None):

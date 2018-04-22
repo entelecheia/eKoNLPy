@@ -42,13 +42,13 @@ class MPTokenizer(BaseTokenizer):
     The default tokenizer for MPKO sub class, which yields 5-gram tokens.
     The output of the tokenizer is tagged by Mecab.
     '''
-    KINDS = {0: 4,
-             1: 7
+    KINDS = {0: 5,
+             1: 5
              }
     FILES = {'stopwords': ['mp_sent_stopwords.txt'],
-             'stopngrams': ['mp_sent_stopngrams.txt'],
+             'stopngrams': ['mp_sent_stop5grams.txt'],
              'startwords': ['mp_sent_startwords.txt'],
-             'vocab': 'mp_sent_vocab_7gram.txt'
+             'vocab': 'mp_sent_vocab_5gram.txt'
              }
 
     def __init__(self, kind=None):
@@ -60,8 +60,8 @@ class MPTokenizer(BaseTokenizer):
         self._vocab = self.get_vocab()
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
         self._stopngrams = self.get_wordset(self.FILES['stopngrams'])
-        self._startwords = self.get_wordset(self.FILES['startwords']) if self._kind == 1 else None
-        self._keepwords = self.extract_words(self._vocab) if self._kind == 0 else None
+        self._startwords = self.get_wordset(self.FILES['startwords']) if self._kind == 0 else None
+        self._keepwords = self.extract_words(self._vocab) if self._kind == 1 else None
 
     def tokenize(self, text):
         if type(text) == list:
@@ -163,20 +163,8 @@ class MPTokenizer(BaseTokenizer):
         with open(vocab_path) as f:
             for i, line in enumerate(f):
                 w = line.strip().split()
-                if self._kind == 1:
-                    if len(w[0]) > 0:
-                        vocab[w[0]] = w[1]
-                else:
-                    tokens = w[0].split(self._delimiter)
-                    for pos in range(len(tokens)):
-                        for gram in range(self._min_ngram, self._ngram + 1):
-                            token = self.get_ngram(tokens, pos, gram)
-                            if token:
-                                if token not in vocab:
-                                    vocab[token] = 1
-                                else:
-                                    vocab[token] += 1
-
+                if len(w[0]) > 0:
+                    vocab[w[0]] = w[1]
         return vocab
 
     def extract_words(self, vocab):
