@@ -37,8 +37,11 @@ class ExTagger:
             tokens_org = tokens
             tokens_new = []
             i = n - 1
-            while i < len(tokens_org):
+            # if length of tokens is less than n, bypass and return original tokens
+            if len(tokens_org) < n:
+                return tokens
 
+            while i < len(tokens_org):
                 tmp_tags = []
                 for j in range(n):
                     tmp_tags.append('NNG'
@@ -96,6 +99,11 @@ class ExTagger:
                         new_tag = xse_tags[tmp_tags]
                         tokens_new.append((new_word, new_tag))
                         i += n
+                        # if position of token reachs to the end, append remaining tokens
+                        if i == len(tokens_org):
+                            for j in range(n-1):
+                                tokens_new.append(tokens_org[i - n + j + 1])
+
                         continue
 
                 tokens_new.append(tokens_org[i - n + 1])
@@ -110,9 +118,10 @@ class ExTagger:
         # tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
         tokens = [(w, self.dictionary.check_tag(w, t))
                   for w, t in tokens]
+
         for x in range(2):
-            for i in range(self.max_tokens - x, 1, -1):
-                tokens = ctagger(x, tokens, i,
+            for t in range(self.max_tokens - x, 1, -1):
+                tokens = ctagger(x, tokens, t,
                                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
                                  self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
         # tokens = ctagger(tokens, 2,
