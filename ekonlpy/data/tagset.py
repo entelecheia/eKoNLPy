@@ -196,6 +196,7 @@ chk_tags = {
     ('NNG', 'NNG', 'NR'): 'NNG',
     ('NNG', 'NNG', 'VA', 'IC'): 'NNG',
     ('NNG', 'NNG', 'VA', 'NNG'): 'NNG',
+    ('NNG', 'NNG', 'VCP', 'VA', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'VV', 'NNG'): 'NNG',
     ('NNG', 'NNG', 'XSN'): 'NNG',
     ('NNG', 'NNG+JX'): 'NNG',
