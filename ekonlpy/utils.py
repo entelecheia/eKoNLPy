@@ -62,4 +62,5 @@ def load_wordlist(file_path, rewrite=False, max_ngram=None,
             for word in words:
                 f.write(word + "\n")
         print('Saved the words to the file: {}, No. of words: {}'.format(file_path, len(words)))
+    words = [word for word in words if not word.startswith('#')]
     return words
