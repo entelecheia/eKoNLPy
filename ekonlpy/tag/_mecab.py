@@ -8,12 +8,12 @@ from ekonlpy.utils import load_dictionary, loadtxt
 
 
 class Mecab:
-    def __init__(self, use_default_dictionary=True, use_phrases=True):
+    def __init__(self, use_default_dictionary=True, use_phrases=True, use_polarity_phrases=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._loaded_default_dictionary = use_default_dictionary
         if use_default_dictionary:
-            self._load_default_dictionary(use_phrases)
+            self._load_default_dictionary(use_phrases, use_polarity_phrases)
         self.extagger = self._load_ext_tagger()
         self.tagset = tagset
         self.nouns_tags = nouns_tags
@@ -29,7 +29,7 @@ class Mecab:
         directory = '%s/data/dictionary/' % installpath
         return loadtxt('%s/STOPWORDS.txt' % directory)
 
-    def _load_default_dictionary(self, use_phrases):
+    def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
         self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/COUNTRY_LIST.txt' % directory), 'NNG')
@@ -41,8 +41,9 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         if use_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/PHRASES.txt' % directory), 'NNG')
-            self._dictionary.add_dictionary(load_dictionary('%s/ACTION_PHRASES.txt' % directory), 'NNG')
             self._dictionary.add_dictionary(load_dictionary('%s/NAME_PHRASES.txt' % directory), 'NNP')
+        if use_polarity_phrases:
+            self._dictionary.add_dictionary(load_dictionary('%s/POLARITY_PHRASES.txt' % directory), 'NNG')
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
