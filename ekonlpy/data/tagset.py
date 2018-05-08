@@ -242,6 +242,7 @@ chk_tags = {
     ('NNG', 'XSN', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'NNG', 'XSN'): 'NNG',
+    ('NNG', 'XSN', 'XSN'): 'NNG',
     ('NNG', 'XSV', 'EC'): 'NNG',
     ('NNG', 'XSV', 'MM', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'MM', 'NNG', 'NNG'): 'NNG',
