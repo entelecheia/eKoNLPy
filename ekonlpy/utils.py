@@ -37,7 +37,8 @@ def save_wordlist(words, file_path):
 
 
 def load_wordlist(file_path, rewrite=False, max_ngram=None,
-                  remove_tag=False, sort=True, remove_delimiter=False):
+                  remove_tag=False, sort=True, remove_delimiter=False,
+                  lowercase=False):
     if os.path.isfile(file_path):
         with open(file_path) as f:
             if remove_tag:
@@ -63,4 +64,5 @@ def load_wordlist(file_path, rewrite=False, max_ngram=None,
                 f.write(word + "\n")
         print('Saved the words to the file: {}, No. of words: {}'.format(file_path, len(words)))
     words = [word for word in words if not word.startswith('#')]
+    words = [word.lower() if lowercase else word for word in words if not word.startswith('#')]
     return words
