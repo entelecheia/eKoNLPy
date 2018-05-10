@@ -66,3 +66,33 @@ def load_wordlist(file_path, rewrite=False, max_ngram=None,
     words = [word for word in words if not word.startswith('#')]
     words = [word.lower() if lowercase else word for word in words if not word.startswith('#')]
     return words
+
+
+def check_word_inclusion(word, check_list, unit_level=False,
+                         endswith=False, startswith=False):
+    word = word.lower()
+    if unit_level:
+        if endswith:
+            if word.split(';')[-1] in check_list:
+                return True
+        elif startswith:
+            if word.split(';')[0] in check_list:
+                return True
+        else:
+            for w in word.split(';'):
+                if w in check_list:
+                    return True
+    else:
+        if endswith:
+            for check_word in check_list:
+                if word.endswith(check_word.lower()):
+                    return True
+        elif startswith:
+            for check_word in check_list:
+                if word.startswith(check_word.lower()):
+                    return True
+        else:
+            for check_word in check_list:
+                if check_word.lower() in word:
+                    return True
+    return False
