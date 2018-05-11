@@ -17,6 +17,7 @@ gdp갭축소
 gdp갭확대
 gdp둔화
 gdp부진
+gdp성장
 gdp성장률둔화
 gdp성장률호조
 gdp증가

@@ -128,7 +128,7 @@ class ExTagger:
             return tokens_new
 
         # tokens = [(w, self.dictionary.check_tag(w, t) if t in self.nouns_tags else t)
-        tokens = [(w, self.dictionary.check_tag(w, t))
+        tokens = [(w.strip(), self.dictionary.check_tag(w.strip(), t))
                   for w, t in tokens]
 
         for x in range(2):
