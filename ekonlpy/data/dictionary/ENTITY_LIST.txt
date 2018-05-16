@@ -100,7 +100,6 @@ CSA 코스믹
 CS홀딩스
 CT&T
 CU전자
-DB
 DB금융투자
 DB라이텍
 DB손해보험
@@ -124,7 +123,6 @@ GIANT 현대차그룹
 GKL
 GK파워
 GMR 머티리얼즈
-GPS
 GREAT GREEN
 GREAT SRI
 GRT

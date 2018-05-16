@@ -4,14 +4,17 @@ from ekonlpy.data.tagset import mecab_tags as tagset
 from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags
 from ekonlpy.dictionary import TermDictionary
 from ekonlpy.utils import installpath
-from ekonlpy.utils import load_dictionary, loadtxt
+from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 
 
 class Mecab:
-    def __init__(self, use_default_dictionary=True, use_phrases=True, use_polarity_phrases=True):
+    def __init__(self, use_default_dictionary=True, use_phrases=True, use_polarity_phrases=True, replace_synonyms=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
-        self._loaded_default_dictionary = use_default_dictionary
+        self.use_default_dictionary = use_default_dictionary
+        self.use_phrases = use_phrases
+        self.use_polarity_phrases = use_polarity_phrases
+        self.replace_synonyms = replace_synonyms
         if use_default_dictionary:
             self._load_default_dictionary(use_phrases, use_polarity_phrases)
         self.extagger = self._load_ext_tagger()
@@ -21,6 +24,8 @@ class Mecab:
         self.stop_tags = stop_tags
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
+        self.synonyms = {}
+        self._load_synonyms()
 
     def _load_ext_tagger(self):
         return ExTagger(self._dictionary)
@@ -28,6 +33,10 @@ class Mecab:
     def _load_stopwords(self):
         directory = '%s/data/dictionary/' % installpath
         return loadtxt('%s/STOPWORDS.txt' % directory)
+
+    def _load_synonyms(self):
+        directory = '%s/data/dictionary/' % installpath
+        self.load_synonyms('%s/SYNONYMS.txt' % directory)
 
     def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
@@ -48,6 +57,10 @@ class Mecab:
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
         tagged = self.extagger.pos(tagged)
+        if self.replace_synonyms:
+            tagged = [(self.synonyms[w.lower()] if w.lower() in self.synonyms else w, t)
+                      for w, t in tagged]
+
         return tagged
 
     def nouns(self, phrase):
@@ -75,3 +88,18 @@ class Mecab:
         if not (tag in self.tagset):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.load_dictionary(fname, tag)
+
+    def load_synonyms(self, fname):
+        vocab = load_vocab(fname)
+        self.add_dictionary(vocab.keys(), 'NNG')
+        self.add_dictionary(vocab.values(), 'NNG')
+        self.synonyms.update(vocab)
+
+    def add_synonym(self, word, synonym):
+        self.synonyms[word] = synonym
+        self.add_dictionary(word, 'NNG')
+        self.add_dictionary(synonym, 'NNG')
+
+    def persist_synonyms(self):
+        directory = '%s/data/dictionary/' % installpath
+        return save_vocab(self.synonyms, '%s/SYNONYMS.txt' % directory)

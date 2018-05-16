@@ -7,7 +7,7 @@ def load_dictionary(fname, encoding='utf-8', rewrite=False):
     words = set()
     try:
         with open(fname, encoding=encoding) as f:
-            words_ = {line.strip().lower() for line in f}
+            words_ = {line.strip().lower().replace(' ', '') for line in f}
             words.update(words_)
         if rewrite:
             with open(fname, 'w') as f:
@@ -27,6 +27,28 @@ def loadtxt(fname, encoding='utf-8'):
     except Exception as e:
         print(e)
         return []
+
+
+def load_vocab(file_path, delimiter=','):
+    vocab = {}
+    if os.path.isfile(file_path):
+        with open(file_path) as f:
+            for i, line in enumerate(f):
+                if len(line) > 0:
+                    w = line.strip().split(delimiter)
+                    vocab[w[0].lower().replace(' ', '')] = w[1].lower().replace(' ', '')
+    else:
+        save_vocab(vocab, file_path)
+    # print('Loaded the file: {}, No. of words: {}'.format(file_path, len(vocab)))
+    return vocab
+
+
+def save_vocab(vocab, file_path, delimiter=','):
+    vocab = [(w, c) for w, c in vocab.items()]
+    # print('Save the dict to the file: {}, No. of words: {}'.format(file_path, len(vocab)))
+    with open(file_path, 'w') as f:
+        for w, c in vocab:
+            f.write(w + delimiter + str(c) + '\n')
 
 
 def save_wordlist(words, file_path):
