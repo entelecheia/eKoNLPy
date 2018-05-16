@@ -9,21 +9,22 @@ EPS (adj) growth,EPS증가율
 EPS (adj),EPS
 EPS 증감률,EPS증가율
 EPS(지배주주),EPS
-gdp성장률,gdp성장율
+gdp성장율,gdp성장률
 HOLD,중립
 M.PERFORM,중립
 Marketperform,중립
 Neutral,중립
 Not Rated,투자의견없음
 NP Margin,순이익률
+NP마진,순이익률
 NR,투자의견없음
 OP Margin,영업이익률
 OP마진,영업이익률
 Outperform,매수
 P/E (adj),PER
-PBR,PBR
-PCR,PCR
-PER,PER
+P/E,PER
+P/B,PBR
+P/CF,PCR
 Reduce,매도
 SELL,매도
 Strong Buy,강력매수
@@ -49,6 +50,9 @@ Underperform,매도
 적극매수,강력매수
 적정주가,목표주가
 주당배당금,DPS
+주당순이익,EPS
+주당순익,EPS
+주당순자산,BPS
 지배순이익,순이익
 지배순이익률,순이익률
 지배주주지분순이익,순이익
