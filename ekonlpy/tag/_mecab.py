@@ -8,13 +8,16 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 
 
 class Mecab:
-    def __init__(self, use_default_dictionary=True, use_phrases=True, use_polarity_phrases=True, replace_synonyms=True):
+    def __init__(self, use_default_dictionary=True,
+                 use_phrases=True, use_polarity_phrases=True,
+                 replace_synonyms=True, combine_suffixes=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self.use_default_dictionary = use_default_dictionary
         self.use_phrases = use_phrases
         self.use_polarity_phrases = use_polarity_phrases
         self.replace_synonyms = replace_synonyms
+        self.combine_suffixes = combine_suffixes
         if use_default_dictionary:
             self._load_default_dictionary(use_phrases, use_polarity_phrases)
         self.extagger = self._load_ext_tagger()
@@ -56,7 +59,7 @@ class Mecab:
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
-        tagged = self.extagger.pos(tagged)
+        tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffixes)
         if self.replace_synonyms:
             tagged = [(self.synonyms[w.lower()] if w.lower() in self.synonyms else w, t)
                       for w, t in tagged]

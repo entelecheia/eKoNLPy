@@ -30,9 +30,9 @@ class ExTagger:
         if type(tags) == list:
             self.skip_tags.update(tags)
 
-    def pos(self, tokens):
+    def pos(self, tokens, combine_suffixes=True):
         def ctagger(passes, tokens, n, nouns_tags, nochk_dic, chk_dic, skgrm_dic, xse_tags, skip_tags, suffix_tags,
-                    term_dict):
+                    term_dict, combining_suffixes=True):
             # tokens_org = [(p[0], 'NNG' if p[1] == 'NNP' else p[1]) for p in tokens]
             tokens_org = tokens
             tokens_new = []
@@ -105,7 +105,7 @@ class ExTagger:
                 #     i += n
                 #     continue
 
-                if passes > 0 and n == 2 and tmp_tags in xse_tags.keys():
+                if combining_suffixes and passes > 0 and n == 2 and tmp_tags in xse_tags.keys():
                     if tokens_org[i - n + 2][0][0] not in ['라']:
                         new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
                         new_tag = xse_tags[tmp_tags]
@@ -135,7 +135,8 @@ class ExTagger:
             for t in range(self.max_tokens - x, 1, -1):
                 tokens = ctagger(x, tokens, t,
                                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
-                                 self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
+                                 self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary,
+                                 combining_suffixes=combine_suffixes)
         # tokens = ctagger(tokens, 2,
         #                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
         #                  self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
