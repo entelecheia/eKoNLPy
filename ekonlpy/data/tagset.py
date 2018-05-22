@@ -115,6 +115,7 @@ chk_tags = {
     ('MM', 'IC', 'NNG', 'XSN'): 'NNG',
     ('MM', 'IC', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('MM', 'IC', 'XPN', 'XR', 'XSN'): 'NNG',
+    ('MM', 'NNBC', 'NNG'): 'NNG',
     ('MM', 'NNG'): 'NNG',
     ('MM', 'NNG', 'NNG'): 'NNG',
     ('MM', 'NNG', 'NNG', 'XSN'): 'NNG',
