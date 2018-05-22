@@ -1,5 +1,6 @@
 FN가이드
 GS칼텍스
+JP모건체이스앤드컴퍼니
 KB선물
 KB운용
 LG경제연구소
@@ -8,6 +9,7 @@ LG선물
 LG이노텍
 LG칼텍스정유
 LG필립스LCD
+LG화학우
 LIG손보
 SK케미칼
 WISEfn
