@@ -44,12 +44,12 @@ class Mecab:
     def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
         self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/COUNTRY_LIST.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/CUST_NAMES.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/ENTITY_LIST.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/FINIST_LIST.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/CUST_ADJS.txt' % directory), 'VA')
-        self._dictionary.add_dictionary(load_dictionary('%s/CUST_ADVS.txt' % directory), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary('%s/COUNTRYS.txt' % directory), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary('%s/PROPER_NOUNS.txt' % directory), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary('%s/ENTITIES.txt' % directory), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTIONS.txt' % directory), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VA')
+        self._dictionary.add_dictionary(load_dictionary('%s/ADVERVES.txt' % directory), 'MAG')
         self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         if use_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/PHRASES.txt' % directory), 'NNG')
