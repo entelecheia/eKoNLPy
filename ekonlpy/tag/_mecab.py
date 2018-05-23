@@ -21,6 +21,7 @@ class Mecab:
         self.combine_suffixes = combine_suffixes
         if use_default_dictionary:
             self._load_default_dictionary(use_phrases, use_polarity_phrases)
+        self._load_term_dictionary()
         self.extagger = self._load_ext_tagger()
         self.tagset = tagset
         self.term_tags = term_tags
