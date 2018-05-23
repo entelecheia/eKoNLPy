@@ -10,7 +10,7 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 class Mecab:
     def __init__(self, use_default_dictionary=True,
                  use_phrases=True, use_polarity_phrases=True,
-                 replace_synonyms=True, combine_suffixes=False):
+                 replace_synonyms=True, combine_suffixes=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
