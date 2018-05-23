@@ -65,7 +65,7 @@ class Mecab:
     def _load_term_dictionary(self):
         directory = '%s/data/dictionary/' % installpath
         self._terms.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'COUNTRY')
-        self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
+        # self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
         self._terms.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'INDUSTRY')
 
     def pos(self, phrase):
@@ -77,9 +77,14 @@ class Mecab:
 
         return tagged
 
-    def nouns(self, phrase):
+    def nouns(self, phrase, exclude_industry_terms=True):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        return [w.lower() for w, t in tagged if t in self.topic_tags and w.lower()]
+        if exclude_industry_terms:
+            return [w.lower() for w, t in tagged
+                    if t in self.topic_tags and w.lower()
+                    and not self._terms.exists(w, 'INDUSTRY')]
+        else:
+            return [w.lower() for w, t in tagged if t in self.topic_tags and w.lower()]
 
     def sent_words(self, phrase, exclude_terms=True):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
