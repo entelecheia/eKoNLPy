@@ -10,7 +10,7 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 class Mecab:
     def __init__(self, use_default_dictionary=True,
                  use_phrases=True, use_polarity_phrases=True,
-                 replace_synonyms=True, combine_suffixes=True):
+                 replace_synonyms=True, combine_suffixes=False):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
@@ -54,7 +54,7 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/ENTITY.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTION.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VA')
-        self._dictionary.add_dictionary(load_dictionary('%s/ADVERVES.txt' % directory), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary('%s/ADVERBES.txt' % directory), 'MAG')
         self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         if use_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
