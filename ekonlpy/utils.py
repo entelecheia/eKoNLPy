@@ -1,4 +1,5 @@
 import os
+from collections import OrderedDict
 
 installpath = os.path.dirname(os.path.realpath(__file__))
 
@@ -40,6 +41,7 @@ def load_vocab(file_path, delimiter=','):
     else:
         save_vocab(vocab, file_path)
     # print('Loaded the file: {}, No. of words: {}'.format(file_path, len(vocab)))
+    vocab = OrderedDict((k, v) for k, v in sorted(vocab.items(), key=lambda x: x[0]))
     return vocab
 
 

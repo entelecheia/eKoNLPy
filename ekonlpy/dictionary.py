@@ -1,3 +1,13 @@
+term_tags = {
+    'COUNTRY': '국가',
+    'INDUSTRY': '산업용어',
+    'PERSON': '사람',
+    'SECTOR': '산업/업종',
+    'ENTITY': '기업/종목',
+    'GEO': '지역명'
+}
+
+
 class TermDictionary:
     def __init__(self):
         self._pos2words = {}
@@ -21,7 +31,7 @@ class TermDictionary:
 
         wordset = self._pos2words.get(tag, set())
         wordset.update(load(fname))
-        self._pos2words[tag] = wordstet
+        self._pos2words[tag] = wordset
 
     def get_tags(self, word):
         # return {tag for tag, words in self._pos2words.items() if word in words}
@@ -39,3 +49,12 @@ class TermDictionary:
 
     def is_tag(self, word, tag):
         return word.lower() in self._pos2words.get(tag, {})
+
+    def exists(self, word, tag=None):
+        if tag in self._pos2words:
+            return True if word.lower() in self._pos2words[tag] else False
+        else:
+            for tag, words in self._pos2words.items():
+                if word.lower() in words:
+                    return True
+            return False
