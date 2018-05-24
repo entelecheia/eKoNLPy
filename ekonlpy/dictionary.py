@@ -4,6 +4,7 @@ term_tags = {
     'PERSON': '사람',
     'SECTOR': '산업/업종',
     'ENTITY': '기업/종목',
+    'GENERIC': '범용어',
     'GEO': '지역명'
 }
 

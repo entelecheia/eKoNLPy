@@ -63,6 +63,8 @@ pce물가지수
 pcr
 per
 pmi지수
+pre-ipo
+preipo
 premium
 reduce
 roe
@@ -1472,6 +1474,7 @@ wti유
 평판위험
 폐쇄
 프라이싱파워
+프리ipo
 프리미엄
 플래트닝
 플랫트닝

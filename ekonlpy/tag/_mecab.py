@@ -48,6 +48,7 @@ class Mecab:
 
     def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
+        self._dictionary.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'NNG')
@@ -68,6 +69,7 @@ class Mecab:
         self._terms.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'COUNTRY')
         self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
         self._terms.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'INDUSTRY')
+        self._terms.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'GENERIC')
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
@@ -80,12 +82,14 @@ class Mecab:
 
     def nouns(self, phrase,
               include_industry_terms=False,
+              include_generic=False,
               include_sector_name=False,
-              include_country_name=False):
+              include_country_name=True):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         return [w.lower() for w, t in tagged
                 if t in self.topic_tags
                 and (include_industry_terms or not self._terms.exists(w, 'INDUSTRY'))
+                and (include_generic or not self._terms.exists(w, 'GENERIC'))
                 and (include_sector_name or not self._terms.exists(w, 'SECTOR'))
                 and (include_country_name or not self._terms.exists(w, 'COUNTRY'))]
 

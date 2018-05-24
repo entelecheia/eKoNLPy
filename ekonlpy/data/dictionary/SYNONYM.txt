@@ -46,6 +46,8 @@ p/e,per
 p/e(adj),per
 pce가격지수,소비자물가
 pce물가지수,소비자물가
+pre-ipo,프리ipo
+preipo,프리ipo
 premium,프리미엄
 reduce,언더퍼폼
 sell,언더퍼폼
