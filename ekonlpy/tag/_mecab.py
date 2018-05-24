@@ -59,14 +59,14 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         if use_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
-            self._dictionary.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'NNP')
+            self._dictionary.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'NNG')
         if use_polarity_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/POLARITY_PHRASES.txt' % directory), 'NNG')
 
     def _load_term_dictionary(self):
         directory = '%s/data/dictionary/' % installpath
         self._terms.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'COUNTRY')
-        # self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
+        self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
         self._terms.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'INDUSTRY')
 
     def pos(self, phrase):
@@ -78,16 +78,21 @@ class Mecab:
 
         return tagged
 
-    def nouns(self, phrase, exclude_industry_terms=True):
+    def nouns(self, phrase,
+              include_industry_terms=False,
+              include_sector_name=False,
+              include_country_name=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        if exclude_industry_terms:
-            return [w.lower() for w, t in tagged
-                    if t in self.topic_tags and w.lower()
-                    and not self._terms.exists(w, 'INDUSTRY')]
-        else:
-            return [w.lower() for w, t in tagged if t in self.topic_tags]
+        return [w.lower() for w, t in tagged
+                if t in self.topic_tags
+                and (include_industry_terms or not self._terms.exists(w, 'INDUSTRY'))
+                and (include_sector_name or not self._terms.exists(w, 'SECTOR'))
+                and (include_country_name or not self._terms.exists(w, 'COUNTRY'))]
 
-    def sent_words(self, phrase, exclude_terms=True, remove_suffix=False, remove_tag=False):
+    def sent_words(self, phrase,
+                   exclude_terms=True,
+                   remove_suffix=False,
+                   remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         if exclude_terms:
             return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
