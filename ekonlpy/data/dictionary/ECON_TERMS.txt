@@ -1,8 +1,3 @@
-1%시스템
-1%원조
-1+1재건축
-1.5세대
-1.5차산업
 100PPM운동
 100PPM인증제도
 100PPM품질인증제
@@ -15,7 +10,6 @@
 11대중과실교통사고
 11세대LCD패널
 12표법
-130/30펀드
 13회차보험유지율
 155버튼
 1577서비스
@@ -335,13 +329,12 @@ B플레이어
 C&C
 C&C2B
 C&F
-C-50운동
-C/A
 C1가스정제기술
 C1화학
 C40기후리더십그룹
 C40세계도시기후정상회의
 C4식물
+C50운동
 CAC40주가지수
 CAC40주가지수선물
 CAR-T세포치료제
@@ -400,14 +393,11 @@ C중유
 C클린운동
 C펩타이드
 C프리프로세서
-D.P.L
-D/A
-D/A어음
-D/P
-D/P어음
 D8그룹
+DA
 DAT레코더
 DAT지문
+DA어음
 DB도서관
 DB마케팅
 DCF법
@@ -434,7 +424,10 @@ DNA지문검사
 DNA필터
 DNS서버
 DNS제도
+DP
+DPL
 DP범죄
+DP어음
 DR플레이
 DSP자동응답전화기
 DTC검사
@@ -452,7 +445,7 @@ EC형부가가치세
 EDI
 EE곡선
 EE시리즈저축채권
-EFT/POS
+EFTPOS
 ELS지수펀드
 ELS펀드
 EMP탄
@@ -479,8 +472,8 @@ EU신화학물질관리제도
 EU인프라투자펀드
 EU일반개인정보보호법
 EU지정항공사조항
-EV/EBITDA
 EVA플러스
+EVEBITDA
 EVP기법
 EuP지침
 E메일폭탄
@@ -499,9 +492,9 @@ FOB인도조건
 FOK주문
 FRET방법
 FSC면세
-FT/S&P월드인덱스
-FT/S&P월드인덱스정책위원회
-FT/S&P지수
+FTS&P월드인덱스
+FTS&P월드인덱스정책위원회
+FTS&P지수
 FTSE100주가지수
 FTSE100지수
 FTSE선진국지수
@@ -510,7 +503,7 @@ FTSE지수
 FT신문
 FT주가지수
 FT지수
-FV/EBITDA
+FVEBITDA
 FX거래
 FX마진거래
 FX사업
@@ -624,10 +617,10 @@ ISM기기전파응용설비
 ISM대역
 ISM제조업지수
 ISM지수
-ISO/IEC
 ISO18000시리즈
 ISO27001인증
 ISO9000시리즈
+ISOIEC
 ISO인증규격
 IS곡선
 IT839전략
@@ -663,11 +656,6 @@ Ka밴드
 Ku밴드
 K컬처밸리
 K포맷수출
-L/C
-L/Com
-L/G
-L/Gnego
-LA-4모드
 LAT족
 LCD광시야각모드기술
 LED디밍
@@ -683,7 +671,6 @@ LTE광대역화
 M&A
 M&A부티크
 M&A이행보증금
-M/L3%
 M2평잔
 MAC주소
 MATV설비
@@ -788,7 +775,7 @@ STT램
 SW임치제도
 S램
 S자형투자이론
-TCP/IP
+TCPIP
 TED스프레드
 TED콘퍼런스
 TFT-LCD구동칩
@@ -802,7 +789,7 @@ T페이퍼
 UHD얼라이언스
 UL마크
 UMTS미디어플로폰
-UN/CEFACT
+UNCEFACT
 UR방식
 USB3.0
 USB포트
@@ -818,7 +805,6 @@ WAP게이트웨이
 WDM광전송
 WEF국가경쟁력평가
 WTO패널
-Win-Trojan/Agent.24576.JPF
 W세대
 XML
 X윈도
@@ -5435,7 +5421,6 @@ standby조건
 기후대책에관한리마선언
 기후변화
 기후변화에관한정부간협의체
-기후변화협약
 기후변화협약당사국
 기후협약
 긱경제
@@ -29859,7 +29844,6 @@ standby조건
 후쿠다설
 후쿠다세
 후퇴시장
-후판
 후행종합지수
 후행지수
 후행지표
@@ -29941,8 +29925,6 @@ standby조건
 희소금속
 희소성의법칙
 희소통화
-희토류금속
-희토류자석
 히스패닉
 히키코모리
 히트
