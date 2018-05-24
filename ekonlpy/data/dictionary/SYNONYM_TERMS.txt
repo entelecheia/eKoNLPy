@@ -36,7 +36,6 @@ hold
 h주
 h주지수
 kospi200
-kospi200지수
 m.perform
 marketperform
 marketshare
@@ -45,6 +44,7 @@ msci선진국지수
 msci선진시장지수
 msci선진지수
 multiple
+netdebt
 neutral
 nim
 notrated
@@ -1356,8 +1356,6 @@ wti유
 캐시플로우
 코뮈니케
 코뮤니케
-코스닥
-코스닥지수
 코스피200
 코스피200지수
 코스피상승

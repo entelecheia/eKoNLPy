@@ -50,7 +50,7 @@ mecab_tags = {
 nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN']
+sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'ETM', 'XR']
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
@@ -59,7 +59,7 @@ nochk_tags = {
 }
 
 vvx_tags = {
-    ('NNG', 'VCP'): 'VVX',
+#    ('NNG', 'VCP'): 'VVX',
     ('NNG', 'XSV'): 'VVX',
     ('XR', 'XSV'): 'VVX'
 }
@@ -73,6 +73,7 @@ xsn_sfx_tag = ('NNG', 'XSN')
 suffix_tags = {
     'VAX': ['적'],
     # 'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형'),
+    'NNG': ('권', '성', '화'),
     'NNBC': ['당']
 }
 # 'NNX': ('상'),
@@ -151,6 +152,7 @@ chk_tags = {
     ('NNG', 'JKB', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'NNG', 'XSN', 'NNG'): 'NNG',
+    ('NNG', 'JKB', 'NP'): 'NNG',
     ('NNG', 'JKB', 'NR', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'NR', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'VA', 'NNG'): 'NNG',
@@ -237,6 +239,7 @@ chk_tags = {
     ('NNG', 'SL', 'SN'): 'NNG',
     ('NNG', 'SN', 'NNG'): 'NNG',
     ('NNG', 'SY', 'SN'): 'NNG',
+    ('NNG', 'VCP'): 'NNG',
     ('NNG', 'VCP', 'EC', 'NNG'): 'NNG',
     ('NNG', 'VCP', 'NNG'): 'NNG',
     ('NNG', 'VCP', 'NNG', 'NNG'): 'NNG',
