@@ -9,18 +9,18 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 
 class Mecab:
     def __init__(self, use_default_dictionary=True,
-                 use_phrases=True, use_polarity_phrases=True,
-                 replace_synonyms=True, combine_suffixes=True):
+                 use_phrase=True, use_polarity_phrase=True,
+                 replace_synonym=True, combine_suffix=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
         self.use_default_dictionary = use_default_dictionary
-        self.use_phrases = use_phrases
-        self.use_polarity_phrases = use_polarity_phrases
-        self.replace_synonyms = replace_synonyms
-        self.combine_suffixes = combine_suffixes
+        self.use_phras = use_phrase
+        self.use_polarity_phras = use_polarity_phrase
+        self.replace_synonym = replace_synonym
+        self.combine_suffix = combine_suffix
         if use_default_dictionary:
-            self._load_default_dictionary(use_phrases, use_polarity_phrases)
+            self._load_default_dictionary(use_phrase, use_polarity_phrase)
         self._load_term_dictionary()
         self.extagger = self._load_ext_tagger()
         self.tagset = tagset
@@ -31,7 +31,7 @@ class Mecab:
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
         self.synonyms = {}
-        self._load_synonyms(use_polarity_phrases)
+        self._load_synonyms(use_polarity_phrase)
 
     def _load_ext_tagger(self):
         return ExTagger(self._dictionary)
@@ -71,8 +71,8 @@ class Mecab:
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
-        tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffixes)
-        if self.replace_synonyms:
+        tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffix)
+        if self.replace_synonym:
             tagged = [(self.synonyms[w.lower()] if w.lower() in self.synonyms else w, t)
                       for w, t in tagged]
 
@@ -85,18 +85,23 @@ class Mecab:
                     if t in self.topic_tags and w.lower()
                     and not self._terms.exists(w, 'INDUSTRY')]
         else:
-            return [w.lower() for w, t in tagged if t in self.topic_tags and w.lower()]
+            return [w.lower() for w, t in tagged if t in self.topic_tags]
 
-    def sent_words(self, phrase, exclude_terms=True):
+    def sent_words(self, phrase, exclude_terms=True, remove_suffix=False, remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         if exclude_terms:
-            return ['{}/{}'.format(w.lower(), t.split('+')[0])
+            return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
+                                   t.split('+')[0])
+                    if not remove_tag else w.lower().split('~')[0] if remove_suffix else w.lower()
                     for w, t in tagged
                     if t in self.sent_tags
                     and not self._terms.exists(w)]
         else:
-            return ['{}/{}'.format(w.lower(), t.split('+')[0]) for w, t in tagged
-                    if t in self.sent_tags and w.lower()]
+            return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
+                                   t.split('+')[0])
+                    if not remove_tag else w.lower().split('~')[0] if remove_suffix else w.lower()
+                    for w, t in tagged
+                    if t in self.sent_tags]
 
     def morphs(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
