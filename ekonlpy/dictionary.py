@@ -21,9 +21,9 @@ class TermDictionary:
         self._pos2words[tag] = wordset
 
     def load_dictionary(self, fname, tag):
-        def load(fname):
+        def load(filename):
             try:
-                with open(fname, encoding='utf-8') as f:
+                with open(filename, encoding='utf-8') as f:
                     words = {word.strip().lower() for word in f}
                     return words
             except Exception as e:
