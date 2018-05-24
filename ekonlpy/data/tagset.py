@@ -251,6 +251,7 @@ chk_tags = {
     ('NNG', 'XPN', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSN'): 'NNG',
     ('NNG', 'XSN', 'JC'): 'NNG',
+    ('NNG', 'XSN', 'MM'): 'NNG',
     ('NNG', 'XSN', 'JC', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'JKB', 'MM', 'NNG'): 'NNG',
     ('NNG', 'XSN', 'JKB', 'NNG'): 'NNG',
@@ -335,5 +336,6 @@ chk_tags = {
     ('XPN', 'XR', 'XSN'): 'NNG',
     ('XR', 'NNG'): 'NNG',
     ('XSN', 'MAG'): 'NNG',
+    ('XSN', 'MM'): 'NNG',
     ('XSN', 'NNG'): 'NNG'
 }

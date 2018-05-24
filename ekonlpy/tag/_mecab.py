@@ -48,7 +48,8 @@ class Mecab:
 
     def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
-        self._dictionary.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'NNG')
+        # self._dictionary.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary('%s/NOUNS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'NNG')
