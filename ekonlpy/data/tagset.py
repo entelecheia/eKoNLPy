@@ -50,7 +50,7 @@ mecab_tags = {
 nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'ETM', 'XR']
+sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'XR']
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
@@ -73,7 +73,7 @@ xsn_sfx_tag = ('NNG', 'XSN')
 suffix_tags = {
     'VAX': ['적'],
     # 'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형'),
-    'NNG': ('권', '성', '화'),
+    'NNG': ('권', '성', '화', '형'),
     'NNBC': ['당']
 }
 # 'NNX': ('상'),
