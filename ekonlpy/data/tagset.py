@@ -247,6 +247,7 @@ chk_tags = {
     ('NNG', 'VV', 'EC'): 'NNG',
     ('NNG', 'VV', 'EC', 'NNG'): 'NNG',
     ('NNG', 'VV', 'EF'): 'NNG',
+    ('NNG', 'VV', 'EF', 'NNG'): 'NNG',
     ('NNG', 'VV', 'EP', 'NNG'): 'NNG',
     ('NNG', 'VV', 'JX', 'NNG'): 'NNG',
     ('NNG', 'VV', 'NNB'): 'NNG',
@@ -344,5 +345,6 @@ chk_tags = {
     ('XR', 'NNG'): 'NNG',
     ('XSN', 'MAG'): 'NNG',
     ('XSN', 'MM'): 'NNG',
-    ('XSN', 'NNG'): 'NNG'
+    ('XSN', 'NNG'): 'NNG',
+    ('XSV', 'IC', 'NNG'): 'NNG'
 }

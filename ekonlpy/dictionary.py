@@ -5,7 +5,9 @@ term_tags = {
     'SECTOR': '산업/업종',
     'ENTITY': '기업/종목',
     'GENERIC': '범용어',
-    'GEO': '지역명'
+    'GEO': '지역명',
+    'CURRENCY': '화폐',
+    'UNIT': '단위'
 }
 
 

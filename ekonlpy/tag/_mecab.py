@@ -58,6 +58,7 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTION.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VA')
         self._dictionary.add_dictionary(load_dictionary('%s/ADVERBES.txt' % directory), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'NNBC')
         # self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         if use_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
@@ -71,12 +72,15 @@ class Mecab:
         self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
         self._terms.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'INDUSTRY')
         self._terms.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'GENERIC')
+        self._terms.add_dictionary(load_dictionary('%s/CURRENCY.txt' % directory), 'CURRENCY')
+        self._terms.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'UNIT')
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
         tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffix)
         if self.replace_synonym:
-            tagged = [(self.synonyms[w.lower()] if w.lower() in self.synonyms else w, t)
+            tagged = [(self.synonyms[w.lower()], 'NNG')
+                      if w.lower() in self.synonyms else (w, t)
                       for w, t in tagged]
 
         return tagged
