@@ -78,19 +78,21 @@ class Mecab:
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
         tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffix)
-        if self.replace_synonym:
-            tagged = [(self.synonyms[w.lower()], 'NNG')
-                      if w.lower() in self.synonyms else (w, t)
-                      for w, t in tagged]
 
         return tagged
 
     def nouns(self, phrase,
+              replace_synonym=True,
               include_industry_terms=False,
               include_generic=False,
               include_sector_name=False,
               include_country_name=True):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
+        self.replace_synonym = replace_synonym
+        if self.replace_synonym:
+            tagged = [(self.synonyms[w.lower()], 'NNG')
+                      if w.lower() in self.synonyms else (w, t)
+                      for w, t in tagged]
         return [w.lower() for w, t in tagged
                 if t in self.topic_tags
                 and (include_industry_terms or not self._terms.exists(w, 'INDUSTRY'))
@@ -99,10 +101,16 @@ class Mecab:
                 and (include_country_name or not self._terms.exists(w, 'COUNTRY'))]
 
     def sent_words(self, phrase,
+                   replace_synonym=True,
                    exclude_terms=True,
                    remove_suffix=False,
                    remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
+        self.replace_synonym = replace_synonym
+        if self.replace_synonym:
+            tagged = [(self.synonyms[w.lower()], 'NNG')
+                      if w.lower() in self.synonyms else (w, t)
+                      for w, t in tagged]
         if exclude_terms:
             return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
                                    t.split('+')[0])
