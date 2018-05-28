@@ -25,6 +25,8 @@ cycle
 discount
 dividendyield
 divyield
+down
+downcycle
 dps
 dy
 earningshock
@@ -123,6 +125,8 @@ tp
 tradingbuy
 turnaround
 underperform
+up
+upcycle
 valuation
 valuationdiscount
 valuationpremium
@@ -449,6 +453,8 @@ yield
 다우존스지수
 다우존스평균지수
 다우지수
+다운
+다운사이클
 단기리스크
 단기위험
 단기채
@@ -1034,6 +1040,8 @@ yield
 어닝시즌
 어닝추정치
 언더퍼폼
+업
+업사이클
 업종리스크
 업종위험
 업황

@@ -15,6 +15,8 @@ cycle,사이클
 discount,디스카운트
 dividendyield,배당수익률
 divyield,배당수익률
+down,다운
+downcycle,다운사이클
 dy,배당수익률
 earningshock,어닝쇼크
 earningsshock,어닝쇼크
@@ -94,6 +96,8 @@ tp,목표주가
 tradingbuy,아웃퍼폼
 turnaround,회복
 underperform,언더퍼폼
+up,업
+upcycle,업사이클
 valuation,밸류에이션
 valuationdiscount,밸류에이션디스카운트
 valuationpremium,밸류에이션프리미엄
