@@ -90,15 +90,30 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         self.replace_synonym = replace_synonym
         if self.replace_synonym:
-            tagged = [(self.synonyms[w.lower()], 'NNG')
-                      if w.lower() in self.synonyms else (w, t)
-                      for w, t in tagged]
+            tagged = self.replace_synonyms(tagged)
         return [w.lower() for w, t in tagged
                 if t in self.topic_tags
                 and (include_industry_terms or not self._terms.exists(w, 'INDUSTRY'))
                 and (include_generic or not self._terms.exists(w, 'GENERIC'))
                 and (include_sector_name or not self._terms.exists(w, 'SECTOR'))
                 and (include_country_name or not self._terms.exists(w, 'COUNTRY'))]
+
+    def replace_synonyms(self, phrase):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        replaced = []
+        for w, t in tagged:
+            if t in ('VAX', 'VVX'):
+                ws = w.split('~')
+                if ws[0].lower() in self.synonyms:
+                    replaced.append((self.synonyms[ws[0].lower()] + '~' + ws[1], t))
+                else:
+                    replaced.append((w, t))
+            else:
+                if w.lower() in self.synonyms:
+                    replaced.append((self.synonyms[w.lower()], t))
+                else:
+                    replaced.append((w, t))
+        return replaced
 
     def sent_words(self, phrase,
                    replace_synonym=True,
@@ -108,9 +123,7 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         self.replace_synonym = replace_synonym
         if self.replace_synonym:
-            tagged = [(self.synonyms[w.lower()], 'NNG')
-                      if w.lower() in self.synonyms else (w, t)
-                      for w, t in tagged]
+            tagged = self.replace_synonyms(tagged)
         if exclude_terms:
             return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
                                    t.split('+')[0])
