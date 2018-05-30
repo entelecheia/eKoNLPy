@@ -58,18 +58,16 @@ nochk_tags = {
     ('XPN', 'XR', 'XSN'): 'NNG'
 }
 
-vvx_tags = {
+xsav_tags = {
     # ('NNG', 'VCP'): 'VVX',
     # ('NNG', 'XSV'): 'VVX',
-    ('XR', 'XSV'): 'VVX'
-}
-
-vax_tags = {
+    ('XR', 'XSV'): 'VVX',
     # ('NNG', 'XSA'): 'VAX',
     ('XR', 'XSA'): 'VAX'
 }
 
 xsn_sfx_tag = ('NNG', 'XSN')
+
 suffix_tags = {
     'VAX': ['적'],
     # 'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형'),

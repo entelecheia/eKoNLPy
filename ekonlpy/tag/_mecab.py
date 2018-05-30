@@ -8,9 +8,11 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 
 
 class Mecab:
-    def __init__(self, use_default_dictionary=True,
-                 use_phrase=True, use_polarity_phrase=True,
-                 replace_synonym=True, combine_suffix=True):
+    def __init__(self,
+                 use_default_dictionary=True,
+                 use_phrase=True,
+                 use_polarity_phrase=True,
+                 replace_synonym=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
@@ -18,7 +20,6 @@ class Mecab:
         self.use_phras = use_phrase
         self.use_polarity_phras = use_polarity_phrase
         self.replace_synonym = replace_synonym
-        self.combine_suffix = combine_suffix
         if use_default_dictionary:
             self._load_default_dictionary(use_phrase, use_polarity_phrase)
         self._load_term_dictionary()
@@ -77,7 +78,7 @@ class Mecab:
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
-        tagged = self.extagger.pos(tagged, combine_suffixes=self.combine_suffix)
+        tagged = self.extagger.pos(tagged)
 
         return tagged
 
@@ -118,23 +119,18 @@ class Mecab:
     def sent_words(self, phrase,
                    replace_synonym=True,
                    exclude_terms=True,
-                   remove_suffix=False,
                    remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         self.replace_synonym = replace_synonym
         if self.replace_synonym:
             tagged = self.replace_synonyms(tagged)
         if exclude_terms:
-            return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
-                                   t.split('+')[0])
-                    if not remove_tag else w.lower().split('~')[0] if remove_suffix else w.lower()
+            return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
                     for w, t in tagged
                     if t in self.sent_tags
                     and not self._terms.exists(w)]
         else:
-            return ['{}/{}'.format(w.lower().split('~')[0] if remove_suffix else w.lower(),
-                                   t.split('+')[0])
-                    if not remove_tag else w.lower().split('~')[0] if remove_suffix else w.lower()
+            return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
                     for w, t in tagged
                     if t in self.sent_tags]
 
@@ -142,8 +138,8 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         return [s for s, t in tagged]
 
-    def phrases(self, phrase):
-        return self._base.phrases(phrase)
+    # def phrases(self, phrase):
+    #     return self._base.phrases(phrase)
 
     def add_dictionary(self, words, tag, force=False):
         if (not force) and (not (tag in self.tagset)):

@@ -54,7 +54,7 @@ class MPTokenizer(BaseTokenizer):
         self._min_ngram = 2
         self._delimiter = ';'
         self._ngram = self.KINDS[self._kind]
-        self._tagger = Mecab(combine_suffix=True)
+        self._tagger = Mecab()
         self._vocab = self.get_vocab(self.FILES['vocab'])
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
         self._start_tags = ['NNG', 'VA', 'VAX']
