@@ -54,12 +54,13 @@ class MPTokenizer(BaseTokenizer):
         self._min_ngram = 2
         self._delimiter = ';'
         self._ngram = self.KINDS[self._kind]
-        self._tagger = Mecab()
+        self._tagger = Mecab(combine_suffix=True)
         self._vocab = self.get_vocab(self.FILES['vocab'])
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
         self._start_tags = ['NNG', 'VA', 'VAX']
-        self._predicate_tags = ['VV', 'VVX', 'VA', 'VAX']
-        self._noun_tags = ['NNG']
+        self._predicate_tags = ['VV', 'VVX', 'VA', 'VAX', 'XSA', 'XSV', 'VCP', 'VX']
+        self._noun_tags = ['NNG', 'XR']
+        self._aux_tags = ['XSA', 'XSV', 'VCP', 'VX']
 
     def tokenize(self, text):
         if type(text) == list:
@@ -80,7 +81,7 @@ class MPTokenizer(BaseTokenizer):
                 token = self.get_ngram(tokens, pos, gram)
                 if token:
                     phrase = self.get_phrase(token)
-                    print(token, phrase)
+                    # print(token, phrase)
                     if phrase in self._vocab.values():
                         ngram_tokens.append(phrase)
         if not keep_overlapping_ngram:
@@ -103,7 +104,9 @@ class MPTokenizer(BaseTokenizer):
         tokens = ngram_tokens.split(self._delimiter)
         phrase = ''
         for token in tokens:
-            phrase += token.split('/')[0].split('~')[0]
+            w, t = token.split('/')
+            if t not in self._aux_tags:
+                phrase += w.split('~')[0]
         return phrase
 
     def get_ngram(self, tokens, pos, gram):

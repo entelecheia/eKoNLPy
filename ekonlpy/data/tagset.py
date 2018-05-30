@@ -50,7 +50,7 @@ mecab_tags = {
 nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
 topic_tags = ['NNG']
 stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'XR']
+sent_tags = ['MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP']
 skip_tags = ['SC', 'SN', 'SY']
 
 nochk_tags = {
@@ -59,13 +59,13 @@ nochk_tags = {
 }
 
 vvx_tags = {
-    ('NNG', 'VCP'): 'VVX',
-    ('NNG', 'XSV'): 'VVX',
+    # ('NNG', 'VCP'): 'VVX',
+    # ('NNG', 'XSV'): 'VVX',
     ('XR', 'XSV'): 'VVX'
 }
 
 vax_tags = {
-    ('NNG', 'XSA'): 'VAX',
+    # ('NNG', 'XSA'): 'VAX',
     ('XR', 'XSA'): 'VAX'
 }
 
@@ -275,6 +275,7 @@ chk_tags = {
     ('NNG', 'XPN'): 'NNG',
     ('NNG', 'XPN', 'NNG'): 'NNG',
     ('NNG', 'XPN', 'NNG', 'NNG'): 'NNG',
+    ('NNG', 'XSA'): 'NNG',
     ('NNG', 'XSN'): 'NNG',
     ('NNG', 'XSN', 'XPN'): 'NNG',
     ('NNG', 'XSN', 'JC'): 'NNG',
