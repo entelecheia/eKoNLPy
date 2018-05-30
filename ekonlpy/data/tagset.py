@@ -59,7 +59,7 @@ nochk_tags = {
 }
 
 vvx_tags = {
-#    ('NNG', 'VCP'): 'VVX',
+    ('NNG', 'VCP'): 'VVX',
     ('NNG', 'XSV'): 'VVX',
     ('XR', 'XSV'): 'VVX'
 }

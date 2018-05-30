@@ -45,10 +45,129 @@ class MPTokenizer(BaseTokenizer):
     KINDS = {0: 5,
              1: 5
              }
-    FILES = {'stopwords': ['mp_sent_stopwords.txt'],
-             'stopngrams': ['mp_sent_stop5grams.txt'],
-             'startwords': ['mp_sent_startwords.txt'],
-             'vocab': 'mp_sent_vocab_5gram.txt'
+    FILES = {'stopwords': ['mpko/mp_polarity_stopwords.txt'],
+             'vocab': 'mpko/mp_polarity_map.txt'
+             }
+
+    def __init__(self, kind=None):
+        self._kind = kind if kind in self.KINDS.keys() else 0
+        self._min_ngram = 2
+        self._delimiter = ';'
+        self._ngram = self.KINDS[self._kind]
+        self._tagger = Mecab()
+        self._vocab = self.get_vocab(self.FILES['vocab'])
+        self._stopwords = self.get_wordset(self.FILES['stopwords'])
+        self._start_tags = ['NNG', 'VA', 'VAX']
+        self._predicate_tags = ['VV', 'VVX', 'VA', 'VAX']
+        self._noun_tags = ['NNG']
+
+    def tokenize(self, text):
+        if type(text) == list:
+            ngram_tokens = []
+            for t in text:
+                tokens = self._tagger.sent_words(t)
+                ngram_tokens += self.ngramize(tokens)
+        else:
+            tokens = self._tagger.sent_words(text)
+            ngram_tokens = self.ngramize(tokens)
+        return ngram_tokens
+
+    def ngramize(self, tokens, keep_overlapping_ngram=True):
+        ngram_tokens = []
+        tokens = [w for w in tokens if w not in self._stopwords]
+        for pos in range(len(tokens)):
+            for gram in range(self._min_ngram, self._ngram + 1):
+                token = self.get_ngram(tokens, pos, gram)
+                if token:
+                    phrase = self.get_phrase(token)
+                    print(token, phrase)
+                    if phrase in self._vocab.values():
+                        ngram_tokens.append(phrase)
+        if not keep_overlapping_ngram:
+            filtered_tokens = []
+            if len(ngram_tokens) > 0:
+                ngram_tokens = sorted(ngram_tokens, key=lambda item: len(item), reverse=True)
+                for token in ngram_tokens:
+                    existing_token = False
+                    for check_token in filtered_tokens:
+                        if token in check_token:
+                            existing_token = True
+                            break
+                    if not existing_token:
+                        filtered_tokens.append(token)
+            ngram_tokens = filtered_tokens
+
+        return ngram_tokens
+
+    def get_phrase(self, ngram_tokens):
+        tokens = ngram_tokens.split(self._delimiter)
+        phrase = ''
+        for token in tokens:
+            phrase += token.split('/')[0].split('~')[0]
+        return phrase
+
+    def get_ngram(self, tokens, pos, gram):
+        if pos < 0:
+            return None
+        if pos + gram > len(tokens):
+            return None
+        token = tokens[pos]
+        check_predicate = False
+        check_noun = False
+
+        tag = token.split('/')[1] if '/' in token else None
+        if tag in self._start_tags:
+            if tag in self._noun_tags:
+                check_noun = True
+            for i in range(1, gram):
+                if tokens[pos + i] not in token:
+                    tag = tokens[pos + i].split('/')[1] if '/' in tokens[pos + i] else None
+                    if tag in self._noun_tags:
+                        check_noun = True
+                    if tag in self._predicate_tags and check_noun:
+                        check_predicate = True
+                    token += self._delimiter + tokens[pos + i]
+            if len(token.split(self._delimiter)) == gram and check_predicate:
+                return token
+            else:
+                return None
+        else:
+            return None
+
+    def get_wordset(self, files):
+        wordset = set()
+        for f in files:
+            fin = open('%s/%s' % (LEXICON_PATH, f), 'r', encoding='utf-8')
+            for line in fin.readlines():
+                word = line.strip().split()[0]
+                if len(word) > 1:
+                    wordset.add(word)
+            fin.close()
+        return wordset
+
+    def get_vocab(self, file):
+        vocab = {}
+        vocab_path = os.path.join(LEXICON_PATH, file)
+        with open(vocab_path) as f:
+            for i, line in enumerate(f):
+                w = line.strip().split()
+                if len(w[0]) > 0:
+                    vocab[w[0]] = w[1]
+        return vocab
+
+
+class MPTokenizerx(BaseTokenizer):
+    '''
+    The default tokenizer for MPKO sub class, which yields 5-gram tokens.
+    The output of the tokenizer is tagged by Mecab.
+    '''
+    KINDS = {0: 5,
+             1: 5
+             }
+    FILES = {'stopwords': ['mpkox/mp_sent_stopwords.txt'],
+             'stopngrams': ['mpkox/mp_sent_stop5grams.txt'],
+             'startwords': ['mpkox/mp_sent_startwords.txt'],
+             'vocab': 'mpkox/mp_sent_vocab_5gram.txt'
              }
 
     def __init__(self, kind=None):
