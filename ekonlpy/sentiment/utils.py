@@ -42,8 +42,8 @@ class MPTokenizer(BaseTokenizer):
     The default tokenizer for MPKO sub class, which yields 5-gram tokens.
     The output of the tokenizer is tagged by Mecab.
     '''
-    KINDS = {0: 5,
-             1: 5
+    KINDS = {0: 6,
+             1: 6
              }
     FILES = {'stopwords': ['mpko/mp_polarity_stopwords.txt'],
              'vocab': 'mpko/mp_polarity_map.txt'
@@ -59,7 +59,7 @@ class MPTokenizer(BaseTokenizer):
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
         self._start_tags = ['NNG', 'VA', 'VAX']
         self._predicate_tags = ['VV', 'VVX', 'VA', 'VAX', 'XSA', 'XSV', 'VCP', 'VX']
-        self._noun_tags = ['NNG', 'XR']
+        self._noun_tags = ['NNG']
         self._aux_tags = ['XSA', 'XSV', 'VCP', 'VX']
 
     def tokenize(self, text):
@@ -73,7 +73,7 @@ class MPTokenizer(BaseTokenizer):
             ngram_tokens = self.ngramize(tokens)
         return ngram_tokens
 
-    def ngramize(self, tokens, keep_overlapping_ngram=True):
+    def ngramize(self, tokens, keep_overlapping_ngram=False):
         ngram_tokens = []
         tokens = [w for w in tokens if w not in self._stopwords]
         for pos in range(len(tokens)):
@@ -130,7 +130,7 @@ class MPTokenizer(BaseTokenizer):
                     if tag in self._predicate_tags and check_noun:
                         check_predicate = True
                     token += self._delimiter + tokens[pos + i]
-            if len(token.split(self._delimiter)) == gram and check_predicate:
+            if len(token.split(self._delimiter)) == gram:
                 return token
             else:
                 return None

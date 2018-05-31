@@ -47,6 +47,7 @@ s&p/NNG
 국내외/NNG
 국제적/VAX
 국제통화기금/NNG
+국토부/NNG
 궁금증/NNG
 규모/NNG
 그간/NNG
@@ -77,6 +78,7 @@ s&p/NNG
 기관/NNG
 기금/NNG
 기록/NNG
+기비/NNG
 기업어음/NNG
 기울기/NNG
 기자회견/NNG
@@ -163,6 +165,7 @@ s&p/NNG
 발언/NNG
 발표/NNG
 밤/NNG
+밤사이/NNG
 배럴/NNG
 범위/NNG
 법정최고금리/NNG
@@ -172,6 +175,7 @@ s&p/NNG
 보험사/NNG
 본격/NNG
 본격적/VAX
+본회의/NNG
 부담금/NNG
 부처/NNG
 부총리/NNG
@@ -179,6 +183,7 @@ s&p/NNG
 분담금/NNG
 분석가/NNG
 분할상환대출/NNG
+브리핑/NNG
 브리핑실/NNG
 비/NNG
 비해/VV
@@ -192,6 +197,7 @@ s&p/NNG
 상당기간/NNG
 상당부분/NNG
 상당히/MAG
+상대국/NNG
 상대적/VAX
 상태/NNG
 생산가능인구/NNG
@@ -228,6 +234,7 @@ s&p/NNG
 시중은행/NNG
 신용평가사/NNG
 신흥국/NNG
+실/NNG
 실제/NNG
 실질/NNG
 아래/NNG
@@ -284,14 +291,18 @@ s&p/NNG
 인민은행/NNG
 일반/NNG
 일반인/NNG
+일별/NNG
 일본은행/NNG
 일비/NNG
 일제히/MAG
 일평균/NNG
 자꾸/MAG
+자료/NNG
 자수/NNG
+작업/NNG
 잘/MAG
 잠정치/NNG
+잠정치가/VAX
 장/NNG
 장관/NNG
 장마감후/NNG
@@ -306,6 +317,7 @@ s&p/NNG
 전구간/NNG
 전국/NNG
 전기/NNG
+전기비/NNG
 전략/NNG
 전략가/NNG
 전망~치는/VVX
@@ -314,14 +326,17 @@ s&p/NNG
 전문가/NNG
 전미부동산중개인협회/NNG
 전반적/VAX
+전분/NNG
 전세계/NNG
 전장/NNG
 전체/NNG
 점진적/VAX
 점차/MAG
+정기예금잔액/NNG
 정례/NNG
 정례회의/NNG
 정부/NNG
+정성/NNG
 정책/NNG
 져/NNG
 조금/MAG
@@ -335,8 +350,11 @@ s&p/NNG
 주/NNG
 주간/NNG
 주도/NNG
+주례/NNG
 주요국/NNG
 주재/NNG
+주전/NNG
+주택시장정상화종합대책/NNG
 중기/NNG
 중기적/VAX
 중반/NNG
@@ -394,6 +412,7 @@ s&p/NNG
 특성/NNG
 틱/NNG
 평가/NNG
+평균/NNG
 포인트/NNG
 핑/NNG
 한국은행/NNG
@@ -420,4 +439,6 @@ s&p/NNG
 회계/NNG
 회의/NNG
 후/NNG
+후반/NNG
 흐름/NNG
+견실한/VAX
