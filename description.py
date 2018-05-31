@@ -1,5 +1,5 @@
 __title__ = 'eKoNLPy'
-__version__ = '0.2.85'
+__version__ = '0.2.88'
 __author__ = 'Youngjoon Lee (entelecheia)'
 __author_email__ = 'yj.lee@yonsei.ac.kr'
 __license__ = 'GPL v3'
