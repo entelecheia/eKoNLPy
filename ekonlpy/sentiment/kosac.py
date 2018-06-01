@@ -9,6 +9,9 @@ class KOSAC(object):
     def __init__(self):
         self._loaddic()
         self._tagger = Kkma()
+        self._ngram = 3
+        self._delimiter = ';'
+        self._skiptags = ['SF', 'SP', 'SS', 'SE', 'SO', 'SW', 'UN', 'UV', 'UE', 'OL', 'OH', 'ON']
 
     def _loaddic(self):
         self._polarity = self._loadfile(os.path.join(LEXICON_PATH, 'kosac', 'polarity.csv'))
@@ -57,7 +60,6 @@ class KOSAC(object):
     def match(self, data, pairdata, keypairs):
         ret = {k[1]: 0 for k in keypairs}
         for m in data:
-            # need to make ngrams
             if m in pairdata:
                 currentdata = pairdata[m]
                 ret = self.calc(keypairs, currentdata, ret,
@@ -108,4 +110,24 @@ class KOSAC(object):
         else:
             raise ValueError('The dataset has to be string or list of string type.')
 
-        return tokens
+        return self.ngramize(tokens)
+
+    def ngramize(self, tokens):
+        ngram_tokens = []
+        tokens = [w for w in tokens if w.split('/')[1] not in self._skiptags]
+        for pos in range(len(tokens)):
+            for gram in range(1, self._ngram + 1):
+                token = self.get_ngram(tokens, pos, gram)
+                if token:
+                    ngram_tokens.append(token)
+        return ngram_tokens
+
+    def get_ngram(self, tokens, pos, gram):
+        if pos < 0:
+            return None
+        if pos + gram > len(tokens):
+            return None
+        token = tokens[pos]
+        for i in range(1, gram):
+            token += self._delimiter + tokens[pos + i]
+        return token
