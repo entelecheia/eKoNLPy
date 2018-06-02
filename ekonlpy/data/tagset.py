@@ -299,6 +299,8 @@ chk_tags = {
     ('NNG', 'XSV', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'NNG', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'XSV', 'NNG', 'NNG', 'XSN'): 'NNG',
+    ('NNG', 'XSV', 'VCP'): 'NNG',
+    ('NNG', 'XSV', 'VCP', 'NNG'): 'NNG',
     ('NP', 'EC'): 'NNG',
     ('NP', 'EC', 'NNG'): 'NNG',
     ('NP', 'IC', 'NNG'): 'NNG',
