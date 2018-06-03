@@ -79,6 +79,7 @@ suffix_tags = {
 skip_chk_tags = {
     ('MM', 'SC', 'NNG', 'SC', 'NR'): 'NNG',
     ('NNG', 'SC', 'NNG'): 'NNG',
+    ('NNG', 'SN', 'NNG'): 'NNG',
     ('NNG', 'SY', 'NNBC', 'JX'): 'NNG',
     ('NNG', 'SY', 'NNG'): 'NNG',
     ('NNG', 'SY', 'NNG', 'XSN'): 'NNG',
@@ -163,6 +164,7 @@ chk_tags = {
     ('NNG', 'JKB', 'NR', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'NR', 'NNG', 'NNG'): 'NNG',
     ('NNG', 'JKB', 'VA', 'NNG'): 'NNG',
+    ('NNG', 'JKB', 'VV'): 'NNG',
     ('NNG', 'JKB', 'VV', 'EC'): 'NNG',
     ('NNG', 'JKB', 'VV', 'XSN', 'XSN'): 'NNG',
     ('NNG', 'JKC'): 'NNG',
