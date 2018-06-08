@@ -10,18 +10,16 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 class Mecab:
     def __init__(self,
                  use_default_dictionary=True,
-                 use_phrase=True,
-                 use_polarity_phrase=True,
+                 use_polarity_phrase=False,
                  replace_synonym=True):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
         self.use_default_dictionary = use_default_dictionary
-        self.use_phras = use_phrase
         self.use_polarity_phras = use_polarity_phrase
         self.replace_synonym = replace_synonym
         if use_default_dictionary:
-            self._load_default_dictionary(use_phrase, use_polarity_phrase)
+            self._load_default_dictionary(use_polarity_phrase)
         self._load_term_dictionary()
         self.extagger = self._load_ext_tagger()
         self.tagset = tagset
@@ -47,7 +45,7 @@ class Mecab:
         if use_polarity_phrases:
             self.load_synonyms('%s/SYNONYM_PHRASES.txt' % directory)
 
-    def _load_default_dictionary(self, use_phrases, use_polarity_phrases):
+    def _load_default_dictionary(self, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
         # self._dictionary.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'NNG')
         self._dictionary.add_dictionary(load_dictionary('%s/NOUNS.txt' % directory), 'NNG')
@@ -61,9 +59,8 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/ADVERBES.txt' % directory), 'MAG')
         self._dictionary.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'NNBC')
         # self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
-        if use_phrases:
-            self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
-            self._dictionary.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'NNG')
         if use_polarity_phrases:
             self._dictionary.add_dictionary(load_dictionary('%s/POLARITY_PHRASES.txt' % directory), 'NNG')
 
