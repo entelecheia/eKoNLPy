@@ -1,7 +1,7 @@
 term_tags = {
     'COUNTRY': '국가',
     'INDUSTRY': '산업용어',
-    'PERSON': '사람',
+    'NAME': '명칭',
     'SECTOR': '산업/업종',
     'ENTITY': '기업/종목',
     'GENERIC': '범용어',
