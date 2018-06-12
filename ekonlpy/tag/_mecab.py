@@ -29,7 +29,7 @@ class Mecab:
         self.stop_tags = stop_tags
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
-        self.synonyms = {}
+        self._synonyms = {}
         self._load_synonyms(use_polarity_phrase)
 
     def _load_ext_tagger(self):
@@ -103,13 +103,13 @@ class Mecab:
         for w, t in tagged:
             if t in ('VAX', 'VVX'):
                 ws = w.split('~')
-                if ws[0].lower() in self.synonyms:
-                    replaced.append((self.synonyms[ws[0].lower()] + '~' + ws[1], t))
+                if ws[0].lower() in self._synonyms:
+                    replaced.append((self._synonyms[ws[0].lower()] + '~' + ws[1], t))
                 else:
                     replaced.append((w, t))
             else:
-                if w.lower() in self.synonyms:
-                    replaced.append((self.synonyms[w.lower()], t))
+                if w.lower() in self._synonyms:
+                    replaced.append((self._synonyms[w.lower()], t))
                 else:
                     replaced.append((w, t))
         return replaced
@@ -163,13 +163,13 @@ class Mecab:
         vocab = load_vocab(fname)
         self.add_dictionary(vocab.keys(), 'NNG')
         self.add_dictionary(vocab.values(), 'NNG')
-        self.synonyms.update(vocab)
+        self._synonyms.update(vocab)
 
     def add_synonym(self, word, synonym):
-        self.synonyms[word] = synonym
+        self._synonyms[word] = synonym
         self.add_dictionary(word, 'NNG')
         self.add_dictionary(synonym, 'NNG')
 
     def persist_synonyms(self):
         directory = '%s/data/dictionary/' % installpath
-        return save_vocab(self.synonyms, '%s/SYNONYM.txt' % directory)
+        return save_vocab(self._synonyms, '%s/SYNONYM.txt' % directory)
