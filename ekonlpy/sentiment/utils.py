@@ -42,8 +42,8 @@ class MPTokenizer(BaseTokenizer):
     The default tokenizer for MPKO sub class, which yields 5-gram tokens.
     The output of the tokenizer is tagged by Mecab.
     '''
-    KINDS = {0: 6,
-             1: 6
+    KINDS = {0: 5,
+             1: 5
              }
     FILES = {'stopwords': ['mpko/mp_polarity_stopwords.txt'],
              'vocab': 'mpko/mp_polarity_map.txt'
@@ -51,16 +51,14 @@ class MPTokenizer(BaseTokenizer):
 
     def __init__(self, kind=None):
         self._kind = kind if kind in self.KINDS.keys() else 0
-        self._min_ngram = 2
+        self._min_ngram = 1
         self._delimiter = ';'
         self._ngram = self.KINDS[self._kind]
         self._tagger = Mecab()
         self._vocab = self.get_vocab(self.FILES['vocab'])
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
         self._start_tags = ['NNG', 'VA', 'VAX']
-        self._predicate_tags = ['VV', 'VVX', 'VA', 'VAX', 'XSA', 'XSV', 'VCP', 'VX']
         self._noun_tags = ['NNG']
-        self._aux_tags = ['XSA', 'XSV', 'VCP', 'VX']
 
     def tokenize(self, text):
         if type(text) == list:
@@ -80,10 +78,8 @@ class MPTokenizer(BaseTokenizer):
             for gram in range(self._min_ngram, self._ngram + 1):
                 token = self.get_ngram(tokens, pos, gram)
                 if token:
-                    phrase = self.get_phrase(token)
-                    # print(token, phrase)
-                    if phrase in self._vocab.values():
-                        ngram_tokens.append(phrase)
+                    if token in self._vocab:
+                        ngram_tokens.append(token)
         if not keep_overlapping_ngram:
             filtered_tokens = []
             if len(ngram_tokens) > 0:
@@ -105,8 +101,7 @@ class MPTokenizer(BaseTokenizer):
         phrase = ''
         for token in tokens:
             w, t = token.split('/')
-            if t not in self._aux_tags:
-                phrase += w.split('~')[0]
+            phrase += w
         return phrase
 
     def get_ngram(self, tokens, pos, gram):
@@ -115,7 +110,6 @@ class MPTokenizer(BaseTokenizer):
         if pos + gram > len(tokens):
             return None
         token = tokens[pos]
-        check_predicate = False
         check_noun = False
 
         tag = token.split('/')[1] if '/' in token else None
@@ -127,10 +121,8 @@ class MPTokenizer(BaseTokenizer):
                     tag = tokens[pos + i].split('/')[1] if '/' in tokens[pos + i] else None
                     if tag in self._noun_tags:
                         check_noun = True
-                    if tag in self._predicate_tags and check_noun:
-                        check_predicate = True
                     token += self._delimiter + tokens[pos + i]
-            if len(token.split(self._delimiter)) == gram:
+            if len(token.split(self._delimiter)) == gram and check_noun:
                 return token
             else:
                 return None
