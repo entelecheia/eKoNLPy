@@ -121,8 +121,6 @@ underperform
 up
 upcycle
 valuation
-valuationdiscount
-valuationpremium
 wti유
 yield
 中
