@@ -10,14 +10,12 @@ from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
 class Mecab:
     def __init__(self,
                  use_default_dictionary=True,
-                 use_polarity_phrase=False,
-                 replace_synonym=True):
+                 use_polarity_phrase=False):
         self._base = KoNLPyMecab()
         self._dictionary = TermDictionary()
         self._terms = TermDictionary()
         self.use_default_dictionary = use_default_dictionary
         self.use_polarity_phras = use_polarity_phrase
-        self.replace_synonym = replace_synonym
         if use_default_dictionary:
             self._load_default_dictionary(use_polarity_phrase)
         self._load_term_dictionary()
@@ -30,6 +28,7 @@ class Mecab:
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
         self._synonyms = {}
+        self._lemmas = {}
         self._load_synonyms(use_polarity_phrase)
 
     def _load_ext_tagger(self):
@@ -44,6 +43,10 @@ class Mecab:
         self.load_synonyms('%s/SYNONYM.txt' % directory)
         if use_polarity_phrases:
             self.load_synonyms('%s/SYNONYM_PHRASES.txt' % directory)
+
+    def _load_lemmas(self):
+        directory = '%s/data/dictionary/' % installpath
+        self.load_lemmas('%s/LEMMA.txt' % directory)
 
     def _load_default_dictionary(self, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
@@ -87,8 +90,7 @@ class Mecab:
               include_sector_name=False,
               include_country_name=True):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        self.replace_synonym = replace_synonym
-        if self.replace_synonym:
+        if replace_synonym:
             tagged = self.replace_synonyms(tagged)
         return [w.lower() for w, t in tagged
                 if t in self.topic_tags
@@ -101,27 +103,33 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         replaced = []
         for w, t in tagged:
-            if t in ('VAX', 'VVX'):
-                ws = w.split('~')
-                if ws[0].lower() in self._synonyms:
-                    replaced.append((self._synonyms[ws[0].lower()] + '~' + ws[1], t))
-                else:
-                    replaced.append((w, t))
+            if w.lower() in self._synonyms:
+                replaced.append((self._synonyms[w.lower()], t))
             else:
-                if w.lower() in self._synonyms:
-                    replaced.append((self._synonyms[w.lower()], t))
+                replaced.append((w, t))
+        return replaced
+
+    def lemmatize(self, phrase):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        replaced = []
+        for w, t in tagged:
+            if t == 'VV':
+                if w.lower() in self._lemmas:
+                    replaced.append((self._lemmas[w.lower()], t))
                 else:
                     replaced.append((w, t))
         return replaced
 
     def sent_words(self, phrase,
                    replace_synonym=True,
+                   lemmatization=True,
                    exclude_terms=True,
                    remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
-        self.replace_synonym = replace_synonym
-        if self.replace_synonym:
+        if replace_synonym:
             tagged = self.replace_synonyms(tagged)
+        if lemmatization:
+            tagged = self.lemmatize(tagged)
         if exclude_terms:
             return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
                     for w, t in tagged
@@ -173,3 +181,14 @@ class Mecab:
     def persist_synonyms(self):
         directory = '%s/data/dictionary/' % installpath
         return save_vocab(self._synonyms, '%s/SYNONYM.txt' % directory)
+
+    def load_lemmas(self, fname):
+        vocab = load_vocab(fname)
+        self._lemmas.update(vocab)
+
+    def add_lemma(self, word, synonym):
+        self._lemmas[word] = synonym
+
+    def persist_lemmas(self):
+        directory = '%s/data/dictionary/' % installpath
+        return save_vocab(self._lemmas, '%s/LEMMA.txt' % directory)
