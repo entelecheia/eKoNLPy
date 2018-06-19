@@ -28,8 +28,9 @@ class Mecab:
         self.sent_tags = sent_tags
         self.stopwords = self._load_stopwords()
         self._synonyms = {}
-        self._lemmas = {}
         self._load_synonyms(use_polarity_phrase)
+        self._lemmas = {}
+        self._load_lemmas()
 
     def _load_ext_tagger(self):
         return ExTagger(self._dictionary)
