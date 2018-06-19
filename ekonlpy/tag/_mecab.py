@@ -114,11 +114,10 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         replaced = []
         for w, t in tagged:
-            if t == 'VV':
-                if w.lower() in self._lemmas:
-                    replaced.append((self._lemmas[w.lower()], t))
-                else:
-                    replaced.append((w, t))
+            if t == 'VV' and w.lower() in self._lemmas:
+                replaced.append((self._lemmas[w.lower()], t))
+            else:
+                replaced.append((w, t))
         return replaced
 
     def sent_words(self, phrase,
