@@ -47,11 +47,11 @@ mecab_tags = {
 }
 # 'NNX': '파생 명사',
 # SL: (?<=\n)[A-Za-z\s-\d]+\n
-nouns_tags = ['NNG', 'NNP', 'UNKNOWN']
-topic_tags = ['NNG']
-stop_tags = ['SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE']
-sent_tags = ['MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP']
-skip_tags = ['SC', 'SN', 'SY']
+nouns_tags = {'NNG', 'NNP', 'UNKNOWN'}
+topic_tags = {'NNG'}
+stop_tags = {'SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE'}
+sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP'}
+skip_tags = {'SC', 'SN', 'SY'}
 
 nochk_tags = {
     ('VX', 'NNG'): 'NNG',
@@ -69,10 +69,10 @@ xsav_tags = {
 xsn_sfx_tag = ('NNG', 'XSN')
 
 suffix_tags = {
-    'VAX': ['적'],
+    'VAX': {'적'},
     # 'NNG': ('감', '권', '계', '력', '률', '별', '분', '성', '용', '율', '자', '치', '화', '형'),
-    'NNG': ('권', '화', '형'),
-    'NNBC': ['당']
+    'NNG': {'권', '화', '형'},
+    'NNBC': {'당'}
 }
 # 'NNX': ('상'),
 

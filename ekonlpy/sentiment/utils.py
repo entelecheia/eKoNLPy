@@ -57,8 +57,8 @@ class MPTokenizer(BaseTokenizer):
         self._tagger = Mecab()
         self._vocab = self.get_vocab(self.FILES['vocab'])
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
-        self._start_tags = ['NNG', 'VA', 'VAX']
-        self._noun_tags = ['NNG']
+        self._start_tags = {'NNG', 'VA', 'VAX'}
+        self._noun_tags = {'NNG'}
 
     def tokenize(self, text):
         if type(text) == list:
