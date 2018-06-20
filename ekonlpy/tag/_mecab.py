@@ -1,7 +1,7 @@
 from konlpy.tag import Mecab as KoNLPyMecab
 from ekonlpy.etag import ExTagger
 from ekonlpy.data.tagset import mecab_tags as tagset
-from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags
+from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags, lemma_tags
 from ekonlpy.dictionary import TermDictionary, term_tags
 from ekonlpy.utils import installpath
 from ekonlpy.utils import load_dictionary, loadtxt, load_vocab, save_vocab
@@ -19,13 +19,14 @@ class Mecab:
         if use_default_dictionary:
             self._load_default_dictionary(use_polarity_phrase)
         self._load_term_dictionary()
-        self.extagger = self._load_ext_tagger()
+        self._extagger = self._load_ext_tagger()
         self.tagset = tagset
-        self.term_tags = term_tags
-        self.nouns_tags = nouns_tags
-        self.topic_tags = topic_tags
-        self.stop_tags = stop_tags
-        self.sent_tags = sent_tags
+        self._term_tags = term_tags
+        self._nouns_tags = nouns_tags
+        self._topic_tags = topic_tags
+        self._stop_tags = stop_tags
+        self._sent_tags = sent_tags
+        self._lemma_tags = lemma_tags
         self.stopwords = self._load_stopwords()
         self._synonyms = {}
         self._load_synonyms(use_polarity_phrase)
@@ -42,6 +43,7 @@ class Mecab:
     def _load_synonyms(self, use_polarity_phrases):
         directory = '%s/data/dictionary/' % installpath
         self.load_synonyms('%s/SYNONYM.txt' % directory)
+        self.load_synonyms('%s/SYNONYM_MAG.txt' % directory, tag='MAG')
         if use_polarity_phrases:
             self.load_synonyms('%s/SYNONYM_PHRASES.txt' % directory)
 
@@ -80,7 +82,7 @@ class Mecab:
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
-        tagged = self.extagger.pos(tagged)
+        tagged = self._extagger.pos(tagged)
 
         return tagged
 
@@ -94,7 +96,7 @@ class Mecab:
         if replace_synonym:
             tagged = self.replace_synonyms(tagged)
         return [w.lower() for w, t in tagged
-                if t in self.topic_tags
+                if t in self._topic_tags
                 and (include_industry_terms or not self._terms.exists(w, 'INDUSTRY'))
                 and (include_generic or not self._terms.exists(w, 'GENERIC'))
                 and (include_sector_name or not self._terms.exists(w, 'SECTOR'))
@@ -114,7 +116,8 @@ class Mecab:
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         replaced = []
         for w, t in tagged:
-            if t == 'VV' and w.lower() in self._lemmas:
+            if t in self._lemma_tags and w.lower() in self._lemmas:
+                t = 'VV' if t == 'XSV' else t
                 replaced.append((self._lemmas[w.lower()], t))
             else:
                 replaced.append((w, t))
@@ -133,12 +136,12 @@ class Mecab:
         if exclude_terms:
             return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
                     for w, t in tagged
-                    if t in self.sent_tags
+                    if t in self._sent_tags
                     and not self._terms.exists(w)]
         else:
             return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
                     for w, t in tagged
-                    if t in self.sent_tags]
+                    if t in self._sent_tags]
 
     def morphs(self, phrase):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
@@ -158,25 +161,27 @@ class Mecab:
         self._dictionary.load_dictionary(fname, tag)
 
     def add_terms(self, words, tag, force=False):
-        if (not force) and (not (tag in self.term_tags)):
+        if (not force) and (not (tag in self._term_tags)):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.add_dictionary(words, tag)
 
     def load_terms(self, fname, tag):
-        if not (tag in self.term_tags):
+        if not (tag in self._term_tags):
             raise ValueError('%s is not available tag' % tag)
         self._dictionary.load_dictionary(fname, tag)
 
-    def load_synonyms(self, fname):
+    def load_synonyms(self, fname, tag='NNG'):
         vocab = load_vocab(fname)
-        self.add_dictionary(vocab.keys(), 'NNG')
-        self.add_dictionary(vocab.values(), 'NNG')
         self._synonyms.update(vocab)
+        if tag == 'NNG':
+            self.add_dictionary(vocab.keys(), tag)
+            self.add_dictionary(vocab.values(), tag)
 
-    def add_synonym(self, word, synonym):
+    def add_synonym(self, word, synonym, tag='NNG'):
         self._synonyms[word] = synonym
-        self.add_dictionary(word, 'NNG')
-        self.add_dictionary(synonym, 'NNG')
+        if tag == 'NNG':
+            self.add_dictionary(word, tag)
+            self.add_dictionary(synonym, tag)
 
     def persist_synonyms(self):
         directory = '%s/data/dictionary/' % installpath

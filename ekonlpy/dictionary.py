@@ -48,6 +48,7 @@ class TermDictionary:
                 tag = tg
                 break
         tag = tag.split('+')[0]
+        tag = 'NNG' if tag == 'XR' else tag
         return tag
 
     def is_tag(self, word, tag):

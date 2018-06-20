@@ -105,17 +105,17 @@ class ExTagger:
                 #     i += n
                 #     continue
 
-                if passes > 0 and n == 2 and tmp_tags in xsav_tags.keys():
-                    if tokens_org[i - n + 2][0][0] not in ['라']:
-                        new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
-                        new_tag = xsav_tags[tmp_tags]
-                        tokens_new.append((new_word, new_tag))
-                        i += n
-                        # if position of token reachs to the end, append remaining tokens
-                        if i == len(tokens_org):
-                            for j in range(n - 1):
-                                tokens_new.append(tokens_org[i - n + j + 1])
-                        continue
+                # if passes > 0 and n == 2 and tmp_tags in xsav_tags.keys():
+                #     if tokens_org[i - n + 2][0][0] not in ['라']:
+                #         new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
+                #         new_tag = xsav_tags[tmp_tags]
+                #         tokens_new.append((new_word, new_tag))
+                #         i += n
+                #         # if position of token reachs to the end, append remaining tokens
+                #         if i == len(tokens_org):
+                #             for j in range(n - 1):
+                #                 tokens_new.append(tokens_org[i - n + j + 1])
+                #         continue
 
                 tokens_new.append(tokens_org[i - n + 1])
 
