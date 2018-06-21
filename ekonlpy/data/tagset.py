@@ -52,7 +52,7 @@ topic_tags = {'NNG'}
 stop_tags = {'SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE'}
 sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP'}
 skip_tags = {'SC', 'SN', 'SY'}
-lemma_tags = {'VV', 'VX', 'XSV', 'VCN'}
+lemma_tags = {'VV', 'VX', 'XSV', 'VCN', 'VA'}
 
 nochk_tags = {
     ('VX', 'NNG'): 'NNG',
