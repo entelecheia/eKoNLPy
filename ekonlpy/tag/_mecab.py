@@ -1,3 +1,4 @@
+import os
 from konlpy.tag import Mecab as KoNLPyMecab
 from ekonlpy.etag import ExTagger
 from ekonlpy.data.tagset import mecab_tags as tagset
@@ -37,50 +38,50 @@ class Mecab:
         return ExTagger(self._dictionary)
 
     def _load_stopwords(self):
-        directory = '%s/data/dictionary/' % installpath
-        return loadtxt('%s/STOPWORDS.txt' % directory)
+        directory = os.path.join(installpath, 'data' , 'dictionary')
+        return loadtxt(os.path.join(directory, 'STOPWORDS.txt'))
 
     def _load_synonyms(self, use_polarity_phrases):
-        directory = '%s/data/dictionary/' % installpath
-        self.load_synonyms('%s/SYNONYM.txt' % directory)
-        self.load_synonyms('%s/SYNONYM_MAG.txt' % directory, tag='MAG')
-        self.load_synonyms('%s/SYNONYM_VA.txt' % directory, tag='VAX')
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        self.load_synonyms(os.path.join(directory, 'SYNONYM.txt'))
+        self.load_synonyms(os.path.join(directory, 'SYNONYM_MAG.txt'), tag='MAG')
+        self.load_synonyms(os.path.join(directory, 'SYNONYM_VA.txt'), tag='VAX')
         if use_polarity_phrases:
-            self.load_synonyms('%s/SYNONYM_PHRASES.txt' % directory)
+            self.load_synonyms(os.path.join(directory, 'SYNONYM_PHRASES.txt'))
 
     def _load_lemmas(self):
-        directory = '%s/data/dictionary/' % installpath
-        self.load_lemmas('%s/LEMMA.txt' % directory)
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        self.load_lemmas(os.path.join(directory, 'LEMMA.txt'))
 
     def _load_default_dictionary(self, use_polarity_phrases):
-        directory = '%s/data/dictionary/' % installpath
-        # self._dictionary.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/NOUNS.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/ECON_TERMS.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/PROPER_NOUNS.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/ENTITY.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTION.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VAX')
-        self._dictionary.add_dictionary(load_dictionary('%s/ADVERBS.txt' % directory), 'MAG')
-        self._dictionary.add_dictionary(load_dictionary('%s/VERBS.txt' % directory), 'VV')
-        self._dictionary.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'NNBC')
-        # self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
-        # self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
-        self._dictionary.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'NNG')
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'GENERIC.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'NOUNS.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ECON_TERMS.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'INDUSTRY_TERMS.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'COUNTRY.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'PROPER_NOUNS.txt')), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ENTITY.txt')), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'INSTITUTION.txt')), 'NNP')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ADJECTIVES.txt')), 'VAX')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ADVERBS.txt')), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'VERBS.txt')), 'VV')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'UNIT.txt')), 'NNBC')
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'FOREIGN_TERMS.txt')), 'SL')
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ECON_PHRASES.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'SECTOR.txt')), 'NNG')
         if use_polarity_phrases:
-            self._dictionary.add_dictionary(load_dictionary('%s/POLARITY_PHRASES.txt' % directory), 'NNG')
+            self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'POLARITY_PHRASES.txt')), 'NNG')
 
     def _load_term_dictionary(self):
-        directory = '%s/data/dictionary/' % installpath
-        self._terms.add_dictionary(load_dictionary('%s/COUNTRY.txt' % directory), 'COUNTRY')
-        self._terms.add_dictionary(load_dictionary('%s/SECTOR.txt' % directory), 'SECTOR')
-        self._terms.add_dictionary(load_dictionary('%s/INDUSTRY_TERMS.txt' % directory), 'INDUSTRY')
-        self._terms.add_dictionary(load_dictionary('%s/GENERIC.txt' % directory), 'GENERIC')
-        self._terms.add_dictionary(load_dictionary('%s/CURRENCY.txt' % directory), 'CURRENCY')
-        self._terms.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'UNIT')
-        self._terms.add_dictionary(load_dictionary('%s/NAMES.txt' % directory), 'NAME')
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'COUNTRY.txt')), 'COUNTRY')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'SECTOR.txt')), 'SECTOR')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'INDUSTRY_TERMS.txt')), 'INDUSTRY')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'GENERIC.txt')), 'GENERIC')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'CURRENCY.txt')), 'CURRENCY')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'UNIT.txt')), 'UNIT')
+        self._terms.add_dictionary(load_dictionary(os.path.join(directory, 'NAMES.txt')), 'NAME')
 
     def pos(self, phrase):
         tagged = self._base.pos(phrase)
@@ -186,8 +187,8 @@ class Mecab:
             self.add_dictionary(synonym, tag)
 
     def persist_synonyms(self):
-        directory = '%s/data/dictionary/' % installpath
-        return save_vocab(self._synonyms, '%s/SYNONYM.txt' % directory)
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        return save_vocab(self._synonyms, os.path.join(directory, 'SYNONYM.txt'))
 
     def load_lemmas(self, fname):
         vocab = load_vocab(fname)
@@ -197,5 +198,5 @@ class Mecab:
         self._lemmas[word] = synonym
 
     def persist_lemmas(self):
-        directory = '%s/data/dictionary/' % installpath
-        return save_vocab(self._lemmas, '%s/LEMMA.txt' % directory)
+        directory = os.path.join(installpath, 'data', 'dictionary')
+        return save_vocab(self._lemmas, os.path.join(directory, 'LEMMA.txt'))
