@@ -64,6 +64,7 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTION.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VAX')
         self._dictionary.add_dictionary(load_dictionary('%s/ADVERBES.txt' % directory), 'MAG')
+        self._dictionary.add_dictionary(load_dictionary('%s/VERBES.txt' % directory), 'VV')
         self._dictionary.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'NNBC')
         # self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
         # self._dictionary.add_dictionary(load_dictionary('%s/ECON_PHRASES.txt' % directory), 'NNG')
