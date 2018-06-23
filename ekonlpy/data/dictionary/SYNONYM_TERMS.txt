@@ -67,7 +67,6 @@ msci선진시장지수
 msci선진지수
 multiple
 nav
-negative
 netdebt
 neutral
 nim
@@ -386,7 +385,6 @@ yield
 내수
 내수진작
 넉아웃
-네거티브
 녹아웃
 농림수산물
 농산물
@@ -624,7 +622,6 @@ yield
 부양책
 부양책축소
 부양축소
-부정적
 부족
 부채
 부채리스크

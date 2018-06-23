@@ -44,6 +44,7 @@ class Mecab:
         directory = '%s/data/dictionary/' % installpath
         self.load_synonyms('%s/SYNONYM.txt' % directory)
         self.load_synonyms('%s/SYNONYM_MAG.txt' % directory, tag='MAG')
+        self.load_synonyms('%s/SYNONYM_VA.txt' % directory, tag='VAX')
         if use_polarity_phrases:
             self.load_synonyms('%s/SYNONYM_PHRASES.txt' % directory)
 
@@ -61,7 +62,7 @@ class Mecab:
         self._dictionary.add_dictionary(load_dictionary('%s/PROPER_NOUNS.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/ENTITY.txt' % directory), 'NNP')
         self._dictionary.add_dictionary(load_dictionary('%s/INSTITUTION.txt' % directory), 'NNP')
-        self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VA')
+        self._dictionary.add_dictionary(load_dictionary('%s/ADJECTIVES.txt' % directory), 'VAX')
         self._dictionary.add_dictionary(load_dictionary('%s/ADVERBES.txt' % directory), 'MAG')
         self._dictionary.add_dictionary(load_dictionary('%s/UNIT.txt' % directory), 'NNBC')
         # self._dictionary.add_dictionary(load_dictionary('%s/FOREIGN_TERMS.txt' % directory), 'SL')
