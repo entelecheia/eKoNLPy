@@ -30,8 +30,6 @@ effect,효과
 effects,효과
 eps(adj),eps
 eps(지배주주),eps
-federalfund,ff
-federalfunds,ff
 guidance,가이던스
 historicallow,최저
 hold,뉴트럴
@@ -525,6 +523,7 @@ yield,수익률
 연구개발비용,연구개발비
 연구비용,연구비
 연방공개시장위원회,공개시장위원회
+연방기금ff,연방기금
 연방은행총재,연은총재
 연방준비은행총재,연준총재
 연방준비이사회,연방준비제도이사회

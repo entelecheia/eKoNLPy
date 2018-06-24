@@ -42,9 +42,6 @@ eps
 eps(adj)
 eps(지배주주)
 fcf
-federalfund
-federalfunds
-ff
 ff금리인상
 fx스왑
 gdp
@@ -1043,6 +1040,7 @@ yield
 연방
 연방공개시장위원회
 연방기금
+연방기금ff
 연방기금금리인상
 연방은행총재
 연방준비위원회
