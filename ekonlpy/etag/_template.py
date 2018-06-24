@@ -139,5 +139,7 @@ class ExTagger:
         # tokens = ctagger(tokens, 2,
         #                  self.nouns_tags, self.nochk_tags, self.chk_tags, self.skip_chk_tags,
         #                  self.xse_tags, self.skip_tags, self.suffix_tags, self.dictionary)
+        tokens = [(w, self.dictionary.check_tag(w, t))
+                  for w, t in tokens]
 
         return tokens
