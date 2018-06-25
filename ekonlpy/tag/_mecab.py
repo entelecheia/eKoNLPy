@@ -57,6 +57,7 @@ class Mecab:
         directory = os.path.join(installpath, 'data', 'dictionary')
         # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'GENERIC.txt')), 'NNG')
         self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'NOUNS.txt')), 'NNG')
+        self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'NAMES.txt')), 'NNG')
         self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ECON_TERMS.txt')), 'NNG')
         self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'INDUSTRY_TERMS.txt')), 'NNG')
         self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'COUNTRY.txt')), 'NNG')
