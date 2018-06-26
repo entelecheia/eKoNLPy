@@ -76,7 +76,6 @@ class ExTagger:
                             tokens_new.append(tokens_org[i - n + j + 1])
                     continue
 
-
                 if tmp_tags in skgrm_dic.keys():
                     new_word = ''
                     for j in range(n):
