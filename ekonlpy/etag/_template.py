@@ -49,20 +49,33 @@ class ExTagger:
                                     else tokens_org[i - n + j + 1][1])
                 tmp_tags = tuple(tmp_tags)
 
-                if tmp_tags in chk_dic.keys():
-                    new_word = ''
-                    for j in range(n):
-                        new_word += tokens_org[i - n + j + 1][0]
-                    dict_tag = term_dict.get_tags(new_word.lower())
-                    if dict_tag:
-                        new_tag = dict_tag if chk_dic[tmp_tags] == 'NNG' else chk_dic[tmp_tags]
-                        tokens_new.append((new_word, new_tag))
-                        i += n
-                        # if position of token reachs to the end, append remaining tokens
-                        if i == len(tokens_org):
-                            for j in range(n - 1):
-                                tokens_new.append(tokens_org[i - n + j + 1])
-                        continue
+                # if tmp_tags in chk_dic.keys():
+                #     new_word = ''
+                #     for j in range(n):
+                #         new_word += tokens_org[i - n + j + 1][0]
+                #     dict_tag = term_dict.get_tags(new_word.lower())
+                #     if dict_tag:
+                #         new_tag = dict_tag if chk_dic[tmp_tags] == 'NNG' else chk_dic[tmp_tags]
+                #         tokens_new.append((new_word, new_tag))
+                #         i += n
+                #         # if position of token reachs to the end, append remaining tokens
+                #         if i == len(tokens_org):
+                #             for j in range(n - 1):
+                #                 tokens_new.append(tokens_org[i - n + j + 1])
+                #         continue
+                new_word = ''
+                for j in range(n):
+                    new_word += tokens_org[i - n + j + 1][0]
+                dict_tag = term_dict.get_tags(new_word.lower())
+                if dict_tag:
+                    tokens_new.append((new_word, dict_tag))
+                    i += n
+                    # if position of token reachs to the end, append remaining tokens
+                    if i == len(tokens_org):
+                        for j in range(n - 1):
+                            tokens_new.append(tokens_org[i - n + j + 1])
+                    continue
+
 
                 if tmp_tags in skgrm_dic.keys():
                     new_word = ''
