@@ -35,7 +35,7 @@ def load_vocab(file_path, delimiter=','):
     if os.path.isfile(file_path):
         with open(file_path) as f:
             for i, line in enumerate(f):
-                if len(line) > 0:
+                if delimiter in line:
                     w = line.strip().split(delimiter)
                     vocab[w[0].lower().replace(' ', '')] = w[1].lower().replace(' ', '')
     else:

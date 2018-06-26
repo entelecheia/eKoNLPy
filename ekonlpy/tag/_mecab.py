@@ -177,15 +177,13 @@ class Mecab:
     def load_synonyms(self, fname, tag='NNG'):
         vocab = load_vocab(fname)
         self._synonyms.update(vocab)
-        if tag == 'NNG':
-            self.add_dictionary(vocab.keys(), tag)
-            self.add_dictionary(vocab.values(), tag)
+        self.add_dictionary(vocab.keys(), tag)
+        self.add_dictionary(vocab.values(), tag)
 
     def add_synonym(self, word, synonym, tag='NNG'):
         self._synonyms[word] = synonym
-        if tag == 'NNG':
-            self.add_dictionary(word, tag)
-            self.add_dictionary(synonym, tag)
+        self.add_dictionary(word, tag)
+        self.add_dictionary(synonym, tag)
 
     def persist_synonyms(self):
         directory = os.path.join(installpath, 'data', 'dictionary')
