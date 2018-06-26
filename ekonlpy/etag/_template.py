@@ -80,21 +80,21 @@ class ExTagger:
                                 tokens_new.append(tokens_org[i - n + j + 1])
                         continue
 
-                if passes > 0 and n == 2 and tmp_tags == xsn_sfx_tag:
-                    # print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
-                    for new_tag in suffix_tags.keys():
-                        # print(len(tokens_org), i - n + 2)
-                        if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
-                            break
-                    if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
-                        new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
-                        tokens_new.append((new_word, new_tag))
-                        i += n
-                        # if position of token reachs to the end, append remaining tokens
-                        if i == len(tokens_org):
-                            for j in range(n - 1):
-                                tokens_new.append(tokens_org[i - n + j + 1])
-                        continue
+                # if passes > 0 and n == 2 and tmp_tags == xsn_sfx_tag:
+                #     # print(tokens_org[i - n + 1][0], tokens_org[i - n + 2][0])
+                #     for new_tag in suffix_tags.keys():
+                #         # print(len(tokens_org), i - n + 2)
+                #         if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
+                #             break
+                #     if tokens_org[i - n + 2][0] in suffix_tags[new_tag]:
+                #         new_word = tokens_org[i - n + 1][0] + tokens_org[i - n + 2][0]
+                #         tokens_new.append((new_word, new_tag))
+                #         i += n
+                #         # if position of token reachs to the end, append remaining tokens
+                #         if i == len(tokens_org):
+                #             for j in range(n - 1):
+                #                 tokens_new.append(tokens_org[i - n + j + 1])
+                #         continue
 
                 # if tmp_tags in nochk_dic.keys():
                 #     new_word = ''
