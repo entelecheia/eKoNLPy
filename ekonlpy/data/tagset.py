@@ -376,6 +376,7 @@ chk_tags = {
     ('VCP', 'EC', 'NNG'): 'NNG',
     ('VCP', 'EC', 'NNG', 'NNG'): 'NNG',
     ('VCP', 'NNG'): 'NNG',
+    ('VCP', 'NNG', 'XSN'): 'NNG',
     ('VV', 'EC'): 'NNG',
     ('VV', 'EC', 'NNG'): 'NNG',
     ('VV', 'EC', 'NNG', 'XSN'): 'NNG',
