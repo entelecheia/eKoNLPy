@@ -1,4 +1,4 @@
-from ekonlpy.data.tagset import skip_chk_tags, skip_tags, nouns_tags
+from ekonlpy.data.tagset import skip_chk_tags, skip_tags, nouns_tags, pass_tags
 
 
 class ETagger:
@@ -8,6 +8,7 @@ class ETagger:
         self.skip_chk_tags = skip_chk_tags
         self.skip_tags = set(skip_tags)
         self.nouns_tags = set(nouns_tags)
+        self.pass_tags = set(pass_tags)
 
     def add_skip_chk_tags(self, template):
         if type(template) == dict:
@@ -18,7 +19,7 @@ class ETagger:
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
-        def ctagger(ctokens, ngram, cnouns_tags, cskip_chk_tags, cskip_tags, cdictionary):
+        def ctagger(ctokens, ngram, cnouns_tags, cpass_tags, cskip_chk_tags, cskip_tags, cdictionary):
 
             tokens_org = ctokens
             tokens_new = []
@@ -35,18 +36,19 @@ class ETagger:
                                     else tokens_org[i - ngram + j + 1][1])
                 tmp_tags = tuple(tmp_tags)
 
-                new_word = ''
-                for j in range(ngram):
-                    new_word += tokens_org[i - ngram + j + 1][0]
-                dict_tag = cdictionary.get_tags(new_word.lower())
-                if dict_tag:
-                    tokens_new.append((new_word, dict_tag))
-                    i += ngram
-                    # if position of token reachs to the end, append remaining tokens
-                    if i == len(tokens_org):
-                        for j in range(ngram - 1):
-                            tokens_new.append(tokens_org[i - ngram + j + 1])
-                    continue
+                if tmp_tags not in cpass_tags:
+                    new_word = ''
+                    for j in range(ngram):
+                        new_word += tokens_org[i - ngram + j + 1][0]
+                    dict_tag = cdictionary.get_tags(new_word.lower())
+                    if dict_tag:
+                        tokens_new.append((new_word, dict_tag))
+                        i += ngram
+                        # if position of token reachs to the end, append remaining tokens
+                        if i == len(tokens_org):
+                            for j in range(ngram - 1):
+                                tokens_new.append(tokens_org[i - ngram + j + 1])
+                        continue
 
                 if tmp_tags in cskip_chk_tags.keys():
                     new_word = ''
@@ -78,7 +80,8 @@ class ETagger:
 
         for x in range(2):
             for t in range(self.max_ngram - x, 1, -1):
-                tokens = ctagger(tokens, t, self.nouns_tags, self.skip_chk_tags, self.skip_tags, self.dictionary)
+                tokens = ctagger(tokens, t, self.nouns_tags, self.pass_tags,
+                                 self.skip_chk_tags, self.skip_tags, self.dictionary)
 
         tokens = [(w, self.dictionary.check_tag(w, t))
                   for w, t in tokens]

@@ -54,9 +54,8 @@ sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', '
 skip_tags = {'SC', 'SN', 'SY'}
 lemma_tags = {'VV', 'VX', 'XSV', 'VCN', 'VA'}
 
-nochk_tags = {
-    ('VX', 'NNG'): 'NNG',
-    ('XPN', 'XR', 'XSN'): 'NNG'
+pass_tags = {
+    ('EC', 'NNG')
 }
 
 xsav_tags = {
