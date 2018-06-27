@@ -1,1 +1,1 @@
-from ._template import ExTagger
+from ._template import ETagger

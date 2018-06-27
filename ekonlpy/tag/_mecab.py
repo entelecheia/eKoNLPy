@@ -1,6 +1,6 @@
 import os
 from konlpy.tag import Mecab as KoNLPyMecab
-from ekonlpy.etag import ExTagger
+from ekonlpy.etag import ETagger
 from ekonlpy.data.tagset import mecab_tags as tagset
 from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags, lemma_tags
 from ekonlpy.dictionary import TermDictionary, term_tags
@@ -35,7 +35,7 @@ class Mecab:
         self._load_lemmas()
 
     def _load_ext_tagger(self):
-        return ExTagger(self._dictionary)
+        return ETagger(self._dictionary)
 
     def _load_stopwords(self):
         directory = os.path.join(installpath, 'data' , 'dictionary')
