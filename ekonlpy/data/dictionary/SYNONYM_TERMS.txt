@@ -36,6 +36,7 @@ divyield
 down
 downcycle
 dps
+dr
 dy
 earningshock
 earningsshock
@@ -738,6 +739,8 @@ yield
 미국연방공개시장위원회
 미래가격
 미래가치
+미스매치
+미스매칭
 미연방공개시장위원회
 미연방기금
 미연준
@@ -1617,6 +1620,7 @@ yield
 주당장부가액
 주식보유비중
 주식비중
+주식예탁증서
 주요국
 주요국가
 주택가격
