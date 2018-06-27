@@ -80,6 +80,8 @@ skip_chk_tags = {
     ('MM', 'SC', 'NNG', 'SC', 'NR'): 'NNG',
     ('NNG', 'SC', 'NNG'): 'NNG',
     ('NNG', 'SN', 'NNG'): 'NNG',
+    ('NNG', 'SN', 'NNBC'): 'NNG',
+    ('NNG', 'SN', 'NNBC', 'NNG'): 'NNG',
     ('NNG', 'SY', 'NNBC', 'JX'): 'NNG',
     ('NNG', 'SY', 'NNG'): 'NNG',
     ('NNG', 'SY', 'NNG', 'XSN'): 'NNG',

@@ -52,10 +52,19 @@ class ETagger:
 
                 if tmp_tags in cskip_chk_tags.keys():
                     new_word = ''
+                    num_word = ''
                     for j in range(ngram):
                         if tmp_tags[j] not in cskip_tags:
                             new_word += tokens_org[i - ngram + j + 1][0]
-                    dict_tag = cdictionary.get_tags(new_word.lower())
+                        if tmp_tags[j] == 'SN':
+                            num_word += 'n'
+                        else:
+                            num_word += tokens_org[i - ngram + j + 1][0]
+                    dict_tag = cdictionary.get_tags(num_word.lower())
+                    if dict_tag:
+                        new_word = num_word
+                    else:
+                        dict_tag = cdictionary.get_tags(new_word.lower())
                     if dict_tag:
                         new_tag = dict_tag if cskip_chk_tags[tmp_tags] == 'NNG' else cskip_chk_tags[tmp_tags]
                         tokens_new.append((new_word, new_tag))
