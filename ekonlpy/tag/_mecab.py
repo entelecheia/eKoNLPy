@@ -111,7 +111,7 @@ class Mecab:
         replaced = []
         for w, t in tagged:
             if w.lower() in self._synonyms:
-                replaced.append((self._synonyms[w.lower()], t))
+                replaced.append((self._synonyms[w.lower()].lower(), t))
             else:
                 replaced.append((w, t))
         return replaced
@@ -181,7 +181,7 @@ class Mecab:
         self.add_dictionary(vocab.values(), tag)
 
     def add_synonym(self, word, synonym, tag='NNG'):
-        self._synonyms[word] = synonym
+        self._synonyms[word.lower()] = synonym.lower()
         self.add_dictionary(word, tag)
         self.add_dictionary(synonym, tag)
 

@@ -155,7 +155,6 @@ BM특허
 BOO방식
 BOX이론
 BSC명예의전당
-BW
 BWT수출
 BWT신용장
 Baltimore평가방식
@@ -399,7 +398,6 @@ LP제도
 LP지분유동화펀드
 LTE광대역화
 L자형
-M&A
 M&A부티크
 M&A이행보증금
 M2평잔

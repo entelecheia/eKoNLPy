@@ -37,7 +37,7 @@ def load_vocab(file_path, delimiter=','):
             for i, line in enumerate(f):
                 if delimiter in line:
                     w = line.strip().split(delimiter)
-                    vocab[w[0].lower().replace(' ', '')] = w[1].replace(' ', '')
+                    vocab[w[0].lower().replace(' ', '')] = w[1].lower().replace(' ', '')
     else:
         save_vocab(vocab, file_path)
     # print('Loaded the file: {}, No. of words: {}'.format(file_path, len(vocab)))
