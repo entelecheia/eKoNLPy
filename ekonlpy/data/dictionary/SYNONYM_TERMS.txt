@@ -84,9 +84,6 @@ marketshare
 mix
 mmf
 ms
-msci선진국지수
-msci선진시장지수
-msci선진지수
 multiple
 nav
 netdebt
@@ -935,6 +932,7 @@ yield
 선섹스
 선섹스지수
 선진국시장
+선진국지수
 선진시장
 선진시장지수
 선진지수
@@ -1125,6 +1123,7 @@ yield
 신흥국
 신흥국가
 신흥국시장
+신흥국지수
 신흥시장
 신흥시장국
 신흥시장지수
