@@ -94,8 +94,8 @@ class ETagger:
         tokens = [(w.strip(), self.dictionary.check_tag(w.strip(), t))
                   for w, t in tokens]
 
-        for x in range(2):
-            for t in range(self.max_ngram - x, 1, -1):
+        for x in range(3):
+            for t in range(2, self.max_ngram - x):
                 tokens = ctagger(tokens, t, self.nouns_tags, self.pass_tags,
                                  self.skip_chk_tags, self.skip_tags, self.dictionary)
 
