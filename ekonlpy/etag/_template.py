@@ -22,13 +22,14 @@ class ETagger:
         def ctagger(ctokens, ngram, cnouns_tags, cpass_tags, cskip_chk_tags, cskip_tags, cdictionary):
 
             tokens_org = ctokens
+            num_tokens = len(ctokens)
             tokens_new = []
             i = ngram - 1
             # if length of tokens is less than n, bypass and return original tokens
-            if len(tokens_org) < ngram:
+            if num_tokens < ngram:
                 return ctokens
 
-            while i < len(tokens_org):
+            while i < num_tokens:
                 tmp_tags = []
                 for j in range(ngram):
                     tmp_tags.append('NNG'
@@ -45,9 +46,11 @@ class ETagger:
                         tokens_new.append((new_word, dict_tag))
                         i += ngram
                         # if position of token reachs to the end, append remaining tokens
-                        if i == len(tokens_org):
+                        if i >= num_tokens:
                             for j in range(ngram - 1):
-                                tokens_new.append(tokens_org[i - ngram + j + 1])
+                                pos = i - ngram + j + 1
+                                if pos < num_tokens:
+                                    tokens_new.append(tokens_org[pos])
                         continue
 
                 if tmp_tags in cskip_chk_tags.keys():
@@ -70,16 +73,20 @@ class ETagger:
                         tokens_new.append((new_word, new_tag))
                         i += ngram
                         # if position of token reachs to the end, append remaining tokens
-                        if i == len(tokens_org):
+                        if i >= num_tokens:
                             for j in range(ngram - 1):
-                                tokens_new.append(tokens_org[i - ngram + j + 1])
+                                pos = i - ngram + j + 1
+                                if pos < num_tokens:
+                                    tokens_new.append(tokens_org[pos])
                         continue
 
                 tokens_new.append(tokens_org[i - ngram + 1])
-
-                if i == len(tokens_org) - 1:
+                # if position of token reachs to the end, append remaining tokens
+                if i >= num_tokens - 1:
                     for j in range(ngram - 1):
-                        tokens_new.append(tokens_org[i - ngram + j + 2])
+                        pos = i - ngram + j + 2
+                        if pos < num_tokens:
+                            tokens_new.append(tokens_org[pos])
                 i += 1
 
             return tokens_new
