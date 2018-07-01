@@ -2,7 +2,7 @@ from ekonlpy.data.tagset import skip_chk_tags, skip_tags, nouns_tags, pass_tags
 
 
 class ETagger:
-    def __init__(self, dictionary, max_ngram=10):
+    def __init__(self, dictionary, max_ngram=7):
         self.dictionary = dictionary
         self.max_ngram = max_ngram
         self.skip_chk_tags = skip_chk_tags
@@ -82,6 +82,8 @@ class ETagger:
                   for w, t in tokens]
 
         tokens = ctagger(tokens, self.max_ngram, self.nouns_tags, self.pass_tags,
+                         self.skip_chk_tags, self.skip_tags, self.dictionary)
+        tokens = ctagger(tokens, 3, self.nouns_tags, self.pass_tags,
                          self.skip_chk_tags, self.skip_tags, self.dictionary)
 
         tokens = [(w, self.dictionary.check_tag(w, t))

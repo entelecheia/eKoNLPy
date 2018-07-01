@@ -51,7 +51,7 @@ nouns_tags = {'NNG', 'NNP', 'UNKNOWN'}
 topic_tags = {'NNG'}
 stop_tags = {'SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE'}
 sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP'}
-skip_tags = {'SC', 'SN', 'SY'}
+skip_tags = {'SC', 'SN', 'SY', 'SSO', 'SSC'}
 lemma_tags = {'VV', 'VX', 'XSV', 'VCN', 'VA', 'MAG', 'VAX'}
 
 pass_tags = {
@@ -91,7 +91,9 @@ skip_chk_tags = {
     ('SL', 'SC', 'SL'): 'NNG',
     ('SL', 'SY', 'SL'): 'NNG',
     ('SN', 'NNBC', 'NNG'): 'NNG',
-    ('SN', 'NNBC', 'VV'): 'NNG'
+    ('SN', 'NNBC', 'VV'): 'NNG',
+    ('SSO', 'NNG', 'SSC'): 'NNG',
+    ('SSO', 'SL', 'SSC'): 'NNG'
 }
 
 chk_tags = {
