@@ -8,6 +8,7 @@ bei
 bep
 bigbath
 bis
+bis기준
 bottomup
 bps
 buy
@@ -201,6 +202,8 @@ yield
 갭하락
 거래
 거래량
+거래소
+거래소시장
 거시
 거시경제
 거시경제변수
