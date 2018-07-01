@@ -46,6 +46,7 @@ class MPTokenizer(BaseTokenizer):
              1: 5
              }
     FILES = {'stopwords': ['mpko/mp_polarity_stopwords.txt'],
+             'auxwords': ['mpko/mp_polarity_auxwords.txt'],
              'vocab': 'mpko/mp_polarity_map.txt'
              }
 
@@ -57,8 +58,10 @@ class MPTokenizer(BaseTokenizer):
         self._tagger = Mecab()
         self._vocab = self.get_vocab(self.FILES['vocab'])
         self._stopwords = self.get_wordset(self.FILES['stopwords'])
-        self._start_tags = {'NNG', 'VA', 'VAX'}
+        self._auxwords = self.get_wordset(self.FILES['auxwords'])
+        self._start_tags = {'NNG', 'VA', 'VAX', 'MAG'}
         self._noun_tags = {'NNG'}
+        self._aux_tags = {'XSA', 'XSV', 'VCP', 'VX'}
 
     def tokenize(self, text):
         if type(text) == list:
@@ -73,7 +76,11 @@ class MPTokenizer(BaseTokenizer):
 
     def ngramize(self, tokens, keep_overlapping_ngram=False):
         ngram_tokens = []
-        tokens = [w for w in tokens if w not in self._stopwords]
+        tokens = [w for w in tokens
+                  if w not in self._stopwords and
+                  ((w.split('/')[1] if '/' in w else None) not in self._aux_tags
+                   or w in self._auxwords)]
+        print(tokens)
         for pos in range(len(tokens)):
             for gram in range(self._min_ngram, self._ngram + 1):
                 token = self.get_ngram(tokens, pos, gram)
@@ -117,12 +124,12 @@ class MPTokenizer(BaseTokenizer):
             if tag in self._noun_tags:
                 check_noun = True
             for i in range(1, gram):
-                if tokens[pos + i] not in token:
+                if tokens[pos + i] != tokens[pos + i - 1]:
                     tag = tokens[pos + i].split('/')[1] if '/' in tokens[pos + i] else None
                     if tag in self._noun_tags:
                         check_noun = True
                     token += self._delimiter + tokens[pos + i]
-            if len(token.split(self._delimiter)) == gram and check_noun:
+            if check_noun:
                 return token
             else:
                 return None
@@ -131,8 +138,8 @@ class MPTokenizer(BaseTokenizer):
 
     def get_wordset(self, files):
         wordset = set()
-        for f in files:
-            fin = open('%s/%s' % (LEXICON_PATH, f), 'r', encoding='utf-8')
+        for file in files:
+            fin = open(os.path.join(LEXICON_PATH, file), 'r', encoding='utf-8')
             for line in fin.readlines():
                 word = line.strip().split()[0]
                 if len(word) > 1:
