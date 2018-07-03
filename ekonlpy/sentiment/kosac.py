@@ -22,12 +22,12 @@ class KSA(BaseDict):
                     continue
                 p = float(word[6].strip())
                 n = float(word[3].strip())
-                s = p if p > 0 else n * -1
+                s = p - n
                 if len(w) > 1:
-                    if p > 0:
+                    if s > 0:
                         self._posdict[w] = 1
                         self._poldict[w] = s
-                    elif n > 0:
+                    elif s < 0:
                         self._negdict[w] = -1
                         self._poldict[w] = s
 

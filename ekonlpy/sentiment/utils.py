@@ -254,14 +254,14 @@ class Tokenizer(BaseTokenizer):
         return stopset
 
 
-def calc_polarity(score, by_count=True):
+def calc_polarity(scores, by_count=True):
     eps = 1e-6
     if by_count:
-        pos_score = [1 for s in score if s > 0]
-        neg_score = [-1 for s in score if s < 0]
+        pos_score = [1 for s in scores if s > 0]
+        neg_score = [-1 for s in scores if s < 0]
     else:
-        pos_score = [s for s in score if s > 0]
-        neg_score = [s for s in score if s < 0]
+        pos_score = [s for s in scores if s > 0]
+        neg_score = [s for s in scores if s < 0]
 
     s_pos = sum(pos_score)
     s_neg = sum(neg_score)
