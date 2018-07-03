@@ -13,5 +13,5 @@ setup(
     install_requires=['konlpy>=0.4.4', 'nltk >= 2.0'],
     keywords=['KoNLPy wrapping customization', 'Sentiment analysis', 'Monetary policy'],
     packages=find_packages(),
-    package_data={'ekonlpy': ['data/*/*.txt', 'data/*/*.csv']}
+    package_data={'ekonlpy': ['data/*/*.txt', 'data/*/*.csv', 'data/*/*/*.csv', 'data/*/*/*.txt']}
 )
