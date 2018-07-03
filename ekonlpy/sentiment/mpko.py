@@ -16,7 +16,7 @@ class MPKO(BaseDict):
              }
 
     def init_tokenizer(self, kind=None):
-        self._tokenizer = MPTokenizer(kind)
+        self._tokenizer = MPTokenizer(kind, self._poldict)
 
     def init_dict(self, kind=None):
         kind = kind if kind in self.KINDS.keys() else 0

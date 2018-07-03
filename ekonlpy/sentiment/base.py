@@ -56,11 +56,11 @@ class BaseDict(object):
         self._posdict = {}
         self._negdict = {}
         self._poldict = {}
+        self.init_dict(kind)
         if tokenizer is None:
             self.init_tokenizer(kind)
         else:
             self._tokenizer = tokenizer
-        self.init_dict(kind)
 
         assert len(self._posdict) > 0 and len(self._negdict) > 0
 

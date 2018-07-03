@@ -45,23 +45,23 @@ class MPTokenizer(BaseTokenizer):
     KINDS = {0: 5,
              1: 5
              }
-    FILES = {'stopwords': ['mpko/mp_polarity_stopwords.txt'],
-             'auxwords': ['mpko/mp_polarity_auxwords.txt'],
+    FILES = {'wordset': ['mpko/mp_polarity_wordset.txt'],
              'vocab': 'mpko/mp_polarity_map.txt'
              }
 
-    def __init__(self, kind=None):
+    def __init__(self, kind=None, vocab=None):
         self._kind = kind if kind in self.KINDS.keys() else 0
         self._min_ngram = 1
         self._delimiter = ';'
         self._ngram = self.KINDS[self._kind]
         self._tagger = Mecab()
-        self._vocab = self.get_vocab(self.FILES['vocab'])
-        self._stopwords = self.get_wordset(self.FILES['stopwords'])
-        self._auxwords = self.get_wordset(self.FILES['auxwords'])
+        if vocab:
+            self._vocab = vocab
+        else:
+            self._vocab = self.get_vocab(self.FILES['vocab'])
+        self._wordset = self.get_wordset(self.FILES['wordset'])
         self._start_tags = {'NNG', 'VA', 'VAX', 'MAG'}
         self._noun_tags = {'NNG'}
-        self._aux_tags = {'XSA', 'XSV', 'VCP', 'VX'}
 
     def tokenize(self, text):
         if type(text) == list:
@@ -76,11 +76,8 @@ class MPTokenizer(BaseTokenizer):
 
     def ngramize(self, tokens, keep_overlapping_ngram=False):
         ngram_tokens = []
-        tokens = [w for w in tokens
-                  if w not in self._stopwords and
-                  ((w.split('/')[1] if '/' in w else None) not in self._aux_tags
-                   or w in self._auxwords)]
-        print(tokens)
+        tokens = [w for w in tokens if w in self._wordset]
+
         for pos in range(len(tokens)):
             for gram in range(self._min_ngram, self._ngram + 1):
                 token = self.get_ngram(tokens, pos, gram)
