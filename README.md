@@ -27,6 +27,11 @@ KoNLPy와 동일하게 Mecab.pos(phrase)를 입력합니다.
 
     > [('금통위', 'NNG'), ('는', 'JX'), ('따라서', 'MAJ'), ('물가', 'NNG'), ('안정', 'NNG'), ('과', 'JC'), ('병행', 'NNG'), (',', 'SC'), ('경기', 'NNG'), ('상황', 'NNG'), ('에', 'JKB'), ('유의', 'NNG'), ('하', 'XSV'), ('는', 'ETM'), ('금리정책', 'NNG'), ('을', 'JKO'), ('펼쳐', 'VV+EC'), ('나가', 'VX'), ('기', 'ETN'), ('로', 'JKB'), ('했', 'VV+EP'), ('다고', 'EC'), ('밝혔', 'VV+EP'), ('다', 'EF'), ('.', 'SF')]
 
+### Lemmatization and synoyms
+
+Sentiment 분석의 정확도를 높이기 위해, 동의어 처리와 lemmatization 기능을 제공한다.
+
+
 ### Add words to dictionary
 
 ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형식의 사용자 사전을 추가할 수 있습니다.
@@ -40,7 +45,7 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class
 
 
-    from ekonlpy.sentiment import MPKO
+    from ekonlpy.sentiment.mpko import MPKO
     mpko = MPKO()
     tokens = mpko.tokenize(text)
     score = mpko.get_score(tokens)
@@ -48,6 +53,16 @@ To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` c
 
 ``MPKO`` is a subclass for ``ekonlpy.sentiment.base.BaseDict``. ``BaseDict`` can be inherited by implmenting ``init_dict`` to initialize ``_posset`` and ``_negset`` for the dictionary
 to calculate 'positive' or 'negative' scores for terms.
+
+``KSA`` is a korean sentiment analyzer for general korean texts. 
+KSA는 일반적인 한국어 감성분석 용도로 사용합니다. 형태소 분석기는 서울대학교 IDS 연구실에서 만든 꼬꼬마를 사용한다.
+감성사전 또한 동 연구소의 것을 사용한다. (참고: http://kkma.snu.ac.kr/)
+
+    from ekonlpy.sentiment.kosac import KSA
+    mpko = MPKO()
+    tokens = mpko.tokenize(text)
+    score = mpko.get_score(tokens)
+
 
 Similarly, to use the Harvard IV-4 dictionary for general english sentiment analysis:
 
