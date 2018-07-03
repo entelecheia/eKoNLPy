@@ -1,8 +1,35 @@
 import os
 from konlpy.tag import Kkma
-from ekonlpy.utils import installpath
+from ekonlpy.sentiment.base import LEXICON_PATH, BaseDict
+from ekonlpy.sentiment.utils import KTokenizer
 
-LEXICON_PATH = '%s/data/lexicon' % installpath
+class KSA(BaseDict):
+    '''
+    Dictionary class for
+    Korean Sentiment Analysis.
+    '''
+
+    def init_tokenizer(self, kind=None):
+        self._tokenizer = KTokenizer(self._poldict)
+
+    def init_dict(self, kind=None):
+        path = os.path.join(LEXICON_PATH, 'kosac', 'polarity.csv')
+        with open(path, encoding='utf-8') as f:
+            for line in f:
+                word = line.split(',')
+                w = word[0]
+                if w == 'ngram':
+                    continue
+                p = float(word[6].strip())
+                n = float(word[3].strip())
+                s = p if p > 0 else n * -1
+                if len(w) > 1:
+                    if p > 0:
+                        self._posdict[w] = 1
+                        self._poldict[w] = s
+                    elif n > 0:
+                        self._negdict[w] = -1
+                        self._poldict[w] = s
 
 
 class KOSAC(object):

@@ -7,6 +7,7 @@ import nltk
 import os
 from ekonlpy.tag import Mecab
 from ekonlpy.sentiment.base import LEXICON_PATH
+from konlpy.tag import Kkma
 
 
 class BaseTokenizer(object):
@@ -35,6 +36,63 @@ class BaseTokenizer(object):
     #     :returns: list
     #     '''
     #     pass
+
+
+class KTokenizer(BaseTokenizer):
+    '''
+    The default tokenizer for KSA sub class.
+    The output of the tokenizer is tagged by Kkma.
+    '''
+
+    def __init__(self, vocab=None):
+        self._tagger = Kkma()
+        self._vocab = vocab
+        self._min_ngram = 1
+        self._ngram = 3
+        self._delimiter = ';'
+        self._skiptags = ['SF', 'SP', 'SS', 'SE', 'SO', 'SW', 'UN', 'UV', 'UE', 'OL', 'OH', 'ON']
+
+    def tokenize(self, text):
+        tokens = []
+        if type(text) == list:
+            for t in text:
+                tokens += self.morpheme(t)
+        elif type(text) == str:
+            tokens = self.morpheme(text)
+        else:
+            raise ValueError('The dataset has to be string or list of string type.')
+
+        return self.ngramize(tokens)
+
+    def ngramize(self, tokens):
+        ngram_tokens = []
+        tokens = [w for w in tokens if w.split('/')[1] not in self._skiptags]
+        for pos in range(len(tokens)):
+            for gram in range(1, self._ngram + 1):
+                token = self.get_ngram(tokens, pos, gram)
+                if token:
+                    if self._vocab is None:
+                        ngram_tokens.append(token)
+                    else:
+                        if token in self._vocab:
+                            ngram_tokens.append(token)
+        return ngram_tokens
+
+    def get_ngram(self, tokens, pos, gram):
+        if pos < 0:
+            return None
+        if pos + gram > len(tokens):
+            return None
+        token = tokens[pos]
+        for i in range(1, gram):
+            token += self._delimiter + tokens[pos + i]
+        return token
+
+    def morpheme(self, dataset):
+        return self.align_morpheme(self._tagger.pos(dataset))
+
+    def align_morpheme(self, morpheme):
+        return ['{}/{}'.format(w, t) for w, t in morpheme]
 
 
 class MPTokenizer(BaseTokenizer):
@@ -153,147 +211,6 @@ class MPTokenizer(BaseTokenizer):
                 if len(w[0]) > 0:
                     vocab[w[0]] = w[1]
         return vocab
-
-
-class MPTokenizerx(BaseTokenizer):
-    '''
-    The default tokenizer for MPKO sub class, which yields 5-gram tokens.
-    The output of the tokenizer is tagged by Mecab.
-    '''
-    KINDS = {0: 5,
-             1: 5
-             }
-    FILES = {'stopwords': ['mpkox/mp_sent_stopwords.txt'],
-             'stopngrams': ['mpkox/mp_sent_stop5grams.txt'],
-             'startwords': ['mpkox/mp_sent_startwords.txt'],
-             'vocab': 'mpkox/mp_sent_vocab_5gram.txt'
-             }
-
-    def __init__(self, kind=None):
-        self._kind = kind if kind in self.KINDS.keys() else 0
-        self._min_ngram = 2
-        self._delimiter = ';'
-        self._ngram = self.KINDS[self._kind]
-        self._tagger = Mecab()
-        self._vocab = self.get_vocab()
-        self._stopwords = self.get_wordset(self.FILES['stopwords'])
-        self._stopngrams = self.get_wordset(self.FILES['stopngrams'])
-        self._startwords = self.get_wordset(self.FILES['startwords']) if self._kind == 0 else None
-        self._keepwords = self.extract_words(self._vocab) if self._kind == 1 else None
-
-    def tokenize(self, text):
-        if type(text) == list:
-            ngram_tokens = []
-            for t in text:
-                tokens = self._tagger.sent_words(t)
-                ngram_tokens += self.ngramize(tokens)
-        else:
-            tokens = self._tagger.sent_words(text)
-            ngram_tokens = self.ngramize(tokens)
-        return ngram_tokens
-
-    def ngramize(self, tokens):
-        ngram_tokens = []
-        if self._keepwords:
-            tokens = [w for w in tokens if w in self._keepwords]
-        else:
-            tokens = [w for w in tokens if w not in self._stopwords]
-        for pos in range(len(tokens)):
-            for gram in range(self._min_ngram, self._ngram + 1):
-                token = self.get_ngram(tokens, pos, gram, self._startwords)
-                if token:
-                    if token in self._vocab:
-                        ngram_tokens.append(token)
-        filtered_tokens = []
-        if len(ngram_tokens) > 0:
-            ngram_tokens = sorted(ngram_tokens, key=lambda item: len(item.split(';')), reverse=True)
-            for token in ngram_tokens:
-                existing_token = False
-                for check_token in filtered_tokens:
-                    if token in check_token:
-                        existing_token = True
-                        break
-                if not existing_token:
-                    filtered_tokens.append(token)
-
-        return filtered_tokens
-
-    def get_ngram(self, tokens, pos, gram, startwords=None):
-        if pos < 0:
-            return None
-        if pos + gram > len(tokens):
-            return None
-        token = tokens[pos]
-        check_verb = False
-        if startwords:
-            if token in startwords:
-                for i in range(1, gram):
-                    if tokens[pos + i] not in token:
-                        if 'VV' in tokens[pos + i] or 'VVX' in tokens[pos + i]:
-                            check_verb = True
-                        token += self._delimiter + tokens[pos + i]
-                if len(token.split(self._delimiter)) == gram and check_verb:
-                    return token
-                else:
-                    return None
-            elif 'VA' in token or 'VAX' in token:
-                if tokens[pos + 1] in startwords:
-                    token = token + self._delimiter + tokens[pos + 1]
-                    for i in range(2, gram):
-                        if tokens[pos + i] not in token:
-                            if 'VV' in tokens[pos + i] or 'VVX' in tokens[pos + i]:
-                                check_verb = True
-                            token += self._delimiter + tokens[pos + i]
-                    if len(token.split(self._delimiter)) == gram and check_verb:
-                        return token
-                    else:
-                        return None
-                else:
-                    return None
-            else:
-                return None
-        else:
-            if 'VA' in token or 'VAX' in token or 'NNG' in token:
-                for i in range(1, gram):
-                    if tokens[pos + i] not in token:
-                        token += self._delimiter + tokens[pos + i]
-                if len(token.split(self._delimiter)) == gram and 'NNG' in token and 'VV' in token:
-                    return token
-                else:
-                    return None
-            else:
-                return None
-
-    def get_wordset(self, files):
-        wordset = set()
-        for f in files:
-            fin = open('%s/%s' % (LEXICON_PATH, f), 'r', encoding='utf-8')
-            for line in fin.readlines():
-                word = line.strip().split()[0]
-                if len(word) > 1:
-                    wordset.add(word)
-            fin.close()
-        return wordset
-
-    def get_vocab(self):
-        vocab = {}
-        vocab_path = os.path.join(LEXICON_PATH, self.FILES['vocab'])
-        with open(vocab_path) as f:
-            for i, line in enumerate(f):
-                w = line.strip().split()
-                if len(w[0]) > 0:
-                    vocab[w[0]] = w[1]
-        return vocab
-
-    def extract_words(self, vocab):
-        words = []
-        for line in vocab.keys() if type(vocab) == dict else vocab:
-            tokens = line.split(self._delimiter)
-            for pos in range(len(tokens)):
-                token = tokens[pos]
-                if token not in words:
-                    words.append(token)
-        return words
 
 
 class Tokenizer(BaseTokenizer):

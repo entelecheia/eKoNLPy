@@ -129,5 +129,4 @@ class BaseDict(object):
 
         return {self.TAG_POS: s_pos,
                 self.TAG_NEG: s_neg,
-                self.TAG_POL: s_pol,
-                self.TAG_SUB: s_sub}
+                self.TAG_POL: s_pol}
