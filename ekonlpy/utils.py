@@ -4,25 +4,6 @@ from collections import OrderedDict
 installpath = os.path.dirname(os.path.realpath(__file__))
 
 
-def calc_polarity(score, by_count=True):
-    eps = 1e-6
-    if by_count:
-        pos_score = [1 for s in score if s > 0]
-        neg_score = [-1 for s in score if s < 0]
-    else:
-        pos_score = [s for s in score if s > 0]
-        neg_score = [s for s in score if s < 0]
-
-    s_pos = sum(pos_score)
-    s_neg = sum(neg_score)
-
-    s_pol = ((s_pos + s_neg) * 1.0 /
-             (((s_pos - s_neg) if by_count
-               else (len(pos_score) + len(pos_score))) + eps))
-
-    return s_pol
-
-
 def load_dictionary(fname, encoding='utf-8', rewrite=False):
     words = set()
     try:
