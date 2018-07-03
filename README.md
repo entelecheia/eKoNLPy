@@ -45,7 +45,7 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class
 
 
-    from ekonlpy.sentiment.mpko import MPKO
+    from ekonlpy.sentiment import MPKO
     mpko = MPKO()
     tokens = mpko.tokenize(text)
     score = mpko.get_score(tokens)
@@ -58,7 +58,7 @@ to calculate 'positive' or 'negative' scores for terms.
 KSA는 일반적인 한국어 감성분석 용도로 사용합니다. 형태소 분석기는 서울대학교 IDS 연구실에서 만든 꼬꼬마를 사용한다.
 감성사전 또한 동 연구소의 것을 사용한다. (참고: http://kkma.snu.ac.kr/)
 
-    from ekonlpy.sentiment.kosac import KSA
+    from ekonlpy.sentiment import KSA
     mpko = MPKO()
     tokens = mpko.tokenize(text)
     score = mpko.get_score(tokens)
