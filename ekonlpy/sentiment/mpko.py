@@ -20,7 +20,7 @@ class MPKO(BaseDict):
 
     def init_dict(self, kind=None):
         kind = kind if kind in self.KINDS.keys() else 0
-        print('Initialize the dictionary using a lexicon file: {}'.format(self.KINDS[kind]))
+        # print('Initialize the dictionary using a lexicon file: {}'.format(self.KINDS[kind]))
         path = os.path.join(LEXICON_PATH, 'mpko', self.KINDS[kind])
         with open(path, encoding='utf-8') as f:
             for line in f:
