@@ -127,7 +127,7 @@ class BaseDict(object):
         s_neg = sum(neg_score_li)
 
         s_pol = (s_pos + s_neg) * 1.0 / (((s_pos - s_neg) if by_count else len(score_li)) + self.EPSILON)
-        s_sub = (len(pos_score_li) + len(neg_score_li)) * 1.0 / (len(score_li) + self.EPSILON)
+        # s_sub = (len(pos_score_li) + len(neg_score_li)) * 1.0 / (len(score_li) + self.EPSILON)
 
         return {self.TAG_POS: s_pos,
                 self.TAG_NEG: s_neg,

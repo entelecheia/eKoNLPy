@@ -64,9 +64,9 @@ KSA는 일반적인 한국어 감성분석 용도로 사용합니다. 형태소 
 감성사전 또한 동 연구소의 것을 사용한다. (참고: http://kkma.snu.ac.kr/)
 
     from ekonlpy.sentiment import KSA
-    mpko = MPKO()
-    tokens = mpko.tokenize(text)
-    score = mpko.get_score(tokens)
+    ksa = KSA()
+    tokens = ksa.tokenize(text)
+    score = ksa.get_score(tokens)
 
 
 Similarly, to use the Harvard IV-4 dictionary for general english sentiment analysis:
