@@ -1,6 +1,4 @@
-# eKoNLPy
-
-`eKo(nomic)NLPy`
+# eKo(nomic)NLPy
 
 `eKoNLPy` is a Python package for natural language processing (NLP) of the Korean language for economic analysis. 
 
