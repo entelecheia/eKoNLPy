@@ -95,3 +95,18 @@ Similarly, to use the Loughran and McDonald dictionary for financial domain sent
 ## Requires
 
 - KoNLPy >= 0.4.4
+
+## License
+
+eKoNLPy is Open Source Software, and is released under the license GPL v3.
+
+* Youngjoon Lee. 텍스트 마이닝을 활용한 통화정책 분석: Introduction to eKoNLPy, 2018. https://github.com/entelecheia/eKoNLPy.
+
+BibTeX entry:
+
+    @misc{lee2018ekonlpy,
+        author= {Lee, Youngjoon},
+        year  = {2018},
+        title = {{텍스트 마이닝을 활용한 통화정책 분석: Introduction to eKoNLPy}},
+        note  = {\url{https://github.com/entelecheia/eKoNLPy}}
+    }
