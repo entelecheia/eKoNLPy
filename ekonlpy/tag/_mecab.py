@@ -129,13 +129,13 @@ class Mecab:
 
     def sent_words(self, phrase,
                    replace_synonym=True,
-                   lemmatization=True,
+                   lemmatisation=True,
                    exclude_terms=True,
                    remove_tag=False):
         tagged = self.pos(phrase) if type(phrase) == str else phrase
         if replace_synonym:
             tagged = self.replace_synonyms(tagged)
-        if lemmatization:
+        if lemmatisation:
             tagged = self.lemmatize(tagged)
         if exclude_terms:
             return ['{}/{}'.format(w.lower(), t.split('+')[0]) if not remove_tag else w.lower()
@@ -193,8 +193,8 @@ class Mecab:
         vocab = load_vocab(fname)
         self._lemmas.update(vocab)
 
-    def add_lemma(self, word, synonym):
-        self._lemmas[word] = synonym
+    def add_lemma(self, word, lemma):
+        self._lemmas[word] = lemma
 
     def persist_lemmas(self):
         directory = os.path.join(installpath, 'data', 'dictionary')

@@ -52,7 +52,6 @@ margin,마진
 marketperform,뉴트럴
 marketshare,시장점유율
 mix,믹스
-ms,시장점유율
 msci지수,msci
 multiple,멀티플
 nav,순자산
