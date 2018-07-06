@@ -1,8 +1,10 @@
-# eKoNLPy - e(conomic)KoNLPy
+# eKoNLPy
 
-eKoNLPy is a Python package for natural language processing (NLP) of the Korean language for economic analysis. 
+`e(conomic)KoNLPy`
 
-KoNLPy의 Mecab tagger를 기반으로 경제관련 전문용어, 금융기관, 기업명 등을 하나의 명사로 분류하도록 후처리 기능을 추가.
+`eKoNLPy` is a Python package for natural language processing (NLP) of the Korean language for economic analysis. 
+
+`KoNLPy`의 Mecab tagger를 기반으로 경제관련 전문용어, 금융기관, 기업명 등을 하나의 명사로 분류하도록 후처리 기능을 추가.
 
 통화정책(Monetary Policy)의 어조(Hawkish/Dovish)를 판단할 수 있는 Sentiment Analysis 기능 포함.
 
