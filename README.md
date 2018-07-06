@@ -1,7 +1,6 @@
-# eKoNLPy
-extended (economic) KoNLPy
+# eKoNLPy - e(conomic)KoNLPy
 
-Python Korean NLP package for economic analysis
+eKoNLPy is a Python package for natural language processing (NLP) of the Korean language for economic analysis. 
 
 KoNLPy의 Mecab tagger를 기반으로 경제관련 전문용어, 금융기관, 기업명 등을 하나의 명사로 분류하도록 후처리 기능을 추가.
 
@@ -27,7 +26,7 @@ KoNLPy와 동일하게 Mecab.pos(phrase)를 입력합니다.
 
     > [('금통위', 'NNG'), ('는', 'JX'), ('따라서', 'MAJ'), ('물가', 'NNG'), ('안정', 'NNG'), ('과', 'JC'), ('병행', 'NNG'), (',', 'SC'), ('경기', 'NNG'), ('상황', 'NNG'), ('에', 'JKB'), ('유의', 'NNG'), ('하', 'XSV'), ('는', 'ETM'), ('금리정책', 'NNG'), ('을', 'JKO'), ('펼쳐', 'VV+EC'), ('나가', 'VX'), ('기', 'ETN'), ('로', 'JKB'), ('했', 'VV+EP'), ('다고', 'EC'), ('밝혔', 'VV+EP'), ('다', 'EF'), ('.', 'SF')]
 
-### Lemmatization and synoyms
+### Lemmatisation and synoyms
 
 Sentiment 분석의 정확도를 높이기 위해, 동의어 처리와 lemmatization 기능을 제공한다.
 
@@ -50,7 +49,7 @@ To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` c
     tokens = mpko.tokenize(text)
     score = mpko.get_score(tokens)
 
-`kind` parammeters for `MPKO` class: a parameter to select a lexicon file
+`kind` parammeter for `MPKO` class: a parameter to select a lexicon file
 
     0: a lexicon file generated using Naive-bayes classifier with 5-gram tokens as features and
         changes of call rates as positive/negative label.
