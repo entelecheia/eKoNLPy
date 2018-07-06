@@ -33,7 +33,7 @@ Sentiment 분석의 정확도를 높이기 위해, 동의어 처리와 lemmatiza
 
 ### Add words to dictionary
 
-ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형식의 사용자 사전을 추가할 수 있습니다.
+ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형식의 단어를 사전에 추가할 수 있습니다.
 
     from ekonlpy.tag import Mecab
     mecab = Mecab()
@@ -72,9 +72,9 @@ Similarly, to use the Harvard IV-4 dictionary for general english sentiment anal
 
 
     from ekonlpy.sentiment import HIV4
-    lm = HIV4()
-    tokens = lm.tokenize(text)
-    score = lm.get_score(tokens)
+    hiv = HIV4()
+    tokens = hiv.tokenize(text)
+    score = hiv.get_score(tokens)
 
 Similarly, to use the Loughran and McDonald dictionary for financial domain sentiment analysis:
 
