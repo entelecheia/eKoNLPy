@@ -95,6 +95,8 @@ Similarly, to use the Loughran and McDonald dictionary for financial domain sent
 ## Requires
 
 - KoNLPy >= 0.4.4
+- nltk >= 2.0
+- gensim >= 3.1.0
 
 ## License
 
