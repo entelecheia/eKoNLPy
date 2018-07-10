@@ -94,10 +94,12 @@ To analyze the Monetary Policy Topics, create an instance of the `MPTK` class in
 
 parammeters for `get_document_topic` fucntion
 
-    include_names: If True, return tuples of list including topic names. ex) (topic_id, topic_name, topic_weight)
-                   If False (default), return tuples of list without topic name. ex) (topic_id, topic_weight)  
+    include_names: If True, return tuples of list including topic names. 
+                        ex) (topic_id, topic_name, topic_weight)
+                   If False (default), return tuples of list without topic name. 
+                        ex) (topic_id, topic_weight)  
 
-    min_weight: If min_weight is set, return topics with the topic weigt is greather than the min_weight.
+    min_weight: If min_weight is set, return topics with the topic weight is greather than the min_weight.
                 Otherwise, return all available topics.
 
 
