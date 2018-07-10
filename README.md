@@ -41,7 +41,7 @@ ekonlpy.tag의 Mecab은 add_dictionary를 통하여 str 혹은 list of str 형�
 
 ## Sentiment analysis
 
-To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class
+To use the Korean Monetary Policy dictionary, create an instance of the `MPKO` class in ekonlpy.sentiment
 
 
     from ekonlpy.sentiment import MPKO
@@ -70,7 +70,6 @@ KSA는 일반적인 한국어 감성분석 용도로 사용합니다. 형태소 
 
 Similarly, to use the Harvard IV-4 dictionary for general english sentiment analysis:
 
-
     from ekonlpy.sentiment import HIV4
     hiv = HIV4()
     tokens = hiv.tokenize(text)
@@ -78,11 +77,29 @@ Similarly, to use the Harvard IV-4 dictionary for general english sentiment anal
 
 Similarly, to use the Loughran and McDonald dictionary for financial domain sentiment analysis:
 
-
     from ekonlpy.sentiment import LM
     lm = LM()
     tokens = lm.tokenize(text)
     score = lm.get_score(tokens)
+
+## Topic analysis
+
+To analyze the Monetary Policy Topics, create an instance of the `MPTK` class in ekonlpy.topic
+
+    from ekonlpy.topic import MPTK
+    mptk = MPKO()
+    tokens = mptk.nouns(text)
+    bow = mpko.doc2bow(tokens)
+    dtm = mpko.get_document_topic(bow)
+
+parammeters for `get_document_topic` fucntion
+
+    include_names: If True, return tuples of list including topic names. ex) (topic_id, topic_name, topic_weight)
+                   If False (default), return tuples of list without topic name. ex) (topic_id, topic_weight)  
+
+    min_weight: If min_weight is set, return topics with the topic weigt is greather than the min_weight.
+                Otherwise, return all available topics.
+
 
 ## Install
 
