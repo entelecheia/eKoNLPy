@@ -87,7 +87,7 @@ Similarly, to use the Loughran and McDonald dictionary for financial domain sent
 To analyze the Monetary Policy Topics, create an instance of the `MPTK` class in ekonlpy.topic
 
     from ekonlpy.topic import MPTK
-    mptk = MPKO()
+    mptk = MPTK()
     tokens = mptk.nouns(text)
     bow = mpko.doc2bow(tokens)
     dtm = mpko.get_document_topic(bow)
