@@ -87,7 +87,6 @@ marketperform
 marketshare
 mix
 mmf
-ms
 msci
 msci지수
 multiple
@@ -1990,7 +1989,7 @@ yield
 환율변동리스크
 환율변동위험
 환율위험
-환헤지
+환헤지ㅇ
 환헷지
 활황
 활황세

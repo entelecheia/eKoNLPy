@@ -10,7 +10,7 @@ setup(
     url=__url__,
     description=__description__,
     long_description=__long_description__,
-    install_requires=['konlpy>=0.4.4', 'nltk >= 2.0', 'gensim >= 3.1.0'],
+    install_requires=['konlpy>=0.4.4', 'nltk >= 2.0', 'gensim >= 3.1.0', 'scipy >= 0.19.1', 'numpy >= 1.13'],
     keywords=['KoNLPy wrapping customization', 'Sentiment analysis', 'Monetary policy'],
     packages=find_packages(),
     package_data={'ekonlpy': ['data/*/*.txt', 'data/*/*.csv', 'data/*/*/*.txt', 'data/*/*/*.csv', 'data/model/*']}

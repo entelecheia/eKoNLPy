@@ -49,9 +49,10 @@ mecab_tags = {
 nouns_tags = {'NNG', 'NNP', 'UNKNOWN'}
 topic_tags = {'NNG'}
 stop_tags = {'SY', 'SF', 'SN', 'SH', 'SSO', 'SSC', 'SC', 'SE'}
-sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSA', 'XSV', 'VCP'}
+sent_tags = {'MAG', 'NNG', 'XR', 'VV', 'VA', 'VVX', 'VAX', 'VX', 'VCN', 'XSV', 'VCP'}
 skip_tags = {'SC', 'SN', 'SY', 'SSO', 'SSC'}
 lemma_tags = {'VV', 'VX', 'XSV', 'VCN', 'VA', 'MAG', 'VAX'}
+aux_tags = {'VX', 'VCP', 'VCN'}
 
 pass_tags = {
     ('EC', 'NNG')

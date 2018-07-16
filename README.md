@@ -89,8 +89,8 @@ To analyze the Monetary Policy Topics, create an instance of the `MPTK` class in
     from ekonlpy.topic import MPTK
     mptk = MPTK()
     tokens = mptk.nouns(text)
-    bow = mpko.doc2bow(tokens)
-    dtm = mpko.get_document_topic(bow)
+    bow = mptk.doc2bow(tokens)
+    dtm = mptk.get_document_topic(bow)
 
 parammeters for `get_document_topic` fucntion
 
@@ -111,11 +111,15 @@ parammeters for `get_document_topic` fucntion
 
     $ pip install .
 
+    $ pip install . --upgrade (for upgrade)
+
 ## Requires
 
 - KoNLPy >= 0.4.4
 - nltk >= 2.0
 - gensim >= 3.1.0
+- scipy >= 0.19.1
+- numpy >= 1.13
 
 ## License
 
