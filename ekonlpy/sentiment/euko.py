@@ -3,23 +3,23 @@ from ekonlpy.sentiment.base import LEXICON_PATH, BaseDict
 from ekonlpy.sentiment.utils import MPTokenizer
 
 
-class MPKO(BaseDict):
+class EUKO(BaseDict):
     '''
     Dictionary class for
-    Korean Monetary Policy Sentiment Analysis.
+    Korean Economic Uncertainty Analysis.
 
     ``Positive`` means ``hawkish`` and ``Negative`` means ``dovish``.
     '''
 
-    KINDS = {0: 'mp_polarity_lexicon_mkt.csv',
-             1: 'mp_polarity_lexicon_lex.csv'
+    KINDS = {0: 'mp_uncertainty_lexicon_mkt.csv',
+             1: 'mp_uncertainty_lexicon_lex.csv'
              }
-    INTENSITY_KINDS = {0: 1.3,
-                       1: 1.1
+    INTENSITY_KINDS = {0: 2.0,
+                       1: 1.3
                        }
 
     def init_tokenizer(self, kind=None):
-        self._tokenizer = MPTokenizer(kind, self._poldict)
+        self._tokenizer = MPTokenizer(kind, self._poldict, keep_overlapping_ngram=True)
 
     def init_dict(self, kind=None, intensity_cutoff=None):
         kind = kind if kind in self.KINDS.keys() else 0
@@ -30,9 +30,9 @@ class MPKO(BaseDict):
                 self._intensity_cutoff = self.INTENSITY_KINDS[kind]
             else:
                 self._intensity_cutoff = 1.1
-        self._intensity_cutoff = min(2, self._intensity_cutoff)
+        self._intensity_cutoff = min(3, self._intensity_cutoff)
         # print('Initialize the dictionary using a lexicon file: {}'.format(self.KINDS[kind]))
-        path = os.path.join(LEXICON_PATH, 'mpko', self.KINDS[kind])
+        path = os.path.join(LEXICON_PATH, 'euko', self.KINDS[kind])
         with open(path, encoding='utf-8') as f:
             for line in f:
                 word = line.split(',')

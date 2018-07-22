@@ -54,11 +54,12 @@ class BaseDict(object):
 
     EPSILON = 1e-6
 
-    def __init__(self, tokenizer=None, kind=None):
+    def __init__(self, tokenizer=None, kind=None, intensity_cutoff=None):
         self._posdict = {}
         self._negdict = {}
         self._poldict = {}
-        self.init_dict(kind)
+        self._intensity_cutoff = intensity_cutoff
+        self.init_dict(kind, intensity_cutoff)
         if tokenizer is None:
             self.init_tokenizer(kind)
         else:
@@ -85,7 +86,7 @@ class BaseDict(object):
         pass
 
     @abc.abstractmethod
-    def init_dict(self, kind):
+    def init_dict(self, kind, intensity_cutoff):
         pass
 
     def _get_score(self, term, by_count=True):
@@ -127,8 +128,9 @@ class BaseDict(object):
         s_neg = sum(neg_score_li)
 
         s_pol = (s_pos + s_neg) * 1.0 / (((s_pos - s_neg) if by_count else len(score_li)) + self.EPSILON)
-        # s_sub = (len(pos_score_li) + len(neg_score_li)) * 1.0 / (len(score_li) + self.EPSILON)
+        s_sub = (len(pos_score_li) + len(neg_score_li)) * 1.0 / (len(score_li) + self.EPSILON)
 
         return {self.TAG_POS: s_pos,
                 self.TAG_NEG: s_neg,
-                self.TAG_POL: s_pol}
+                self.TAG_POL: s_pol,
+                self.TAG_SUB: s_sub}

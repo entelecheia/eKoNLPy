@@ -104,11 +104,12 @@ class MPTokenizer(BaseTokenizer):
              1: 5
              }
     FILES = {'wordset': ['mpko/mp_polarity_wordset.txt'],
-             'vocab': 'mpko/mp_polarity_map.txt'
+             'vocab': 'mpko/mp_polarity_vocab.txt'
              }
 
-    def __init__(self, kind=None, vocab=None):
+    def __init__(self, kind=None, vocab=None, keep_overlapping_ngram=False):
         self._kind = kind if kind in self.KINDS.keys() else 0
+        self._keep_overlapping_ngram = keep_overlapping_ngram
         self._min_ngram = 1
         self._delimiter = ';'
         self._ngram = self.KINDS[self._kind]
@@ -132,7 +133,7 @@ class MPTokenizer(BaseTokenizer):
             ngram_tokens = self.ngramize(tokens)
         return ngram_tokens
 
-    def ngramize(self, tokens, keep_overlapping_ngram=False):
+    def ngramize(self, tokens):
         ngram_tokens = []
         tokens = [w for w in tokens if w in self._wordset]
 
@@ -140,9 +141,12 @@ class MPTokenizer(BaseTokenizer):
             for gram in range(self._min_ngram, self._ngram + 1):
                 token = self.get_ngram(tokens, pos, gram)
                 if token:
-                    if token in self._vocab:
+                    if self._keep_overlapping_ngram:
                         ngram_tokens.append(token)
-        if not keep_overlapping_ngram:
+                    else:
+                        if token in self._vocab:
+                            ngram_tokens.append(token)
+        if not self._keep_overlapping_ngram:
             filtered_tokens = []
             if len(ngram_tokens) > 0:
                 ngram_tokens = sorted(ngram_tokens, key=lambda item: len(item), reverse=True)

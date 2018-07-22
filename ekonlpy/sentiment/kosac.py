@@ -12,7 +12,7 @@ class KSA(BaseDict):
     def init_tokenizer(self, kind=None):
         self._tokenizer = KTokenizer(self._poldict)
 
-    def init_dict(self, kind=None):
+    def init_dict(self, kind=None, intensity_cutoff=None):
         path = os.path.join(LEXICON_PATH, 'kosac', 'polarity.csv')
         with open(path, encoding='utf-8') as f:
             for line in f:

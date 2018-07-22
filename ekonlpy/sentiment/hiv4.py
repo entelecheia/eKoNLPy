@@ -13,7 +13,7 @@ class HIV4(BaseDict):
 
     PATH = '%s/HIV-4.csv' % LEXICON_PATH
 
-    def init_tokenizer(self, kind=None):
+    def init_tokenizer(self, kind=None, intensity_cutoff=None):
         self._tokenizer = Tokenizer()
 
     def init_dict(self, kind=None):
