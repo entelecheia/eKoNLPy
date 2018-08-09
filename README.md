@@ -149,13 +149,13 @@ parammeters for `get_document_topic` fucntion
 
 eKoNLPy is Open Source Software, and is released under the license GPL v3.
 
-* Youngjoon Lee. Introduction to eKoNLPy, 2018. https://github.com/entelecheia/eKoNLPy.
+* Youngjoon Lee. Introduction to eKoNLPy: A Python NLP Library for Economic Analysis, 2018. https://github.com/entelecheia/eKoNLPy.
 
 BibTeX entry:
 
     @misc{lee2018ekonlpy,
         author= {Lee, Youngjoon},
         year  = {2018},
-        title = {{Introduction to eKoNLPy}},
+        title = {{Introduction to eKoNLPy: A Python NLP Library for Economic Analysis}},
         note  = {\url{https://github.com/entelecheia/eKoNLPy}}
     }
