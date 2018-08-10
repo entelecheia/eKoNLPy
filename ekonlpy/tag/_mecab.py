@@ -1,7 +1,7 @@
 import os
 from konlpy.tag import Mecab as KoNLPyMecab
 from ekonlpy.etag import ETagger
-from ekonlpy.data.tagset import mecab_tags as tagset
+from ekonlpy.data.tagset import mecab_tags as tagset, mecab_tags_en as tagset_en
 from ekonlpy.data.tagset import nouns_tags, stop_tags, sent_tags, topic_tags, lemma_tags
 from ekonlpy.dictionary import TermDictionary, term_tags
 from ekonlpy.utils import installpath
@@ -22,6 +22,7 @@ class Mecab:
         self._load_term_dictionary()
         self._extagger = self._load_ext_tagger()
         self.tagset = tagset
+        self.tagset_en = tagset_en
         self._term_tags = term_tags
         self._nouns_tags = nouns_tags
         self._topic_tags = topic_tags
