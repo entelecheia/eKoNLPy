@@ -1,6 +1,6 @@
 # eKo(nomic)NLPy
 
-`eKoNLPy` is a Python NLP Library for Economic Analysis, which supports Korean Language. 
+`eKoNLPy` is a Korean NLP Python Library for Economic Analysis, which supports Korean Language. 
 
 `KoNLPy`의 Mecab tagger를 기반으로 경제관련 전문용어, 금융기관, 기업명 등을 하나의 명사로 분류하도록 후처리 기능을 추가.
 
@@ -149,13 +149,13 @@ parammeters for `get_document_topic` fucntion
 
 eKoNLPy is Open Source Software, and is released under the license GPL v3.
 
-* Youngjoon Lee. Introduction to eKoNLPy: A Python NLP Library for Economic Analysis, 2018. https://github.com/entelecheia/eKoNLPy.
+* Youngjoon Lee. Introduction to eKoNLPy: A Korean NLP Python Library for Economic Analysis, 2018. https://github.com/entelecheia/eKoNLPy.
 
 BibTeX entry:
 
     @misc{lee2018ekonlpy,
         author= {Lee, Youngjoon},
         year  = {2018},
-        title = {{Introduction to eKoNLPy: A Python NLP Library for Economic Analysis}},
+        title = {{Introduction to eKoNLPy: A Korean NLP Python Library for Economic Analysis}},
         note  = {\url{https://github.com/entelecheia/eKoNLPy}}
     }

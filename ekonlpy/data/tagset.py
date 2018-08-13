@@ -38,7 +38,7 @@ mecab_tags_en = {
     'SE': 'Ellipsis Symbol',
     'SSO': 'Left Quotation Mark',
     'SSC': 'Right Quotation Mark',
-    'SC': 'Seprator Symbol',
+    'SC': 'Separator Symbol',
     'SY': 'Symbol',
     'SH': 'Chinese Charachter',
     'SL': 'Foreign Word',
