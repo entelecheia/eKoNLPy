@@ -101,7 +101,10 @@ class MPTokenizer(BaseTokenizer):
     The output of the tokenizer is tagged by Mecab.
     '''
     KINDS = {0: 5,
-             1: 5
+             1: 5,
+             3: 3,
+             7: 7,
+             99: 1
              }
     FILES = {'wordset': ['mpko/mp_polarity_wordset.txt'],
              'vocab': 'mpko/mp_polarity_vocab.txt'

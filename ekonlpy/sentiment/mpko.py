@@ -12,10 +12,14 @@ class MPKO(BaseDict):
     '''
 
     KINDS = {0: 'mp_polarity_lexicon_mkt.csv',
-             1: 'mp_polarity_lexicon_lex.csv'
+             1: 'mp_polarity_lexicon_lex.csv',
+             3: 'mp_polarity_lexicon_mkt_n3.csv',
+             7: 'mp_polarity_lexicon_mkt_n7.csv'
              }
     INTENSITY_KINDS = {0: 1.3,
-                       1: 1.1
+                       1: 1.1,
+                       3: 1.3,
+                       7: 1.3
                        }
 
     def init_tokenizer(self, kind=None):
