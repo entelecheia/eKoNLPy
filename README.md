@@ -149,14 +149,14 @@ parammeters for `get_document_topic` fucntion
 
 eKoNLPy is Open Source Software, and is released under the license GPL v3.
 
-* Youngjoon Lee. Introduction to eKoNLPy: A Korean NLP Python Library for Economic Analysis, 2018. https://github.com/entelecheia/eKoNLPy.
+* Lee, Young Joon, Introduction to eKoNLPy: A Korean NLP Python Library for Economic Analysis, 2018. https://github.com/entelecheia/eKoNLPy.
 
-* Lee, Youngjoon and Kim, Soohyon and Park, Ki Young, Deciphering Monetary Policy Committee Minutes with Text Mining Approach: A Case of South Korea (September 3, 2018). Available at SSRN: https://ssrn.com/abstract=3237909
+* Lee, Young Joon, Soohyon Kim, and Ki Young Park. "Deciphering Monetary Policy Board Minutes with Text Mining: The Case of South Korea." Korean Economic Review 35 (2019): 471-511.
 
 BibTeX entry:
 
     @misc{lee2018ekonlpy,
-        author= {Lee, Youngjoon},
+        author= {Lee, Young Joon},
         year  = {2018},
         title = {{Introduction to eKoNLPy: A Korean NLP Python Library for Economic Analysis}},
         note  = {\url{https://github.com/entelecheia/eKoNLPy}}
