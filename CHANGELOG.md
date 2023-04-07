@@ -1,5 +1,8 @@
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-04-07)
+
+
 ## v1.0.0-rc.1 (2023-04-07)
 ### Feature
 * Repackage the library using poetry ([`39219de`](https://github.com/entelecheia/eKoNLPy/commit/39219defb8e2306bbbcaee451dd6b5451ef4f0d4))
