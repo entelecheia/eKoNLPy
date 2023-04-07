@@ -132,7 +132,7 @@ tag_regex = '^(?P<prefix>v)?(?P<version>[^\+]+)(?P<suffix>.*)?$'
 [tool.semantic_release]
 branch = "master"
 version_toml = "pyproject.toml:tool.poetry.version"
-version_pattern = "src/ekonlpy/_version.py:__version__ = \"{version}\""
+version_variable = "src/ekonlpy/_version.py:__version__"
 version_source = "tag"
 commit_version_number = true                                          # required for version_source = "tag"
 commit_subject = "chore(release): :rocket: {version} [skip ci]"
