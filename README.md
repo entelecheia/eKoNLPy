@@ -17,6 +17,9 @@
 [release-url]: https://github.com/entelecheia/eKoNLPy/releases
 [codecov-image]: https://codecov.io/gh/entelecheia/eKoNLPy/branch/master/graph/badge.svg?token=8I4ORHRREL
 [codecov-url]: https://codecov.io/gh/entelecheia/eKoNLPy
+[zeonodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.6497226.svg
+[zendo-url]: https://doi.org/10.5281/zenodo.6497226
+
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
 [conventional commits]: https://conventionalcommits.org
 [repo-url]: https://github.com/entelecheia/eKoNLPy
