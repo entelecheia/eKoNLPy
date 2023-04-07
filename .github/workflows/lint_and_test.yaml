@@ -1,0 +1,79 @@
+---
+name: lint & test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - "*"
+  #   paths:
+  #     - "src/**"
+  #     - "tests/**"
+      
+jobs:
+  build:
+    # Name the Job
+    name: test-code-base
+    # Set the agent to run on
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+
+    steps:
+      # Checkout the code base #
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # install poetry
+      - name: Install poetry
+        run: pipx install poetry>=1.3.2
+
+      # set up python
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+
+      # install dependencies
+      - name: Install dependencies for linters
+        run: make install-dev
+
+      # run linters
+      - name: Run linters
+        run: |
+          set -o pipefail
+          make lint
+
+      # run unit tests
+      - name: Run unit-tests
+        run: |
+          set -o pipefail
+          make scm-version
+          make tests-cov-fail
+
+      # add content to GitHub summary
+      - name: Pytest coverage GitHub summary
+        run: |
+          set -o pipefail
+          echo '# Coverage report' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat pytest-coverage.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo '\n\n\n'
+          echo '${{ steps.coverageComment.outputs.coverageHtml }}' >> $GITHUB_STEP_SUMMARY
+
+      # add pytest coverage report to PR
+      - name: Pytest coverage comment
+        if: ${{ success() && github.event_name == 'pull_request' }}
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          title: Coverage Report
+          pytest-coverage-path: pytest-coverage.txt
+          junitxml-path: pytest.xml

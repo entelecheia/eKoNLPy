@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; do NOT edit manually
+_commit: v0.1.9
+_src_path: gh:entelecheia/hyperfast-python-template
+author: Young Joon Lee
+copyright_year: 2023
+documentaion_tool: mkdocs
+documentation_url: https://ekonlpy.entelecheia.ai
+email: entelecheia@hotmail.com
+friendly_name: eKoNLPy
+github_repo_name: eKoNLPy
+github_username: entelecheia
+package_name: ekonlpy
+project_description: This is a Korean natural language processing toolkit for economic
+    analysis. It is based on Mecab and Mecab-ko-dic.
+project_license: MIT
+project_name: eKoNLPy
+project_short_description: A Korean natural language processing toolkit for economic
+    analysis
+
