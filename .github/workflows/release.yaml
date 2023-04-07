@@ -1,0 +1,46 @@
+---
+name: semantic-release
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  build:
+    # Name the Job
+    name: semantic-release
+    # Set the agent to run on
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+
+    # Load all steps #
+    steps:
+      # Checkout the code base #
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # set env variable
+      - name: Set env variable
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      # semantic release
+      - name: Python Semantic Release to PyPI
+        uses: relekang/python-semantic-release@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository_username: __token__
+          repository_password: ${{ secrets.PYPI_API_TOKEN }}
+          additional_options: --verbosity=DEBUG --define=branch=${{ env.BRANCH }}

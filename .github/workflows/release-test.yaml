@@ -1,0 +1,47 @@
+---
+name: semantic-release-test
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  build:
+    # Name the Job
+    name: semantic-release-test
+    # Set the agent to run on
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+
+    steps:
+      # Checkout the code base #
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # set env variable
+      - name: Set env variable
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      # semantic release
+      - name: Python Semantic Release to PyPI
+        uses: relekang/python-semantic-release@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository_username: __token__
+          repository_password: ${{ secrets.PYPI_API_TOKEN }}
+          additional_options: --noop --verbosity=DEBUG --define=branch=${{ env.BRANCH }}
+        env:
+          REPOSITORY_URL: https://test.pypi.org/legacy/
