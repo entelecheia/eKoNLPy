@@ -44,13 +44,6 @@ jobs:
       - name: Install dependencies
         run: make install-dev
 
-      # # Bump version
-      # - name: Bump version using semantic-release
-      #   run: |
-      #     git config --global user.name "GitHub Actions"
-      #     git config --global user.email "actions@github.com"
-      #     poetry run semantic-release version
-
       - name: Python Semantic Release to PyPI
         run: |
           git config --global user.name "GitHub Actions"
@@ -60,12 +53,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY_USERNAME: __token__
           REPOSITORY_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-
-      # # semantic release
-      # - name: Python Semantic Release to PyPI
-      #   uses: relekang/python-semantic-release@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     repository_username: __token__
-      #     repository_password: ${{ secrets.PYPI_API_TOKEN }}
-      #     additional_options: --verbosity=DEBUG --define=branch=${{ env.BRANCH }}
