@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.0.1 (2023-04-07)
+### Fix
+* **sentiment:** Specify utf-8 encoding in file open ([`9968ff1`](https://github.com/entelecheia/eKoNLPy/commit/9968ff15868a349a592bc10b04dfc7b133e519b8))
+
+### Documentation
+* Update README ([`893f755`](https://github.com/entelecheia/eKoNLPy/commit/893f7557e2c365eb636547466762b309bd0d906d))
+
 ## v1.0.0 (2023-04-07)
 
 
