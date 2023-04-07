@@ -1,5 +1,29 @@
 # eKoNLPy: Korean NLP Python Library for Economic Analysis
 
+[![pypi-image]][pypi-url]
+[![version-image]][release-url]
+[![release-date-image]][release-url]
+[![license-image]][license-url]
+
+<!-- Links: -->
+
+[pypi-image]: https://badge.fury.io/py/ekonlpy.svg
+[pypi-url]: https://badge.fury.io/py/ekonlpy
+[license-image]: https://img.shields.io/github/license/entelecheia/eKoNLPy
+[license-url]: https://github.com/entelecheia/eKoNLPy/blob/master/LICENSE
+[version-image]: https://img.shields.io/github/v/release/entelecheia/eKoNLPy?sort=semver
+[release-date-image]: https://img.shields.io/github/release-date/entelecheia/eKoNLPy
+[release-url]: https://github.com/entelecheia/eKoNLPy/releases
+[conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
+[conventional commits]: https://conventionalcommits.org
+[repo-url]: https://github.com/entelecheia/eKoNLPy
+[pypi-url]: https://pypi.org/project/ekonlpy
+[docs-url]: https://ekonlpy.entelecheia.ai
+[changelog]: https://github.com/entelecheia/eKoNLPy/blob/master/CHANGELOG.md
+[contributing guidelines]: https://github.com/entelecheia/eKoNLPy/blob/master/CONTRIBUTING.md
+
+<!-- Links: -->
+
 `eKoNLPy` is a Korean Natural Language Processing (NLP) Python library specifically designed for economic analysis. It extends the functionality of the `MeCab` tagger from KoNLPy to improve the handling of economic terms, financial institutions, and company names, classifying them as single nouns. Additionally, it incorporates sentiment analysis features to determine the tone of monetary policy statements, such as Hawkish or Dovish.
 
 ## Installation
@@ -108,9 +132,17 @@ tokens = lm.tokenize(text)
 score = lm.get_score(tokens)
 ```
 
+## Changelog
+
+See the [CHANGELOG] for more information.
+
+## Contributing
+
+Contributions are welcome! Please see the [contributing guidelines] for more information.
+
 ## License
 
-eKoNLPy is an open-source software library for Korean Natural Language Processing (NLP), specifically designed for economic analysis. The library is released under the [MIT License](LICENSE), allowing developers and researchers to use, modify, and distribute the software as they see fit.
+eKoNLPy is an open-source software library for Korean Natural Language Processing (NLP), specifically designed for economic analysis. The library is released under the [MIT License][license-url], allowing developers and researchers to use, modify, and distribute the software as they see fit.
 
 ## Citation
 
