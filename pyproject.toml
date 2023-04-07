@@ -142,7 +142,7 @@ tag_commit = true
 changelog_file = "CHANGELOG.md"
 upload_to_repository = true
 upload_to_release = true
-build_command = "poetry build"
+build_command = "poetry build --no-cache"
 hvcs = "github"                                                       # hosting version control system, gitlab is also supported
 
 [build-system]
