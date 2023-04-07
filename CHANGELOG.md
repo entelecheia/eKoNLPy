@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.3 (2023-04-07)
+### Fix
+* Semantic-release version bump ([`57d97df`](https://github.com/entelecheia/eKoNLPy/commit/57d97df632963ca2008de5df6df92095a5f4d6f1))
+
 ## v1.1.2 (2023-04-07)
 ### Fix
 * Separate semantic-release version bump ([`5a177e8`](https://github.com/entelecheia/eKoNLPy/commit/5a177e836a74a2b622fac792973be2a56de89dc7))
