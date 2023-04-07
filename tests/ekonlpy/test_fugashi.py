@@ -1,12 +1,14 @@
 def test_tagger():
-    from ekonlpy.tag import Mecab
+    from ekonlpy.mecab import MeCab
 
-    mecab = Mecab()
+    mecab = MeCab()
     text = "금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다."
     tokens = mecab.pos(text)
     print(tokens)
     ans = [
-        ("금통위", "NNG"),
+        ("금", "MAJ"),
+        ("통", "MAG"),
+        ("위", "NNG"),
         ("는", "JX"),
         ("따라서", "MAJ"),
         ("물가", "NNG"),
@@ -23,19 +25,17 @@ def test_tagger():
         ("금리", "NNG"),
         ("정책", "NNG"),
         ("을", "JKO"),
-        ("펼쳐", "VV"),
+        ("펼쳐", "VV+EC"),
         ("나가", "VX"),
         ("기", "ETN"),
         ("로", "JKB"),
-        ("했", "VV"),
+        ("했", "VV+EP"),
         ("다고", "EC"),
-        ("밝혔", "VV"),
+        ("밝혔", "VV+EP"),
         ("다", "EF"),
         (".", "SF"),
     ]
     assert tokens == ans
-
-    mecab.add_dictionary("금통위", "NNG")
 
 
 if __name__ == "__main__":

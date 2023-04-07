@@ -1,231 +1,269 @@
-import logging
 import os
-from collections import namedtuple
+from typing import Dict, List, Tuple, Union
 
-log = logging.getLogger(__name__)
-
-
-Feature = namedtuple(
-    "Feature",
-    [
-        "pos",
-        "semantic",
-        "has_jongseong",
-        "reading",
-        "type",
-        "start_pos",
-        "end_pos",
-        "expression",
-    ],
-)
-# ('합니다',
-#   Feature(pos='XSA+EF', semantic=None, has_jongseong=False, reading='합니다', type='Inflect',
-#           start_pos='XSA', end_pos='EF',
-#           expression='하/XSA/*+ᄇ니다/EF/*')),
+from ..data.tagset import lemma_tags
+from ..data.tagset import mecab_tags as tagset
+from ..data.tagset import mecab_tags_en as tagset_en
+from ..data.tagset import nouns_tags, sent_tags, stop_tags, topic_tags
+from ..etag import ExtTagger
+from ..utils.dictionary import TermDictionary, term_tags
+from ..utils.io import installpath, load_dictionary, load_txt, load_vocab, save_vocab
+from ..mecab import MeCab as _MeCab
 
 
-def _extract_feature(values):
-    # Reference:
-    # - http://taku910.github.io/mecab/learn.html
-    # - https://docs.google.com/spreadsheets/d/1-9blXKjtjeKZqsf4NzHeYJCrr49-nXeRF6D80udfcwY
-    # - https://bitbucket.org/eunjeon/mecab-ko-dic/src/master/utils/dictionary/lexicon.py
-
-    # feature = <pos>,<semantic>,<has_jongseong>,<reading>,<type>,<start_pos>,<end_pos>,<expression>
-    assert len(values) == 8
-
-    values = [value if value != "*" else None for value in values]
-    feature = dict(zip(Feature._fields, values))
-    feature["has_jongseong"] = {"T": True, "F": False}.get(feature["has_jongseong"])
-
-    return Feature(**feature)
-
-
-class MeCabError(Exception):
-    pass
-
-
-class MeCab:  # APIs are inspried by KoNLPy
+class Mecab:
     def __init__(
         self,
-        dicdir=None,
-        userdic_path=None,
-        backend="mecab-python3",
-        verbose=False,
-        **kwargs,
+        use_default_dictionary: bool = True,
+        use_polarity_phrase: bool = False,
     ):
-        import mecab_ko_dic
+        self._tokenizer = _MeCab()
+        self._dictionary = TermDictionary()
+        self._terms = TermDictionary()
+        self.use_default_dictionary = use_default_dictionary
+        self.use_polarity_phras = use_polarity_phrase
+        if use_default_dictionary:
+            self._load_default_dictionary(use_polarity_phrase)
+        self._load_term_dictionary()
+        self._extagger = self._load_ext_tagger()
+        self.tagset = tagset
+        self.tagset_en = tagset_en
+        self._term_tags = term_tags
+        self._nouns_tags = nouns_tags
+        self._topic_tags = topic_tags
+        self._stop_tags = stop_tags
+        self._sent_tags = sent_tags
+        self._lemma_tags = lemma_tags
+        self.stopwords = self._load_stopwords()
+        self._synonyms: Dict[str, str] = {}
+        self._load_synonyms(use_polarity_phrase)
+        self._lemmas: Dict[str, str] = {}
+        self._load_lemmas()
 
-        self.dicdir = None
-        self.userdic_path = None
-        self.verbose = verbose
+    def _load_ext_tagger(self) -> ExtTagger:
+        return ExtTagger(self._dictionary)
 
-        DICDIR = mecab_ko_dic.DICDIR
-        mecabrc = os.path.join(DICDIR, "mecabrc")
+    def _load_stopwords(self) -> List[str]:
+        directory = os.path.join(installpath, "data", "dictionary")
+        return load_txt(os.path.join(directory, "STOPWORDS.txt"))
 
-        self.backend = backend
-        assert self.backend in [
-            "fugashi",
-            "mecab-python3",
-        ], "Wrong backend! Currently, we support [`fugashi`, `mecab-python3`] backend."
-        if self.verbose:
-            log.info(f"MeCab uses {self.backend} as backend.")
+    def _load_synonyms(self, use_polarity_phrases: bool):
+        directory = os.path.join(installpath, "data", "dictionary")
+        self.load_synonyms(os.path.join(directory, "SYNONYM.txt"))
+        self.load_synonyms(os.path.join(directory, "SYNONYM_MAG.txt"), tag="MAG")
+        self.load_synonyms(os.path.join(directory, "SYNONYM_VA.txt"), tag="VAX")
+        if use_polarity_phrases:
+            self.load_synonyms(os.path.join(directory, "SYNONYM_PHRASES.txt"))
 
-        if not dicdir:
-            dicdir = DICDIR
-        self.dicdir = dicdir
-        MECAB_ARGS = '-r "{}" -d "{}" '.format(mecabrc, dicdir)
-        if userdic_path:
-            self.userdic_path = userdic_path
-            MECAB_ARGS += '-u "{}" '.format(userdic_path)
-        if self.verbose:
-            log.info(
-                f"Mecab uses system dictionary: {dicdir}, user dictionary: {userdic_path}"
+    def _load_lemmas(self):
+        directory = os.path.join(installpath, "data", "dictionary")
+        self.load_lemmas(os.path.join(directory, "LEMMA.txt"))
+
+    def _load_default_dictionary(self, use_polarity_phrases):
+        directory = os.path.join(installpath, "data", "dictionary")
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'GENERIC.txt')), 'NNG')
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "NOUNS.txt")), "NNG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "NAMES.txt")), "NNG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "ECON_TERMS.txt")), "NNG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "INDUSTRY_TERMS.txt")), "NNG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "COUNTRY.txt")), "NNG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "PROPER_NOUNS.txt")), "NNP"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "ENTITY.txt")), "NNP"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "INSTITUTION.txt")), "NNP"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "ADJECTIVES.txt")), "VAX"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "ADVERBS.txt")), "MAG"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "VERBS.txt")), "VV"
+        )
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "UNIT.txt")), "NNBC"
+        )
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'FOREIGN_TERMS.txt')), 'SL')
+        # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'ECON_PHRASES.txt')), 'NNG')
+        self._dictionary.add_dictionary(
+            load_dictionary(os.path.join(directory, "SECTOR.txt")), "NNG"
+        )
+        if use_polarity_phrases:
+            self._dictionary.add_dictionary(
+                load_dictionary(os.path.join(directory, "POLARITY_PHRASES.txt")), "NNG"
             )
-        try:
-            if self.backend == "fugashi":
-                try:
-                    import fugashi as _mecab
-                except ImportError:
-                    raise ImportError(
-                        "\n"
-                        "You must install `fugashi` if you want to use `fugashi` backend.\n"
-                    )
-                self.tagger = _mecab.GenericTagger(MECAB_ARGS)
-                self.dictionary_info = self.tagger.dictionary_info
-                self.sysdic_path = self.dictionary_info[0]["filename"]
-            else:
-                try:
-                    import MeCab as _mecab
-                except ImportError:
-                    raise ImportError(
-                        "\n"
-                        "You must install `mecab-python3` if you want to use `mecab-python3` backend.\n"
-                    )
-                self.tagger = _mecab.Tagger(MECAB_ARGS)
-                self.version = _mecab.VERSION
-        except RuntimeError:
-            raise Exception(
-                'The MeCab dictionary does not exist at "%s". Is the dictionary correctly installed?\nYou can also try entering the dictionary path when initializing the MeCab class: "MeCab(\'/some/dic/path\')"'
-                % self.dicdir
-            )
-        except NameError:
-            raise Exception("Check if MeCab is installed correctlly.")
 
-    def _parse_fugashi(self, text):
-        return [
-            (node.surface, _extract_feature(node.feature)) for node in self.tagger(text)
-        ]
+    def _load_term_dictionary(self):
+        directory = os.path.join(installpath, "data", "dictionary")
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "COUNTRY.txt")), "COUNTRY"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "SECTOR.txt")), "SECTOR"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "INDUSTRY_TERMS.txt")), "INDUSTRY"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "GENERIC.txt")), "GENERIC"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "CURRENCY.txt")), "CURRENCY"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "UNIT.txt")), "UNIT"
+        )
+        self._terms.add_dictionary(
+            load_dictionary(os.path.join(directory, "NAMES.txt")), "NAME"
+        )
 
-    def _parse_mecab(self, text):
-        m = self.tagger.parseToNode(text)
-        nodes = []
-        while m:
-            feature = m.feature.split(",")
-            if "BOS/EOS" != feature[0]:
-                nodes.append((m.surface, _extract_feature(feature)))
-            m = m.next
-        return nodes
+    def pos(self, phrase: str) -> List[Tuple[str, str]]:
+        tagged = self._tokenizer.pos(phrase)
+        tagged = self._extagger.pos(tagged)
 
-    def parse(self, text):
-        if self.backend == "fugashi":
-            return self._parse_fugashi(text)
-        else:
-            return self._parse_mecab(text)
-
-    def pos(
-        self,
-        sentence,
-        flatten=True,
-        concat_surface_and_pos=False,
-        include_whitespace_token=True,
-    ):
-        sentence = sentence.strip()
-        if include_whitespace_token:
-            sent_ptr = 0
-            res = []
-
-            for token, pos in self._pos(sentence, flatten=flatten):
-                if sentence[sent_ptr] == " ":
-                    # Move pointer to whitespace token to reserve whitespace
-                    # cf. to prevent double white-space, move pointer to next eojeol
-                    while sentence[sent_ptr] == " ":
-                        sent_ptr += 1
-                    res.append((" ", "SP"))
-                res.append((token, pos))
-                sent_ptr += len(token)
-        else:
-            res = self._pos(sentence, flatten=flatten)
-
-        return [s[0] + "/" + s[1] if concat_surface_and_pos else s for s in res]
-
-    def _pos(self, sentence, flatten=True):
-        if flatten:
-            return [(surface, feature.pos) for surface, feature in self.parse(sentence)]
-        else:
-            res = []
-            for surface, feature in self.parse(sentence):
-                if feature.expression is None:
-                    res.append((surface, feature.pos))
-                else:
-                    for elem in feature.expression.split("+"):
-                        s = elem.split("/")
-                        res.append((s[0], s[1]))
-            return res
-
-    def morphs(self, sentence, flatten=True, include_whitespace_token=True):
-        return [
-            surface
-            for surface, _ in self.pos(
-                sentence,
-                flatten=flatten,
-                concat_surface_and_pos=False,
-                include_whitespace_token=include_whitespace_token,
-            )
-        ]
+        return tagged
 
     def nouns(
         self,
-        sentence,
-        flatten=True,
-        include_whitespace_token=True,
-        noun_pos=["NNG", "NNP", "XSN", "SL", "XR", "NNB", "NR"],
-    ):
+        phrase: Union[str, List[Tuple[str, str]]],
+        replace_synonym: bool = True,
+        include_industry_terms: bool = False,
+        include_generic: bool = False,
+        include_sector_name: bool = False,
+        include_country_name: bool = True,
+    ) -> List[str]:
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        if replace_synonym:
+            tagged = self.replace_synonyms(tagged)
         return [
-            surface
-            for surface, pos in self.pos(
-                sentence,
-                flatten=flatten,
-                concat_surface_and_pos=False,
-                include_whitespace_token=include_whitespace_token,
-            )
-            if pos in noun_pos
+            w.lower()
+            for w, t in tagged
+            if t in self._topic_tags
+            and (include_industry_terms or not self._terms.exists(w, "INDUSTRY"))
+            and (include_generic or not self._terms.exists(w, "GENERIC"))
+            and (include_sector_name or not self._terms.exists(w, "SECTOR"))
+            and (include_country_name or not self._terms.exists(w, "COUNTRY"))
         ]
 
+    def replace_synonyms(self, phrase):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        replaced = []
+        for w, t in tagged:
+            if w.lower() in self._synonyms:
+                replaced.append((self._synonyms[w.lower()].lower(), t))
+            else:
+                replaced.append((w, t))
+        return replaced
 
-DicEntry = namedtuple(
-    "DicEntry",
-    [
-        "surface",
-        "left_id",
-        "right_id",
-        "cost",
-        "pos",
-        "semantic",
-        "has_jongseong",
-        "reading",
-        "type",
-        "start_pos",
-        "end_pos",
-        "expression",
-    ],
-    defaults=[None, None, None, None, "NNP", "*", "T", None, "*", "*", "*", "*"],
-)
+    def lemmatize(self, phrase):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        replaced = []
+        for w, t in tagged:
+            if t in self._lemma_tags and w.lower() in self._lemmas:
+                t = "VV" if t == "XSV" else t
+                replaced.append((self._lemmas[w.lower()], t))
+            else:
+                replaced.append((w, t))
+        return replaced
 
+    def sent_words(
+        self,
+        phrase,
+        replace_synonym=True,
+        lemmatisation=True,
+        exclude_terms=True,
+        remove_tag=False,
+    ):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        if replace_synonym:
+            tagged = self.replace_synonyms(tagged)
+        if lemmatisation:
+            tagged = self.lemmatize(tagged)
+        if exclude_terms:
+            return [
+                "{}/{}".format(w.lower(), t.split("+")[0])
+                if not remove_tag
+                else w.lower()
+                for w, t in tagged
+                if t in self._sent_tags and not self._terms.exists(w)
+            ]
+        else:
+            return [
+                "{}/{}".format(w.lower(), t.split("+")[0])
+                if not remove_tag
+                else w.lower()
+                for w, t in tagged
+                if t in self._sent_tags
+            ]
 
-if __name__ == "__main__":
-    tagger = MeCab()
-    text = "아버지가 방에 들어가신다."
-    print(tagger.parse(text))
-    print(tagger.pos(text))
-    print(tagger.morphs(text))
-    print(tagger.nouns(text))
+    def morphs(self, phrase):
+        tagged = self.pos(phrase) if type(phrase) == str else phrase
+        return [s for s, t in tagged]
+
+    # def phrases(self, phrase):
+    #     return self._base.phrases(phrase)
+
+    def add_dictionary(self, words, tag, force=False):
+        if (not force) and (not (tag in self.tagset)):
+            raise ValueError("%s is not available tag" % tag)
+        self._dictionary.add_dictionary(words, tag)
+
+    def load_dictionary(self, fname: str, tag: str) -> None:
+        if not (tag in self.tagset):
+            raise ValueError("%s is not available tag" % tag)
+        self._dictionary.load_dictionary(fname, tag)
+
+    def add_terms(self, words: List[str], tag: str, force: bool = False):
+        """
+        Add words to the dictionary with the given tag. If force is
+        set, tags not in the dictionary will be added.
+        """
+        if (not force) and (not (tag in self._term_tags)):
+            raise ValueError("%s is not available tag" % tag)
+        self._dictionary.add_dictionary(words, tag)
+
+    def load_terms(self, fname, tag):
+        if not (tag in self._term_tags):
+            raise ValueError("%s is not available tag" % tag)
+        self._dictionary.load_dictionary(fname, tag)
+
+    def load_synonyms(self, fname, tag="NNG"):
+        vocab = load_vocab(fname)
+        self._synonyms.update(vocab)
+        self.add_dictionary(vocab.keys(), tag)
+        self.add_dictionary(vocab.values(), tag)
+
+    def add_synonym(self, word, synonym, tag="NNG"):
+        self._synonyms[word.lower()] = synonym.lower()
+        self.add_dictionary(word, tag)
+        self.add_dictionary(synonym, tag)
+
+    def persist_synonyms(self):
+        directory = os.path.join(installpath, "data", "dictionary")
+        return save_vocab(self._synonyms, os.path.join(directory, "SYNONYM.txt"))
+
+    def load_lemmas(self, fname):
+        vocab = load_vocab(fname)
+        self._lemmas.update(vocab)
+
+    def add_lemma(self, word, lemma):
+        self._lemmas[word] = lemma
+
+    def persist_lemmas(self):
+        directory = os.path.join(installpath, "data", "dictionary")
+        return save_vocab(self._lemmas, os.path.join(directory, "LEMMA.txt"))

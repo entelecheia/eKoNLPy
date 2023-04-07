@@ -23,7 +23,6 @@ fugashi = "^1.2.1"
 mecab-ko-dic = "^1.0.0"
 nltk = "^3.8.1"
 scipy = "^1.10.1"
-mecab-python3 = "^1.0.6"
 pandas = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -131,10 +130,11 @@ write_to_template = '__version__ = "{version}"'
 tag_regex = '^(?P<prefix>v)?(?P<version>[^\+]+)(?P<suffix>.*)?$'
 
 [tool.semantic_release]
-branch = "main"
+branch = "master"
 version_toml = "pyproject.toml:tool.poetry.version"
+version_pattern = "src/ekonlpy/_version.py:__version__ = \"{version}\""
 version_source = "tag"
-commit_version_number = true                                    # required for version_source = "tag"
+commit_version_number = true                                          # required for version_source = "tag"
 commit_subject = "chore(release): :rocket: {version} [skip ci]"
 prerelease_tag = "rc"
 major_on_zero = true
@@ -143,7 +143,7 @@ changelog_file = "CHANGELOG.md"
 upload_to_repository = true
 upload_to_release = true
 build_command = "pip install poetry && poetry build"
-hvcs = "github"                                                 # hosting version control system, gitlab is also supported
+hvcs = "github"                                                       # hosting version control system, gitlab is also supported
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "setuptools>=45", "setuptools_scm[toml]>=6.2"]

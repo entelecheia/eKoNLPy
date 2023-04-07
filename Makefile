@@ -89,7 +89,10 @@ clean-cov: ## remove output files from pytest & coverage
 clean-book-build: ## remove output files from mkdocs
 	@rm -rf book/_build
 
-clean: clean-cov clean-book-build ## run all clean commands
+clean-pycache: ## remove __pycache__ directories
+	@find . -name __pycache__ -type d -exec rm -rf {} +
+
+clean: clean-cov clean-book-build clean-pycache ## run all clean commands
 
 ##@ Releases
 
