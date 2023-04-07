@@ -139,7 +139,7 @@ dev-checkout-upstream: ## create and checkout the dev branch, and set the upstre
 		git push --set-upstream origin $${branch} || true
 
 main-checkout: ## checkout the main branch
-	@git checkout main
+	@git checkout master
 
 ##@ Setup
 

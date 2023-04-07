@@ -1,5 +1,5 @@
 ---
-name: semantic-prerelease
+name: semantic-prerelease-to-test-pypi
 
 on:
   workflow_call:
