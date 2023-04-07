@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.1 (2023-04-07)
+### Fix
+* Version variable ([`c58aa06`](https://github.com/entelecheia/eKoNLPy/commit/c58aa0635ce76bfebec6b71ef0855052f9df8474))
+
 ## v1.1.0 (2023-04-07)
 ### Feature
 * Remove mecab-python3 and support MeCab from fugashi ([`53dd6cc`](https://github.com/entelecheia/eKoNLPy/commit/53dd6ccefa07d0f289bcd79c0c219bac80eb1a87))
