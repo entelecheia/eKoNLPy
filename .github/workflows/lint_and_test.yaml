@@ -10,7 +10,7 @@ on:
   #   paths:
   #     - "src/**"
   #     - "tests/**"
-      
+
 jobs:
   build:
     # Name the Job
@@ -68,12 +68,5 @@ jobs:
           echo '\n\n\n'
           echo '${{ steps.coverageComment.outputs.coverageHtml }}' >> $GITHUB_STEP_SUMMARY
 
-      # add pytest coverage report to PR
-      - name: Pytest coverage comment
-        if: ${{ success() && github.event_name == 'pull_request' }}
-        id: coverageComment
-        uses: MishaKav/pytest-coverage-comment@main
-        with:
-          title: Coverage Report
-          pytest-coverage-path: pytest-coverage.txt
-          junitxml-path: pytest.xml
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3

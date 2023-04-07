@@ -4,6 +4,7 @@
 [![version-image]][release-url]
 [![release-date-image]][release-url]
 [![license-image]][license-url]
+[![codecov](https://codecov.io/gh/entelecheia/eKoNLPy/branch/master/graph/badge.svg)](https://codecov.io/gh/entelecheia/eKoNLPy)
 
 <!-- Links: -->
 
@@ -14,6 +15,8 @@
 [version-image]: https://img.shields.io/github/v/release/entelecheia/eKoNLPy?sort=semver
 [release-date-image]: https://img.shields.io/github/release-date/entelecheia/eKoNLPy
 [release-url]: https://github.com/entelecheia/eKoNLPy/releases
+[codecov-image]: https://codecov.io/gh/entelecheia/eKoNLPy/branch/master/graph/badge.svg?token=8I4ORHRREL
+[codecov-url]: https://codecov.io/gh/entelecheia/eKoNLPy
 [conventional-commits-image]: https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white
 [conventional commits]: https://conventionalcommits.org
 [repo-url]: https://github.com/entelecheia/eKoNLPy
