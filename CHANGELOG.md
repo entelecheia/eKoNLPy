@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.0 (2023-04-07)
+### Feature
+* Remove mecab-python3 and support MeCab from fugashi ([`53dd6cc`](https://github.com/entelecheia/eKoNLPy/commit/53dd6ccefa07d0f289bcd79c0c219bac80eb1a87))
+
 ## v1.0.1 (2023-04-07)
 ### Fix
 * **sentiment:** Specify utf-8 encoding in file open ([`9968ff1`](https://github.com/entelecheia/eKoNLPy/commit/9968ff15868a349a592bc10b04dfc7b133e519b8))
