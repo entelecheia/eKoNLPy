@@ -237,7 +237,7 @@ class MPTokenizer(BaseTokenizer):
     def get_vocab(self, file):
         vocab = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
-        with open(vocab_path) as f:
+        with open(vocab_path, "r", encoding="utf-8") as f:
             for i, line in enumerate(f):
                 w = line.strip().split()
                 if len(w[0]) > 0:
