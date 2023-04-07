@@ -4,12 +4,12 @@ name: lint & test
 on:
   workflow_call:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - "*"
-  #   paths:
-  #     - "src/**"
-  #     - "tests/**"
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "tests/**"
 
 jobs:
   build:

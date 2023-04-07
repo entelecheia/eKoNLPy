@@ -6,9 +6,9 @@ from ..data.tagset import mecab_tags as tagset
 from ..data.tagset import mecab_tags_en as tagset_en
 from ..data.tagset import nouns_tags, sent_tags, stop_tags, topic_tags
 from ..etag import ExtTagger
+from ..mecab import MeCab as _MeCab
 from ..utils.dictionary import TermDictionary, term_tags
 from ..utils.io import installpath, load_dictionary, load_txt, load_vocab, save_vocab
-from ..mecab import MeCab as _MeCab
 
 
 class Mecab:
