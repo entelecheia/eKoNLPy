@@ -1,24 +1,25 @@
 import os
-from konlpy.tag import Kkma
-from ekonlpy.sentiment.base import LEXICON_PATH, BaseDict
-from ekonlpy.sentiment.utils import KTokenizer
+
+from .base import LEXICON_PATH, BaseDict
+from .utils import KTokenizer
+
 
 class KSA(BaseDict):
-    '''
+    """
     Dictionary class for
     Korean Sentiment Analysis.
-    '''
+    """
 
     def init_tokenizer(self, kind=None):
         self._tokenizer = KTokenizer(self._poldict)
 
     def init_dict(self, kind=None, intensity_cutoff=None):
-        path = os.path.join(LEXICON_PATH, 'kosac', 'polarity.csv')
-        with open(path, encoding='utf-8') as f:
+        path = os.path.join(LEXICON_PATH, "kosac", "polarity.csv")
+        with open(path, encoding="utf-8") as f:
             for line in f:
-                word = line.split(',')
+                word = line.split(",")
                 w = word[0]
-                if w == 'ngram':
+                if w == "ngram":
                     continue
                 p = float(word[6].strip())
                 n = float(word[3].strip())
@@ -34,18 +35,42 @@ class KSA(BaseDict):
 
 class KOSAC(object):
     def __init__(self):
+        try:
+            from konlpy.tag import Kkma
+        except ImportError:
+            raise ImportError("Kkma is required for KOSAC")
+
         self._loaddic()
         self._tagger = Kkma()
         self._ngram = 3
-        self._delimiter = ';'
-        self._skiptags = ['SF', 'SP', 'SS', 'SE', 'SO', 'SW', 'UN', 'UV', 'UE', 'OL', 'OH', 'ON']
+        self._delimiter = ";"
+        self._skiptags = [
+            "SF",
+            "SP",
+            "SS",
+            "SE",
+            "SO",
+            "SW",
+            "UN",
+            "UV",
+            "UE",
+            "OL",
+            "OH",
+            "ON",
+        ]
 
     def _loaddic(self):
-        self._polarity = self._loadfile(os.path.join(LEXICON_PATH, 'kosac', 'polarity.csv'))
-        self._expressive = self._loadfile(os.path.join(LEXICON_PATH, 'kosac', 'expressive-type.csv'))
-        self._intensity = self._loadfile(os.path.join(LEXICON_PATH, 'kosac', 'intensity.csv'))
+        self._polarity = self._loadfile(
+            os.path.join(LEXICON_PATH, "kosac", "polarity.csv")
+        )
+        self._expressive = self._loadfile(
+            os.path.join(LEXICON_PATH, "kosac", "expressive-type.csv")
+        )
+        self._intensity = self._loadfile(
+            os.path.join(LEXICON_PATH, "kosac", "intensity.csv")
+        )
 
-    def _loadfile(self, file_path, delimiter=','):
+    def _loadfile(self, file_path, delimiter=","):
         vocab = {}
         if os.path.isfile(file_path):
             with open(file_path) as f:
@@ -69,7 +94,7 @@ class KOSAC(object):
         return self.align_morpheme(self._tagger.pos(dataset))
 
     def align_morpheme(self, morpheme):
-        return ['{}/{}'.format(w, t) for w, t in morpheme]
+        return ["{}/{}".format(w, t) for w, t in morpheme]
 
     def percentage(self, obj):
         return {k: v / sum(obj.values()) for k, v in obj.items()}
@@ -89,40 +114,46 @@ class KOSAC(object):
         for m in data:
             if m in pairdata:
                 currentdata = pairdata[m]
-                ret = self.calc(keypairs, currentdata, ret,
-                                lambda s, t: t + s)
+                ret = self.calc(keypairs, currentdata, ret, lambda s, t: t + s)
         return self.percentage(ret)
 
     def polarity(self, data):
-        return self.match(data,
-                          self._polarity,
-                          [['COMP', 'com'],
-                           ['POS', 'pos'],
-                           ['NEG', 'neg'],
-                           ['NEUT', 'neut'],
-                           ['None', 'none']])
+        return self.match(
+            data,
+            self._polarity,
+            [
+                ["COMP", "com"],
+                ["POS", "pos"],
+                ["NEG", "neg"],
+                ["NEUT", "neut"],
+                ["None", "none"],
+            ],
+        )
 
     def intensity(self, data):
-        return self.match(data,
-                          self._intensity,
-                          [['High', 'high'],
-                           ['Low', 'low'],
-                           ['Medium', 'medium'],
-                           ['None', 'none']])
+        return self.match(
+            data,
+            self._intensity,
+            [["High", "high"], ["Low", "low"], ["Medium", "medium"], ["None", "none"]],
+        )
 
     def expressive(self, data):
-        return self.match(data,
-                          self._expressive,
-                          [['dir-action', 'dir-action'],
-                           ['dir-explicit', 'dir-explicit'],
-                           ['dir-speech', 'dir-speech'],
-                           ['indirect', 'indirect'],
-                           ['writing-device', 'writing-device']])
+        return self.match(
+            data,
+            self._expressive,
+            [
+                ["dir-action", "dir-action"],
+                ["dir-explicit", "dir-explicit"],
+                ["dir-speech", "dir-speech"],
+                ["indirect", "indirect"],
+                ["writing-device", "writing-device"],
+            ],
+        )
 
     def analyze(self, dataset):
         dataset = self.parse(dataset)
         ret = {}
-        for analysis in ['polarity', 'intensity', 'expressive']:
+        for analysis in ["polarity", "intensity", "expressive"]:
             func = getattr(self, analysis)
             ret[analysis] = func(dataset)
         return ret
@@ -135,13 +166,13 @@ class KOSAC(object):
         elif type(dataset) == str:
             tokens = self.morpheme(dataset)
         else:
-            raise ValueError('The dataset has to be string or list of string type.')
+            raise ValueError("The dataset has to be string or list of string type.")
 
         return self.ngramize(tokens)
 
     def ngramize(self, tokens):
         ngram_tokens = []
-        tokens = [w for w in tokens if w.split('/')[1] not in self._skiptags]
+        tokens = [w for w in tokens if w.split("/")[1] not in self._skiptags]
         for pos in range(len(tokens)):
             for gram in range(1, self._ngram + 1):
                 token = self.get_ngram(tokens, pos, gram)
