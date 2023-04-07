@@ -102,6 +102,9 @@ version: ## returns the current version
 next-version: ## returns the next version
 	@poetry run semantic-release print-version --next
 
+release-vesrion: ## release without changing anything
+	@poetry run semantic-release version -v DEBUG
+
 changelog: ## returns the current changelog
 	@poetry run semantic-release changelog --released
 
