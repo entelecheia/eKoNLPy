@@ -5,5 +5,5 @@ from .utils.io import installpath, load_dictionary, load_txt
 
 
 def get_version() -> str:
-    """This is the cli function of the package"""
+    """This function returns the version of ekonlpy."""
     return __version__
