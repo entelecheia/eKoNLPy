@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.4 (2023-04-08)
+### Fix
+* Release for zenodo ([`2b0128d`](https://github.com/entelecheia/eKoNLPy/commit/2b0128d8ba995b119bfa5c3580f9b20acbdc31ab))
+
 ## v1.1.3 (2023-04-07)
 ### Fix
 * Semantic-release version bump ([`57d97df`](https://github.com/entelecheia/eKoNLPy/commit/57d97df632963ca2008de5df6df92095a5f4d6f1))
