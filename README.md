@@ -3,6 +3,7 @@
 [![pypi-image]][pypi-url]
 [![version-image]][release-url]
 [![release-date-image]][release-url]
+[![pypi-downloads-image]][pypi-url]
 [![license-image]][license-url]
 [![codecov][codecov-image]][codecov-url]
 [![zenodo-image]][zenodo-url]
@@ -16,6 +17,7 @@
 [version-image]: https://img.shields.io/github/v/release/entelecheia/eKoNLPy?sort=semver
 [release-date-image]: https://img.shields.io/github/release-date/entelecheia/eKoNLPy
 [release-url]: https://github.com/entelecheia/eKoNLPy/releases
+[pypi-downloads-image]: https://img.shields.io/pypi/dm/ekonlpy
 [codecov-image]: https://codecov.io/gh/entelecheia/eKoNLPy/branch/master/graph/badge.svg?token=8I4ORHRREL
 [codecov-url]: https://codecov.io/gh/entelecheia/eKoNLPy
 [zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.7809447.svg
