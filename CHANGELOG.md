@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.6 (2023-04-21)
+### Fix
+* **version:** Disable scm-version ([`6f95991`](https://github.com/entelecheia/eKoNLPy/commit/6f95991048a7a3ff0c9677e66765c58eae953317))
+
 ## v1.1.5 (2023-04-21)
 ### Fix
 * **version:** Add pre-commit command to make scm-version ([`0101ea3`](https://github.com/entelecheia/eKoNLPy/commit/0101ea370f956090bf9fd869fe12bc61d8c0ebe0))
