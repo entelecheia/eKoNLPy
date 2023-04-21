@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v1.1.5 (2023-04-21)
+### Fix
+* **version:** Add pre-commit command to make scm-version ([`0101ea3`](https://github.com/entelecheia/eKoNLPy/commit/0101ea370f956090bf9fd869fe12bc61d8c0ebe0))
+
+### Documentation
+* Update README for zenodo ([`b1b8a26`](https://github.com/entelecheia/eKoNLPy/commit/b1b8a269ada49ae59df542b52eb76f07ce0d1884))
+
 ## v1.1.4 (2023-04-08)
 ### Fix
 * Release for zenodo ([`2b0128d`](https://github.com/entelecheia/eKoNLPy/commit/2b0128d8ba995b119bfa5c3580f9b20acbdc31ab))
