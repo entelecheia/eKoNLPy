@@ -1,5 +1,9 @@
 <!--next-version-placeholder-->
 
+## v1.1.7 (2023-04-26)
+### Fix
+* Dependencies, scipy stats namespace ([`17e101c`](https://github.com/entelecheia/eKoNLPy/commit/17e101c4941924bd49e07a83ca420df48170fc73))
+
 ## v1.1.6 (2023-04-21)
 ### Fix
 * **version:** Disable scm-version ([`6f95991`](https://github.com/entelecheia/eKoNLPy/commit/6f95991048a7a3ff0c9677e66765c58eae953317))
