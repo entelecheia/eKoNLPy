@@ -23,11 +23,10 @@ fugashi = "^1.2.1"
 mecab-ko-dic = "^1.0.0"
 nltk = "^3.8.1"
 scipy = "^1.10.1"
-pandas = "^2.0.0"
+pandas = "^1.5.3"
 
 [tool.poetry.group.dev.dependencies]
 python-semantic-release = "^7.33.1"
-setuptools-scm = "^7.1.0"
 isort = "^5.12.0"
 black = "^23.1.0"
 flake8 = "^6.0.0"
@@ -145,5 +144,5 @@ build_command = "poetry build --no-cache"
 hvcs = "github"                                                       # hosting version control system, gitlab is also supported
 
 [build-system]
-requires = ["poetry-core>=1.0.0", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = 'setuptools.build_meta'
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

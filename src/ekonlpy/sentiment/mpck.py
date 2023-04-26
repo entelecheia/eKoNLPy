@@ -13,7 +13,7 @@ from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 from nltk.metrics.scores import precision, recall
 from nltk.probability import ConditionalFreqDist, FreqDist
-from scipy.stats.stats import pearsonr, spearmanr
+from scipy.stats import pearsonr, spearmanr
 
 from ..data.tagset import aux_tags
 from ..tag import Mecab
