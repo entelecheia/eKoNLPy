@@ -27,7 +27,7 @@ class ExtTagger:
                 cskip_chk_tags,
                 cskip_tags,
                 cdictionary,
-            ):
+        ):
             tokens_org = ctokens
             num_tokens = len(ctokens)
             tokens_new = []
