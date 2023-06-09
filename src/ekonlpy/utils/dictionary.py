@@ -44,7 +44,7 @@ class TermDictionary:
                     words = {word.strip().lower() for word in f}
                     return words
             except Exception as e:
-                print("load_dictionary error: %s" % e)
+                print(f"load_dictionary error: {e}")
                 return set()
 
         wordset = self._pos2words.get(tag, set())
@@ -97,9 +97,6 @@ class TermDictionary:
         :return: True if the word exists in the dictionary under the specified tag or any tag, False otherwise
         """
         if tag in self._pos2words:
-            return True if word.lower() in self._pos2words[tag] else False
+            return word.lower() in self._pos2words[tag]
         else:
-            for tag, words in self._pos2words.items():
-                if word.lower() in words:
-                    return True
-            return False
+            return any(word.lower() in words for tag, words in self._pos2words.items())

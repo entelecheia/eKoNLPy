@@ -135,15 +135,13 @@ class MecabDicConfig:
             df = pd.DataFrame(self.userdic.values())
             df.to_csv(save_path, header=False, index=False)
             self.userdic_path = save_path
-            print("Saved the userdic to {}".format(save_path))
+            print(f"Saved the userdic to {save_path}")
         else:
             print("No userdic to save...")
 
     def build_userdic(self, built_userdic_path, userdic_path=None):
         if userdic_path:
             self.userdic_path = userdic_path
-        args = '-d "{}" -u "{}" {}'.format(
-            self.dicdir, built_userdic_path, self.userdic_path
-        )
+        args = f'-d "{self.dicdir}" -u "{built_userdic_path}" {self.userdic_path}'
         # print(args)
         subprocess.run(["fugashi-build-dict", args])

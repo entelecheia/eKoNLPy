@@ -91,13 +91,13 @@ class KTokenizer(BaseTokenizer):
         tokens = [w for w in tokens if w.split("/")[1] not in self._skiptags]
         for pos in range(len(tokens)):
             for gram in range(1, self._ngram + 1):
-                token = self.get_ngram(tokens, pos, gram)
-                if token:
-                    if self._vocab is None:
+                if token := self.get_ngram(tokens, pos, gram):
+                    if (
+                        self._vocab is not None
+                        and token in self._vocab
+                        or self._vocab is None
+                    ):
                         ngram_tokens.append(token)
-                    else:
-                        if token in self._vocab:
-                            ngram_tokens.append(token)
         return ngram_tokens
 
     def get_ngram(self, tokens, pos, gram):
@@ -114,7 +114,7 @@ class KTokenizer(BaseTokenizer):
         return self.align_morpheme(self._tagger.pos(dataset))
 
     def align_morpheme(self, morpheme):
-        return ["{}/{}".format(w, t) for w, t in morpheme]
+        return [f"{w}/{t}" for w, t in morpheme]
 
 
 class MPTokenizer(BaseTokenizer):
@@ -136,10 +136,7 @@ class MPTokenizer(BaseTokenizer):
         self._delimiter = ";"
         self._ngram = self.KINDS[self._kind]
         self._tagger = Mecab()
-        if vocab:
-            self._vocab = vocab
-        else:
-            self._vocab = self.get_vocab(self.FILES["vocab"])
+        self._vocab = vocab if vocab else self.get_vocab(self.FILES["vocab"])
         self._wordset = self.get_wordset(self.FILES["wordset"])
         self._start_tags = {"NNG", "VA", "VAX", "MAG"}
         self._noun_tags = {"NNG"}
@@ -161,25 +158,21 @@ class MPTokenizer(BaseTokenizer):
 
         for pos in range(len(tokens)):
             for gram in range(self._min_ngram, self._ngram + 1):
-                token = self.get_ngram(tokens, pos, gram)
-                if token:
-                    if self._keep_overlapping_ngram:
+                if token := self.get_ngram(tokens, pos, gram):
+                    if (
+                        not self._keep_overlapping_ngram
+                        and token in self._vocab
+                        or self._keep_overlapping_ngram
+                    ):
                         ngram_tokens.append(token)
-                    else:
-                        if token in self._vocab:
-                            ngram_tokens.append(token)
         if not self._keep_overlapping_ngram:
             filtered_tokens = []
-            if len(ngram_tokens) > 0:
+            if ngram_tokens:
                 ngram_tokens = sorted(
                     ngram_tokens, key=lambda item: len(item), reverse=True
                 )
                 for token in ngram_tokens:
-                    existing_token = False
-                    for check_token in filtered_tokens:
-                        if token in check_token:
-                            existing_token = True
-                            break
+                    existing_token = any(token in check_token for check_token in filtered_tokens)
                     if not existing_token:
                         filtered_tokens.append(token)
             ngram_tokens = filtered_tokens
@@ -203,42 +196,37 @@ class MPTokenizer(BaseTokenizer):
         check_noun = False
 
         tag = token.split("/")[1] if "/" in token else None
-        if tag in self._start_tags:
-            if tag in self._noun_tags:
-                check_noun = True
-            for i in range(1, gram):
-                if tokens[pos + i] != tokens[pos + i - 1]:
-                    tag = (
-                        tokens[pos + i].split("/")[1]
-                        if "/" in tokens[pos + i]
-                        else None
-                    )
-                    if tag in self._noun_tags:
-                        check_noun = True
-                    token += self._delimiter + tokens[pos + i]
-            if check_noun:
-                return token
-            else:
-                return None
-        else:
+        if tag not in self._start_tags:
             return None
+        if tag in self._noun_tags:
+            check_noun = True
+        for i in range(1, gram):
+            if tokens[pos + i] != tokens[pos + i - 1]:
+                tag = (
+                    tokens[pos + i].split("/")[1]
+                    if "/" in tokens[pos + i]
+                    else None
+                )
+                if tag in self._noun_tags:
+                    check_noun = True
+                token += self._delimiter + tokens[pos + i]
+        return token if check_noun else None
 
     def get_wordset(self, files):
         wordset = set()
         for file in files:
-            fin = open(os.path.join(LEXICON_PATH, file), "r", encoding="utf-8")
-            for line in fin.readlines():
-                word = line.strip().split()[0]
-                if len(word) > 1:
-                    wordset.add(word)
-            fin.close()
+            with open(os.path.join(LEXICON_PATH, file), "r", encoding="utf-8") as fin:
+                for line in fin:
+                    word = line.strip().split()[0]
+                    if len(word) > 1:
+                        wordset.add(word)
         return wordset
 
     def get_vocab(self, file):
         vocab = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
         with open(vocab_path, "r", encoding="utf-8") as f:
-            for i, line in enumerate(f):
+            for line in f:
                 w = line.strip().split()
                 if len(w[0]) > 0:
                     vocab[w[0]] = w[1]
@@ -279,15 +267,14 @@ class Tokenizer(BaseTokenizer):
         ]
         stopset = set()
         for f in files:
-            fin = open("%s/%s" % (LEXICON_PATH, f), "rb")
-            for line in fin.readlines():
-                line = line.decode(encoding="latin-1")
-                match = re.search(r"(\w+)", line)
-                if match is None:
-                    continue
-                word = match.group(1)
-                stopset.add(self._stemmer.stem(word.lower()))
-            fin.close()
+            with open(f"{LEXICON_PATH}/{f}", "rb") as fin:
+                for line in fin:
+                    line = line.decode(encoding="latin-1")
+                    match = re.search(r"(\w+)", line)
+                    if match is None:
+                        continue
+                    word = match[1]
+                    stopset.add(self._stemmer.stem(word.lower()))
         return stopset
 
 
@@ -303,10 +290,15 @@ def calc_polarity(scores, by_count=True):
     s_pos = sum(pos_score)
     s_neg = sum(neg_score)
 
-    s_pol = (
+    return (
         (s_pos + s_neg)
         * 1.0
-        / (((s_pos - s_neg) if by_count else (len(pos_score) + len(pos_score))) + eps)
+        / (
+            (
+                (s_pos - s_neg)
+                if by_count
+                else (len(pos_score) + len(pos_score))
+            )
+            + eps
+        )
     )
-
-    return s_pol

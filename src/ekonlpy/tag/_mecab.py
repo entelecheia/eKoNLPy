@@ -196,17 +196,13 @@ class Mecab:
             tagged = self.lemmatize(tagged)
         if exclude_terms:
             return [
-                "{}/{}".format(w.lower(), t.split("+")[0])
-                if not remove_tag
-                else w.lower()
+                f'{w.lower()}/{t.split("+")[0]}' if not remove_tag else w.lower()
                 for w, t in tagged
                 if t in self._sent_tags and not self._terms.exists(w)
             ]
         else:
             return [
-                "{}/{}".format(w.lower(), t.split("+")[0])
-                if not remove_tag
-                else w.lower()
+                f'{w.lower()}/{t.split("+")[0]}' if not remove_tag else w.lower()
                 for w, t in tagged
                 if t in self._sent_tags
             ]
@@ -219,13 +215,13 @@ class Mecab:
     #     return self._base.phrases(phrase)
 
     def add_dictionary(self, words, tag, force=False):
-        if (not force) and (not (tag in self.tagset)):
-            raise ValueError("%s is not available tag" % tag)
+        if not force and tag not in self.tagset:
+            raise ValueError(f"{tag} is not available tag")
         self._dictionary.add_dictionary(words, tag)
 
     def load_dictionary(self, fname: str, tag: str) -> None:
-        if not (tag in self.tagset):
-            raise ValueError("%s is not available tag" % tag)
+        if tag not in self.tagset:
+            raise ValueError(f"{tag} is not available tag")
         self._dictionary.load_dictionary(fname, tag)
 
     def add_terms(self, words: List[str], tag: str, force: bool = False):
@@ -233,13 +229,13 @@ class Mecab:
         Add words to the dictionary with the given tag. If force is
         set, tags not in the dictionary will be added.
         """
-        if (not force) and (not (tag in self._term_tags)):
-            raise ValueError("%s is not available tag" % tag)
+        if not force and tag not in self._term_tags:
+            raise ValueError(f"{tag} is not available tag")
         self._dictionary.add_dictionary(words, tag)
 
     def load_terms(self, fname, tag):
-        if not (tag in self._term_tags):
-            raise ValueError("%s is not available tag" % tag)
+        if tag not in self._term_tags:
+            raise ValueError(f"{tag} is not available tag")
         self._dictionary.load_dictionary(fname, tag)
 
     def load_synonyms(self, fname, tag="NNG"):

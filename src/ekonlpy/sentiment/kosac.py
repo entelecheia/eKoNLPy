@@ -21,10 +21,10 @@ class KSA(BaseDict):
                 w = word[0]
                 if w == "ngram":
                     continue
-                p = float(word[6].strip())
-                n = float(word[3].strip())
-                s = p - n
                 if len(w) > 1:
+                    n = float(word[3].strip())
+                    p = float(word[6].strip())
+                    s = p - n
                     if s > 0:
                         self._posdict[w] = 1
                         self._poldict[w] = s
@@ -78,23 +78,17 @@ class KOSAC(object):
                     # skip header
                     if lno == 0:
                         headers = line.strip().split(delimiter)
-                    else:
-                        if len(line) > 0:
-                            row = line.strip().split(delimiter)
-                            ngram = row[0]
-                            # ngram_split = tuple(ngram.split(';'))
-                            data = {}
-                            for i, header in enumerate(headers):
-                                if i > 0:
-                                    data[header] = row[i]
-                            vocab[ngram] = data
+                    elif len(line) > 0:
+                        row = line.strip().split(delimiter)
+                        data = {header: row[i] for i, header in enumerate(headers) if i > 0}
+                        vocab[row[0]] = data
         return vocab
 
     def morpheme(self, dataset):
         return self.align_morpheme(self._tagger.pos(dataset))
 
     def align_morpheme(self, morpheme):
-        return ["{}/{}".format(w, t) for w, t in morpheme]
+        return [f"{w}/{t}" for w, t in morpheme]
 
     def percentage(self, obj):
         return {k: v / sum(obj.values()) for k, v in obj.items()}
@@ -102,10 +96,10 @@ class KOSAC(object):
     def calc(self, keypairs, source, target, func):
         for keypair in keypairs:
             sourcekey = keypair[0]
-            targetkey = keypair[1]
             if sourcekey in source:
                 sourcedata = source[sourcekey]
                 sourcedata = float(sourcedata)
+                targetkey = keypair[1]
                 target[targetkey] = func(sourcedata, target[targetkey])
         return target
 
@@ -175,8 +169,7 @@ class KOSAC(object):
         tokens = [w for w in tokens if w.split("/")[1] not in self._skiptags]
         for pos in range(len(tokens)):
             for gram in range(1, self._ngram + 1):
-                token = self.get_ngram(tokens, pos, gram)
-                if token:
+                if token := self.get_ngram(tokens, pos, gram):
                     ngram_tokens.append(token)
         return ngram_tokens
 
