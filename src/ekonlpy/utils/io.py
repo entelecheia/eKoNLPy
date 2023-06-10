@@ -76,7 +76,7 @@ def save_vocab(vocab: Dict[str, str], file_path: str, delimiter: str = ",") -> N
     :param file_path: File name to save vocabulary
     :param delimiter: Delimiter used to separate words and their values
     """
-    vocab = [(w, c) for w, c in vocab.items()]
+    vocab = list(vocab.items())
     with open(file_path, "w", encoding="utf-8") as f:
         for w, c in vocab:
             f.write(w + delimiter + str(c) + "\n")
@@ -89,9 +89,7 @@ def save_wordlist(words: List[str], file_path: str) -> None:
     :param words: List of words to be saved
     :param file_path: File name to save the list of words
     """
-    print(
-        "Save the list to the file: {}, no. of words: {}".format(file_path, len(words))
-    )
+    print(f"Save the list to the file: {file_path}, no. of words: {len(words)}")
     with open(file_path, "w", encoding="utf-8") as f:
         for word in words:
             f.write(word + "\n")
@@ -137,22 +135,14 @@ def load_wordlist(
     if max_ngram:
         words = [word for word in words if len(word.split(";")) <= max_ngram]
 
-    if sort:
-        words = sorted(set(words))
-    else:
-        words = set(words)
-
-    print("Loaded the file: {}, No. of words: {}".format(file_path, len(words)))
+    words = sorted(set(words)) if sort else set(words)
+    print(f"Loaded the file: {file_path}, No. of words: {len(words)}")
 
     if rewrite:
         with open(file_path, "w", encoding="utf-8") as f:
             for word in words:
                 f.write(word + "\n")
-        print(
-            "Saved the words to the file: {}, No. of words: {}".format(
-                file_path, len(words)
-            )
-        )
+        print(f"Saved the words to the file: {file_path}, No. of words: {len(words)}")
 
     words = [word for word in words if not word.startswith("#")]
     words = [
@@ -195,16 +185,13 @@ def check_word_inclusion(
                 if w in check_list:
                     return True
     else:
-        if endswith:
-            for check_word in check_list:
+        for check_word in check_list:
+            if endswith:
                 if word.endswith(check_word.lower()):
                     return True
-        elif startswith:
-            for check_word in check_list:
+            elif startswith:
                 if word.startswith(check_word.lower()):
                     return True
-        else:
-            for check_word in check_list:
-                if check_word.lower() in word:
-                    return True
+            elif check_word.lower() in word:
+                return True
     return False

@@ -1,0 +1,11 @@
+.copierignore
+.tasks-extra.toml
+CHANGELOG.md
+pyproject.toml
+docs/index.md
+mkdocs.yaml
+README.md
+.gitignore
+.pre-commit-config.yaml
+CONTRIBUTING.md
+LICENSE

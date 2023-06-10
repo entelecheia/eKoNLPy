@@ -1,19 +1,33 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.1.9
+_commit: v0.8.6
 _src_path: gh:entelecheia/hyperfast-python-template
 author: Young Joon Lee
+build_and_release: true
+code_template_answers_file: .copier-hyfi-config.yaml
+code_template_source: ''
 copyright_year: 2023
 documentaion_tool: mkdocs
 documentation_url: https://ekonlpy.entelecheia.ai
 email: entelecheia@hotmail.com
-friendly_name: eKoNLPy
+favicon_path: https://assets.entelecheia.ai/favicon.png
+friendly_name: 'eKoNLPy: Korean NLP Python Library for Economic Analysis'
 github_repo_name: eKoNLPy
 github_username: entelecheia
+google_analytics_id: ''
+logo_path: https://assets.entelecheia.ai/favicon.png
 package_name: ekonlpy
-project_description: This is a Korean natural language processing toolkit for economic
-    analysis. It is based on Mecab and Mecab-ko-dic.
+project_description: eKoNLPy is a Korean Natural Language Processing (NLP) Python
+    library specifically designed for economic analysis. It extends the functionality
+    of the MeCab tagger from KoNLPy to improve the handling of economic terms, financial
+    institutions, and company names, classifying them as single nouns. Additionally,
+    it incorporates sentiment analysis features to determine the tone of monetary
+    policy statements, such as Hawkish or Dovish.
 project_license: MIT
 project_name: eKoNLPy
 project_short_description: A Korean natural language processing toolkit for economic
     analysis
+upload_to_release: true
+upload_to_repository: true
+use_launch_buttons: false
+use_source_code_skeleton: false
 

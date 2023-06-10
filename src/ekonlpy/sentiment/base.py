@@ -2,11 +2,12 @@
 This module contains base classes for dictionaries.
 """
 
+
 import abc
 
 from ..utils.io import installpath
 
-LEXICON_PATH = "%s/data/lexicon" % installpath
+LEXICON_PATH = f"{installpath}/data/lexicon"
 
 
 class BaseDict(object):
@@ -66,7 +67,7 @@ class BaseDict(object):
         else:
             self._tokenizer = tokenizer
 
-        assert len(self._posdict) > 0 and len(self._negdict) > 0
+        assert self._posdict and self._negdict
 
     def tokenize(self, text):
         """
@@ -98,18 +99,14 @@ class BaseDict(object):
 
         :returns: int
         """
-        if by_count:
-            if term in self._posdict.keys():
-                return self._posdict[term]
-            elif term in self._negdict.keys():
-                return self._negdict[term]
-            else:
-                return 0
+        if not by_count:
+            return self._poldict[term] if term in self._poldict.keys() else 0
+        if term in self._posdict.keys():
+            return self._posdict[term]
+        elif term in self._negdict.keys():
+            return self._negdict[term]
         else:
-            if term in self._poldict.keys():
-                return self._poldict[term]
-            else:
-                return 0
+            return 0
 
     def get_score(self, terms, by_count=True):
         """Get score for a list of terms.
@@ -120,7 +117,7 @@ class BaseDict(object):
 
         :returns: dict
         """
-        assert isinstance(terms, list) or isinstance(terms, tuple)
+        assert isinstance(terms, (list, tuple))
         score_li = [self._get_score(t, by_count) for t in terms]
         pos_score_li = [s for s in score_li if s > 0]
         neg_score_li = [s for s in score_li if s < 0]

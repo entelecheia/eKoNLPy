@@ -67,10 +67,10 @@ class MeCab:  # APIs are inspried by KoNLPy
         if not dicdir:
             dicdir = DICDIR
         self.dicdir = dicdir
-        MECAB_ARGS = '-r "{}" -d "{}" '.format(mecabrc, dicdir)
+        MECAB_ARGS = f'-r "{mecabrc}" -d "{dicdir}" '
         if userdic_path:
             self.userdic_path = userdic_path
-            MECAB_ARGS += '-u "{}" '.format(userdic_path)
+            MECAB_ARGS += f'-u "{userdic_path}" '
         if self.verbose:
             log.info(
                 f"Mecab uses system dictionary: {dicdir}, user dictionary: {userdic_path}"
@@ -124,21 +124,20 @@ class MeCab:  # APIs are inspried by KoNLPy
         else:
             res = self._pos(sentence, flatten=flatten)
 
-        return [s[0] + "/" + s[1] if concat_surface_and_pos else s for s in res]
+        return [f"{s[0]}/{s[1]}" if concat_surface_and_pos else s for s in res]
 
     def _pos(self, sentence, flatten=True):
         if flatten:
             return [(surface, feature.pos) for surface, feature in self.parse(sentence)]
-        else:
-            res = []
-            for surface, feature in self.parse(sentence):
-                if feature.expression is None:
-                    res.append((surface, feature.pos))
-                else:
-                    for elem in feature.expression.split("+"):
-                        s = elem.split("/")
-                        res.append((s[0], s[1]))
-            return res
+        res = []
+        for surface, feature in self.parse(sentence):
+            if feature.expression is None:
+                res.append((surface, feature.pos))
+            else:
+                for elem in feature.expression.split("+"):
+                    s = elem.split("/")
+                    res.append((s[0], s[1]))
+        return res
 
     def morphs(self, sentence, flatten=True, include_whitespace_token=True):
         return [

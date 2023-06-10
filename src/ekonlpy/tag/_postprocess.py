@@ -49,7 +49,7 @@ class Postprocessor:
             words = [
                 w
                 for w in words
-                if not ((w in self.stopwords) or (w[0] in self.stopwords))
+                if w not in self.stopwords and w[0] not in self.stopwords
             ]
         if self.passwords:
             words = [

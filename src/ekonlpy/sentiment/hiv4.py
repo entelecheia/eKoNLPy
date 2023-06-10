@@ -21,13 +21,10 @@ class HIV4(BaseDict):
         data = pd.read_csv(self.PATH, low_memory=False)
         for category in ["Positiv", "Negativ"]:
             terms = data["Entry"][data[category] == category]
-            if category == "Positiv":
-                for t in terms:
-                    t = self.tokenize(t)
-                    if len(t) > 0:
+            for t in terms:
+                t = self.tokenize(t)
+                if len(t) > 0:
+                    if category == "Positiv":
                         self._posdict[t[0]] = 1
-            else:
-                for t in terms:
-                    t = self.tokenize(t)
-                    if len(t) > 0:
+                    else:
                         self._negdict[t[0]] = -1

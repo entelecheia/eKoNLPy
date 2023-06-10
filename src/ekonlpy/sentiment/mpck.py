@@ -2,6 +2,7 @@
 This module contains classes for monetary policy sentiment classifier.
 """
 
+
 import os
 import pickle
 from collections import defaultdict, namedtuple
@@ -20,7 +21,7 @@ from ..tag import Mecab
 from ..utils.io import installpath
 from .base import LEXICON_PATH
 
-MODEL_PATH = "%s/data/model" % installpath
+MODEL_PATH = f"{installpath}/data/model"
 
 
 class MPCK(object):
@@ -51,7 +52,7 @@ class MPCK(object):
         vocab = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
         with open(vocab_path) as f:
-            for i, line in enumerate(f):
+            for line in f:
                 w = line.strip().split()
                 if len(w[0]) > 0:
                     vocab[w[0]] = w[1]
@@ -71,7 +72,7 @@ class MPCK(object):
     def save_classifier(self, file_path):
         with open(file_path, "wb") as f:
             pickle.dump(self.classifier, f)
-        print("Save the classifier to the file: {}".format(file_path))
+        print(f"Save the classifier to the file: {file_path}")
 
     def tokenize(self, text):
         tokens = self._tokenizer.sent_words(text)
@@ -90,22 +91,17 @@ class MPCK(object):
 
         for pos in range(len(tokens)):
             for gram in range(self._min_ngram, self._ngram + 1):
-                token = self.get_ngram(tokens, pos, gram)
-                if token:
+                if token := self.get_ngram(tokens, pos, gram):
                     if token in self._vocab:
                         ngram_tokens.append(token)
         if not keep_overlapping_ngram:
             filtered_tokens = []
-            if len(ngram_tokens) > 0:
+            if ngram_tokens:
                 ngram_tokens = sorted(
                     ngram_tokens, key=lambda item: len(item), reverse=True
                 )
                 for token in ngram_tokens:
-                    existing_token = False
-                    for check_token in filtered_tokens:
-                        if token in check_token:
-                            existing_token = True
-                            break
+                    existing_token = any(token in check_token for check_token in filtered_tokens)
                     if not existing_token:
                         filtered_tokens.append(token)
             ngram_tokens = filtered_tokens
@@ -121,25 +117,21 @@ class MPCK(object):
         check_noun = False
 
         tag = token.split("/")[1] if "/" in token else None
-        if tag in self._start_tags:
-            if tag in self._noun_tags:
-                check_noun = True
-            for i in range(1, gram):
-                if tokens[pos + i] != tokens[pos + i - 1]:
-                    tag = (
-                        tokens[pos + i].split("/")[1]
-                        if "/" in tokens[pos + i]
-                        else None
-                    )
-                    if tag in self._noun_tags:
-                        check_noun = True
-                    token += self._delimiter + tokens[pos + i]
-            if check_noun:
-                return token
-            else:
-                return None
-        else:
+        if tag not in self._start_tags:
             return None
+        if tag in self._noun_tags:
+            check_noun = True
+        for i in range(1, gram):
+            if tokens[pos + i] != tokens[pos + i - 1]:
+                tag = (
+                    tokens[pos + i].split("/")[1]
+                    if "/" in tokens[pos + i]
+                    else None
+                )
+                if tag in self._noun_tags:
+                    check_noun = True
+                token += self._delimiter + tokens[pos + i]
+        return token if check_noun else None
 
     def classify(self, tokens, intensity_cutoff=1.3):
         eps = 1e-6
@@ -165,7 +157,7 @@ class MPCK(object):
         cpdist = (
             self.classifier._feature_probdist
         )  # probability distribution for feature values given labels
-        fcnt = len(set([w for _, w in cpdist.keys()]))
+        fcnt = len({w for _, w in cpdist.keys()})
         feature_list = []
         epsilon = 1e-6
         feature = namedtuple("Feature", ["Word", "Label", "Polarity", "Intensity"])
@@ -228,15 +220,13 @@ class MPCK(object):
 
         if verbose:
             print(
-                "\nNo. of iterations: {}. feature function: {}, train ratio: {}, best words ratio: {}".format(
-                    iterations, feature_fn_name, train_ratio, best_words_ratio
-                )
+                f"\nNo. of iterations: {iterations}. feature function: {feature_fn_name}, train ratio: {train_ratio}, best words ratio: {best_words_ratio}"
             )
 
         clfs = []
         mlst = []
 
-        for i in range(iterations):
+        for _ in range(iterations):
             classifier, metrics = self.train_classifier(
                 dataset,
                 feature_fn_name=feature_fn_name,
@@ -262,12 +252,12 @@ class MPCK(object):
                 for key in metrics.keys():
                     mean_metrics[key] = metrics[key]
             else:
-                for key in mean_metrics.keys():
-                    mean_metrics[key] += metrics[key]
-        for key in mean_metrics.keys():
+                for key, value in mean_metrics.items():
+                    value += metrics[key]
+        for key in mean_metrics:
             mean_metrics[key] = mean_metrics[key] / len(mlst)
         if verbose:
-            print("Best classifier: {}".format(best_index))
+            print(f"Best classifier: {best_index}")
             print(mlst[best_index])
             print("- Average metrics of classifiers -")
             print(mean_metrics)
@@ -352,7 +342,7 @@ class MPCK(object):
             best = sorted(word_scores.items(), key=lambda item: item[1], reverse=True)[
                 :best_cnt
             ]
-            bestwords = set([w for w, s in best])
+            bestwords = {w for w, s in best}
             if feature_fn_name == "best_trigram_word_feats":
                 feat_fn = best_trigram_word_feats
             elif feature_fn_name == "best_bigram":

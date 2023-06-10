@@ -20,13 +20,13 @@ class ExtTagger:
 
     def pos(self, tokens):
         def ctagger(
-            ctokens,
-            max_ngram,
-            cnouns_tags,
-            cpass_tags,
-            cskip_chk_tags,
-            cskip_tags,
-            cdictionary,
+                ctokens,
+                max_ngram,
+                cnouns_tags,
+                cpass_tags,
+                cskip_chk_tags,
+                cskip_tags,
+                cdictionary,
         ):
             tokens_org = ctokens
             num_tokens = len(ctokens)
@@ -65,10 +65,7 @@ class ExtTagger:
                         for j in range(ngram):
                             if tmp_tags[j] not in cskip_tags:
                                 new_word += tokens_org[ipos + j][0]
-                            if tmp_tags[j] == "SN":
-                                num_word += "n"
-                            else:
-                                num_word += tokens_org[ipos + j][0]
+                            num_word += "n" if tmp_tags[j] == "SN" else tokens_org[ipos + j][0]
                         dict_tag = cdictionary.get_tags(num_word.lower())
                         if dict_tag:
                             new_word = num_word

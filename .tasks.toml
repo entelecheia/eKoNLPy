@@ -1,0 +1,91 @@
+[tool.poe.tasks.format-black]
+cmd = "black ."
+help = "format code with black"
+
+[tool.poe.tasks.format-isort]
+cmd = "isort ."
+help = "sort imports with isort"
+
+[tool.poe.tasks.format]
+sequence = ["format-black", "format-isort"]
+help = "format code with black and isort"
+
+[tool.poe.tasks.lint-black]
+cmd = "black --check --diff ."
+help = "check code formatting with black"
+
+[tool.poe.tasks.lint-flake8]
+cmd = "flake8 ."
+help = "check code style with flake8"
+
+[tool.poe.tasks.lint-isort]
+cmd = "isort --check-only --diff ."
+help = "check import sorting with isort"
+
+[tool.poe.tasks.lint-mypy]
+cmd = "mypy --config-file project.toml ."
+help = "check types with mypy"
+
+[tool.poe.tasks.lint-mypy-reports]
+cmd = "mypy --config-file project.toml . --html-report ./tests/mypy-report"
+help = "generate an HTML report of the type (mypy) checker"
+
+[tool.poe.tasks.lint]
+sequence = ["lint-black", "lint-flake8", "lint-isort"]
+help = "check code style with flake8, black, and isort"
+
+[tool.poe.tasks.tests]
+cmd = "pytest --doctest-modules"
+help = "run tests with pytest"
+
+[tool.poe.tasks.tests-cov]
+cmd = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html"
+help = "run tests with pytest and generate a coverage report"
+
+[tool.poe.tasks.tests-cov-fail]
+shell = "pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt"
+help = "run tests with pytest and generate a coverage report, fail if coverage is below 80%"
+
+[tool.poe.tasks.clean-cov]
+cmd = "rm -rf .coverage tests/htmlcov tests/pytest.xml tests/pytest-coverage.txt"
+help = "remove coverage reports"
+
+[tool.poe.tasks.clean-pycache]
+cmd = "find . -type d -name __pycache__ -exec rm -rf {} +"
+help = "remove __pycache__ directories"
+
+[tool.poe.tasks.clean-build]
+cmd = "rm -rf build dist *.egg-info"
+help = "remove build/python artifacts"
+
+[tool.poe.tasks.clean-docs]
+cmd = "rm -rf book/_build docs/_build _site"
+help = "remove documentation artifacts"
+
+[tool.poe.tasks.clean]
+sequence = ["clean-cov", "clean-pycache", "clean-build", "clean-docs"]
+help = "remove build artifacts and coverage reports"
+
+[tool.poe.tasks.run]
+cmd = "ekonlpy"
+help = "run the main program"
+
+[tool.poe.tasks.build]
+cmd = "poetry build"
+help = "build the package"
+
+[tool.poe.tasks.install]
+cmd = "poetry install --without dev"
+help = "install dependencies"
+
+[tool.poe.tasks.install-dev]
+cmd = "poetry install --with dev"
+help = "install dev dependencies"
+
+[tool.poe.tasks.update]
+cmd = "poetry update"
+help = "update dependencies"
+
+[tool.poe.tasks.lock]
+cmd = "poetry lock"
+help = "lock dependencies"

@@ -27,11 +27,10 @@ class MPKO(BaseDict):
         kind = kind if kind in self.KINDS.keys() else 0
         if intensity_cutoff is not None:
             self._intensity_cutoff = intensity_cutoff
+        elif kind in self.INTENSITY_KINDS.keys():
+            self._intensity_cutoff = self.INTENSITY_KINDS[kind]
         else:
-            if kind in self.INTENSITY_KINDS.keys():
-                self._intensity_cutoff = self.INTENSITY_KINDS[kind]
-            else:
-                self._intensity_cutoff = 1.1
+            self._intensity_cutoff = 1.1
         self._intensity_cutoff = min(2, self._intensity_cutoff)
         # print('Initialize the dictionary using a lexicon file: {}'.format(self.KINDS[kind]))
         path = os.path.join(LEXICON_PATH, "mpko", self.KINDS[kind])

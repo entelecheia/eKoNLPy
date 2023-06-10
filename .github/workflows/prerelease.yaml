@@ -11,6 +11,9 @@ on:
       - alpha*
       - rc*
       - nigtly*
+    paths:
+      - 'src/**'
+      - 'pyproject.toml'
 
 permissions:
   contents: write

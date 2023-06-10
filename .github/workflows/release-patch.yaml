@@ -8,6 +8,9 @@ on:
     branches:
       - patch*
       - hotfix*
+    paths:
+      - 'src/**'
+      - 'pyproject.toml'
 
 permissions:
   contents: write
