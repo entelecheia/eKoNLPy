@@ -10,6 +10,7 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - ".github/workflows/lint_and_test.yaml"
 
 jobs:
   build:
@@ -73,6 +74,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
