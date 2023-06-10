@@ -40,21 +40,25 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "poetry"
 
+      # initialize
+      - name: Initialize
+        run: make initialize
+
       # install dependencies
       - name: Install dependencies for linters
-        run: make install-dev
+        run: poe install-dev
 
       # run linters
       - name: Run linters
         run: |
           set -o pipefail
-          make lint
+          poe lint
 
       # run unit tests
       - name: Run unit-tests
         run: |
           set -o pipefail
-          make tests-cov-fail
+          poe tests-cov-fail
 
       # add content to GitHub summary
       - name: Pytest coverage GitHub summary
@@ -62,10 +66,9 @@ jobs:
           set -o pipefail
           echo '# Coverage report' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          cat pytest-coverage.txt >> $GITHUB_STEP_SUMMARY
+          cat tests/pytest-coverage.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
           echo '\n\n\n'
-          echo '${{ steps.coverageComment.outputs.coverageHtml }}' >> $GITHUB_STEP_SUMMARY
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
