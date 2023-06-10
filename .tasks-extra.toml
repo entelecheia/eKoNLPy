@@ -1,0 +1,3 @@
+[tool.poe.tasks.codecov-validate]
+cmd = "curl -X POST --data-binary @codecov.yml https://codecov.io/validate"
+help = "Validate codecov.yml"
