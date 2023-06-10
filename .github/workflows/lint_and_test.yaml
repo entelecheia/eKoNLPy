@@ -10,6 +10,7 @@ on:
     paths:
       - "src/**"
       - "tests/**"
+      - ".github/workflows/lint_and_test.yaml"
 
 jobs:
   build:
