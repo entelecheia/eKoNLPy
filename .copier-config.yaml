@@ -9,12 +9,12 @@ copyright_year: 2023
 documentaion_tool: mkdocs
 documentation_url: https://ekonlpy.entelecheia.ai
 email: entelecheia@hotmail.com
-favicon_path: ''
+favicon_path: https://assets.entelecheia.ai/favicon.png
 friendly_name: 'eKoNLPy: Korean NLP Python Library for Economic Analysis'
 github_repo_name: eKoNLPy
 github_username: entelecheia
 google_analytics_id: ''
-logo_path: ''
+logo_path: https://assets.entelecheia.ai/favicon.png
 package_name: ekonlpy
 project_description: eKoNLPy is a Korean Natural Language Processing (NLP) Python
     library specifically designed for economic analysis. It extends the functionality

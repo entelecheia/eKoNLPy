@@ -1,4 +1,18 @@
 site_name: eKoNLPy
+site_url: https://ekonlpy.entelecheia.ai
+site_author: Young Joon Lee <entelecheia@hotmail.com>
+site_description: >-
+  eKoNLPy is a Korean Natural Language Processing (NLP) Python
+    library specifically designed for economic analysis. It extends the functionality
+    of the MeCab tagger from KoNLPy to improve the handling of economic terms, financial
+    institutions, and company names, classifying them as single nouns. Additionally,
+    it incorporates sentiment analysis features to determine the tone of monetary
+    policy statements, such as Hawkish or Dovish.
+# Repository
+repo_name: entelecheia/eKoNLPy
+repo_url: https://github.com/entelecheia/eKoNLPy
+edit_uri: edit/master/docs/
+
 plugins:
   - search
   - mkdocstrings:
@@ -7,11 +21,59 @@ plugins:
         python:
           options:
             docstring_style: sphinx
+
 markdown_extensions:
   - markdown_include.include:
       base_path: .
+  - pymdownx.arithmatex:
+      generic: true
   - admonition
+  - pymdownx.caret
+  - pymdownx.details
+  # - pymdownx.emoji:
+  #     emoji_generator: "!!python/name:materialx.emoji.to_svg"
+  #     emoji_index: "!!python/name:materialx.emoji.twemoji"
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.snippets
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
 theme:
   name: material
+  favicon: https://assets.entelecheia.ai/favicon.png # favicon: Path to the favicon image
+  logo: https://assets.entelecheia.ai/favicon.png # logo: Path to the book logo
   palette:
     scheme: slate
+  features:
+    - navigation.expand
+    - navigation.indexes
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    # - content.tabs.link
+    - content.tooltips
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+
+extra:
+  analytics:
+    provider: google
+    property: G-VMN7QWCMSV
