@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v2.0.1 (2023-07-24)
+
+### Fix
+
+* **dependencies:** Update pandas version range in pyproject.toml ([`54082d7`](https://github.com/entelecheia/eKoNLPy/commit/54082d790a49f7d5ad41cec49354eb3cbd68c6cd))
+
 ## v2.0.0 (2023-07-24)
 
 ### Feature
