@@ -74,9 +74,9 @@ ekonlpy --input "안녕하세요"
 ### cf. MeCab POS Tagging (fugashi)
 
 ```python
-from ekonlpy import MeCab # Be careful! `C` is capital.
+from ekonlpy import Mecab
 
-mecab = Mecab(use_original_tagger=True)
+mecab = Mecab(use_original_tagger=True) # set use_original_tagger=True
 mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다.')
 ```
 
