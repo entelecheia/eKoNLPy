@@ -70,7 +70,8 @@ class Mecab(BaseMecab):
         DICDIR = mecab_ko_dic.DICDIR
         mecabrc = os.path.join(DICDIR, "mecabrc")
 
-        logger.debug("MeCab uses %s backend.", self.backend)
+        if self.verbose:
+            logger.debug("MeCab uses %s backend.", self.backend)
 
         if not dicdir:
             dicdir = DICDIR
@@ -85,9 +86,10 @@ class Mecab(BaseMecab):
             )
         try:
             self._tagger = _mecab.GenericTagger(MECAB_ARGS)  # type: ignore
-            dictionary_info = self._tagger.dictionary_info
-            sysdic_path = dictionary_info[0]["filename"]
-            logger.debug("Mecab is loaded from %s", sysdic_path)
+            if self.verbose:
+                dictionary_info = self._tagger.dictionary_info
+                sysdic_path = dictionary_info[0]["filename"]
+                logger.debug("Mecab is loaded from %s", sysdic_path)
         except RuntimeError as e:
             raise MeCabError(
                 'The MeCab dictionary does not exist at "%s". Is the dictionary correctly installed?\nYou can also try entering the dictionary path when initializing the MeCab class: "MeCab(\'/some/dic/path\')"'
