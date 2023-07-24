@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v2.0.2 (2023-07-24)
+
+### Fix
+
+* **mecab:** Ensure debugging messages appear only in verbose mode ([`7f76839`](https://github.com/entelecheia/eKoNLPy/commit/7f76839da95d3da431e81caa8a7715bf63d4e733))
+
 ## v2.0.1 (2023-07-24)
 
 ### Fix
