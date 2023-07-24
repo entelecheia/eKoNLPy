@@ -22,7 +22,6 @@
 [codecov-url]: https://codecov.io/gh/entelecheia/eKoNLPy
 [zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.7809447.svg
 [zenodo-url]: https://doi.org/10.5281/zenodo.7809447
-
 [repo-url]: https://github.com/entelecheia/eKoNLPy
 [pypi-url]: https://pypi.org/project/ekonlpy
 [docs-url]: https://ekonlpy.entelecheia.ai
@@ -34,7 +33,7 @@
 `eKoNLPy` is a Korean Natural Language Processing (NLP) Python library specifically designed for economic analysis. It extends the functionality of the `MeCab` tagger from KoNLPy to improve the handling of economic terms, financial institutions, and company names, classifying them as single nouns. Additionally, it incorporates sentiment analysis features to determine the tone of monetary policy statements, such as Hawkish or Dovish.
 
 > **Note**
-> 
+>
 > eKoNLPy is built on the [fugashi](https://github.com/polm/fugashi) and [mecab-ko-dic](https://github.com/LuminosoInsight/mecab-ko-dic) libraries. For more information on using the `Mecab` tagger, please refer to the [fugashi documentation](https://github.com/polm/fugashi). As eKoNLPy no longer relies on the [KoNLPy](https://konlpy.org) library, Java is not required for its use. This makes eKoNLPy compatible with Windows, Linux, and Mac OS, without the need for Java installation. You can also use eKoNLPy on Google Colab.
 
 If you wish to tokenize general Korean text with eKoNLPy, you do not need to install the `KoNLPy` library. Instead, utilize `ekonlpy.mecab.MeCab` as a replacement for `ekonlpy.tag.Mecab`.
@@ -56,7 +55,7 @@ pip install ekonlpy
 To use the part of speech tagging feature, input `Mecab.pos(phrase)` just like KoNLPy. First, the input is processed using KoNLPy's Mecab morpheme analyzer. Then, if a combination of consecutive tokens matches a term in the user dictionary, the phrase is separated into compound nouns.
 
 ```python
-from ekonlpy.tag import Mecab
+from ekonlpy import Mecab
 
 mecab = Mecab()
 mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다.')
@@ -67,9 +66,9 @@ mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의
 ### cf. MeCab POS Tagging (fugashi)
 
 ```python
-from ekonlpy.mecab import MeCab # Be careful! `C` is capital.
+from ekonlpy import MeCab # Be careful! `C` is capital.
 
-mecab = MeCab()
+mecab = Mecab(use_original_tagger=True)
 mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다.')
 ```
 
