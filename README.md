@@ -34,6 +34,10 @@
 
 > **Note**
 >
+> From the version 2.0.0, eKoNLPy intergrate the extended tagger with the original tagger. If you want to use the original tagger, please set `use_original_tagger=True` when you create the instance of `Mecab` class. Additionally, the `Mecab` class can be directly imported from `ekonlpy` module. The default input text parameter of `Mecab.pos()` is changed from `phrase` to `text` to be consistent with the original tagger.
+
+> **Note**
+>
 > eKoNLPy is built on the [fugashi](https://github.com/polm/fugashi) and [mecab-ko-dic](https://github.com/LuminosoInsight/mecab-ko-dic) libraries. For more information on using the `Mecab` tagger, please refer to the [fugashi documentation](https://github.com/polm/fugashi). As eKoNLPy no longer relies on the [KoNLPy](https://konlpy.org) library, Java is not required for its use. This makes eKoNLPy compatible with Windows, Linux, and Mac OS, without the need for Java installation. You can also use eKoNLPy on Google Colab.
 
 If you wish to tokenize general Korean text with eKoNLPy, you do not need to install the `KoNLPy` library. Instead, utilize `ekonlpy.mecab.MeCab` as a replacement for `ekonlpy.tag.Mecab`.
