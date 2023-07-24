@@ -17,6 +17,9 @@ include = [
     "src/ekonlpy/data/model/*",
 ]
 
+[tool.poetry.scripts]
+ekonlpy = "ekonlpy.__cli__:main"
+
 [tool.poe]
 include = [".tasks.toml", ".tasks-extra.toml"]
 
@@ -27,11 +30,12 @@ mecab-ko-dic = "^1.0.0"
 nltk = "^3.8.1"
 scipy = "^1.10.1"
 pandas = "^1.5.3"
+click = "^8.1.6"
 
 [tool.poetry.group.dev.dependencies]
 python-semantic-release = "^7.33.1"
 isort = "^5.12.0"
-black = "^23.1.0"
+black = ">=23.0.0,<=23.3.0"
 flake8 = "^6.0.0"
 mypy = "^1.0.0"
 flake8-pyproject = "^1.2.2"
@@ -134,7 +138,7 @@ branch = "master"
 version_toml = "pyproject.toml:tool.poetry.version"
 version_variable = "src/ekonlpy/_version.py:__version__"
 version_source = "tag"
-commit_version_number = true                                          # required for version_source = "tag"
+commit_version_number = true                                    # required for version_source = "tag"
 commit_subject = "chore(release): :rocket: {version} [skip ci]"
 prerelease_tag = "rc"
 major_on_zero = true
@@ -143,7 +147,7 @@ changelog_file = "CHANGELOG.md"
 upload_to_repository = true
 upload_to_release = true
 build_command = "poetry build --no-cache"
-hvcs = "github"                                                       # hosting version control system, gitlab is also supported
+hvcs = "github"                                                 # hosting version control system, gitlab is also supported
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
