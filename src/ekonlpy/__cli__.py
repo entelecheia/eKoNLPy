@@ -27,10 +27,17 @@ def main(ctk, tagger, input):
     """
     # Print a message to the user.
     if input:
-        click.echo(f"Tagging {input} with {tagger}...")
+        click.echo(tag(tagger, input))
     else:
         # Print usage message to the user.
         click.echo(ctk.get_help())
+
+
+def tag(tagger: str, text: str) -> list:
+    from ekonlpy import Mecab
+
+    mecab = Mecab(use_original_tagger=tagger == "mecab")
+    return mecab.pos(text)
 
 
 # main function for the main module

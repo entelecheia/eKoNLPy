@@ -1,4 +1,4 @@
-from typing import Dict, List, Set, Union
+from typing import Dict, List, Optional, Set, Union
 
 term_tags = {
     "COUNTRY": "국가",
@@ -17,7 +17,7 @@ class TermDictionary:
     def __init__(self):
         self._pos2words: Dict[str, Set[str]] = {}
 
-    def add_dictionary(self, words: Union[str, List[str]], tag: str) -> None:
+    def add_dictionary(self, words: Union[str, List[str], Set[str]], tag: str) -> None:
         """
         Add a list of words or a single word to the dictionary under the given tag.
 
@@ -51,7 +51,7 @@ class TermDictionary:
         wordset.update(load(fname))
         self._pos2words[tag] = wordset
 
-    def get_tags(self, word: str) -> str:
+    def get_tags(self, word: str) -> Optional[str]:
         """
         Get the tag associated with the given word.
 
@@ -88,7 +88,7 @@ class TermDictionary:
         """
         return word.lower() in self._pos2words.get(tag, {})
 
-    def exists(self, word: str, tag: str = None) -> bool:
+    def exists(self, word: str, tag: Optional[str] = None) -> bool:
         """
         Check if the given word exists in the dictionary under the specified tag, or under any tag if no tag is given.
 
@@ -96,7 +96,7 @@ class TermDictionary:
         :param tag: Tag to be checked against, or None to check all tags
         :return: True if the word exists in the dictionary under the specified tag or any tag, False otherwise
         """
-        if tag in self._pos2words:
+        if tag and tag in self._pos2words:
             return word.lower() in self._pos2words[tag]
         else:
             return any(word.lower() in words for tag, words in self._pos2words.items())
