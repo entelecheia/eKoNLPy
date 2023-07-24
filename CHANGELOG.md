@@ -1,5 +1,15 @@
 <!--next-version-placeholder-->
 
+## v2.0.0 (2023-07-24)
+
+### Feature
+
+* **README:** Add details for version 2.0.0 usage instructions ([`55b810d`](https://github.com/entelecheia/eKoNLPy/commit/55b810d18220a53dd2a8d2c541d4b6ce34f27456))
+
+### Breaking
+
+*  ([`55b810d`](https://github.com/entelecheia/eKoNLPy/commit/55b810d18220a53dd2a8d2c541d4b6ce34f27456))
+
 ## v1.2.0 (2023-07-24)
 
 ### Feature
