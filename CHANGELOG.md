@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v1.2.0 (2023-07-24)
+
+### Feature
+
+* **eKoNLPy:** This is a BREAKING CHANGE. ([#8](https://github.com/entelecheia/eKoNLPy/issues/8)) ([`4ee09b9`](https://github.com/entelecheia/eKoNLPy/commit/4ee09b96c94e93c3e12b886fa48fb6a4c80f51d2))
+
 ## v1.1.7 (2023-04-26)
 ### Fix
 * Dependencies, scipy stats namespace ([`17e101c`](https://github.com/entelecheia/eKoNLPy/commit/17e101c4941924bd49e07a83ca420df48170fc73))
