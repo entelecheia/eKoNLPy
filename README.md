@@ -34,7 +34,7 @@
 
 > **Note**
 >
-> From the version 2.0.0, eKoNLPy intergrate the extended tagger with the original tagger. If you want to use the original tagger, please set `use_original_tagger=True` when you create the instance of `Mecab` class. Additionally, the `Mecab` class can be directly imported from `ekonlpy` module. The default input text parameter of `Mecab.pos()` is changed from `phrase` to `text` to be consistent with the original tagger.
+> From version 2.0.0, eKoNLPy integrates the extended tagger with the original tagger. If you want to use the original tagger, please set `use_original_tagger=True` when you create the instance of `Mecab` class. Additionally, the `Mecab` class can be directly imported from `ekonlpy` module. The default input text parameter of `Mecab.pos()` is changed from `phrase` to `text` to be consistent with the original tagger.
 
 > **Note**
 >
