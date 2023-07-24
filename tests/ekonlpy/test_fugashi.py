@@ -1,7 +1,7 @@
 def test_tagger():
-    from ekonlpy.mecab import MeCab
+    from ekonlpy.mecab import Mecab
 
-    mecab = MeCab()
+    mecab = Mecab()
     text = "금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다."
     tokens = mecab.pos(text)
     print(tokens)

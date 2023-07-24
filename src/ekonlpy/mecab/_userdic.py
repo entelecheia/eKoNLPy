@@ -1,9 +1,14 @@
+import logging
 import os
 import subprocess
 from collections import namedtuple
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
+import mecab_ko_dic
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 DicEntry = namedtuple(
     "DicEntry",
@@ -52,9 +57,12 @@ def has_jongseong(c):
 
 
 class MecabDicConfig:
-    def __init__(self, userdic_path=None):
-        import mecab_ko_dic
+    userdic: Dict[str, DicEntry] = {}
+    dicdir: str = mecab_ko_dic.DICDIR
+    left_ids: List[ContextEntry] = []
+    right_ids: List[ContextEntry] = []
 
+    def __init__(self, userdic_path: Optional[str] = None):
         if userdic_path:
             self.load_userdic(userdic_path)
         else:
@@ -63,7 +71,7 @@ class MecabDicConfig:
         self.left_ids = self.load_context_ids("left-id.def")
         self.right_ids = self.load_context_ids("right-id.def")
 
-    def load_context_ids(self, id_file):
+    def load_context_ids(self, id_file: str) -> List[ContextEntry]:
         id_file = os.path.join(self.dicdir, id_file)
         context_ids = []
         with open(id_file, "r", encoding="utf-8") as f:
@@ -73,12 +81,12 @@ class MecabDicConfig:
                 context_ids.append(entry)
         return context_ids
 
-    def find_left_context_id(self, search):
+    def find_left_context_id(self, search: DicEntry) -> Optional[str]:
         for entry in self.left_ids:
             if entry.pos == search.pos and entry.semantic == search.semantic:
                 return entry.id
 
-    def find_right_context_id(self, search):
+    def find_right_context_id(self, search: DicEntry) -> Optional[str]:
         for entry in self.right_ids:
             if (
                 entry.pos == search.pos
@@ -87,22 +95,27 @@ class MecabDicConfig:
             ):
                 return entry.id
 
-    def load_userdic(self, userdic_path):
-        userdic_path = Path(userdic_path)
+    def load_userdic(self, userdic_path: str):
+        userdic_path_ = Path(userdic_path)
 
-        if userdic_path.is_dir():
+        if userdic_path_.is_dir():
             self.userdic = {}
-            for f in userdic_path.glob("*.csv"):
+            for f in userdic_path_.glob("*.csv"):
                 df = pd.read_csv(f, names=DicEntry._fields)
-                dic = {e.surface: e for e in iternamedtuples(df)}
+                dic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
                 self.userdic = {**self.userdic, **dic}
         else:
-            df = pd.read_csv(userdic_path, names=DicEntry._fields)
-            self.userdic = {e.surface: e for e in iternamedtuples(df)}
-        print(" No. of user dictionary entires loaded: %d" % len(self.userdic))
+            df = pd.read_csv(userdic_path_, names=DicEntry._fields)
+            self.userdic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
+        logger.info("No. of user dictionary entires loaded: %d", len(self.userdic))
 
     def add_entry_to_userdic(
-        self, surface, pos="NNP", semantic="*", reading=None, cost=1000
+        self,
+        surface: str,
+        pos: str = "NNP",
+        semantic: str = "*",
+        reading: Optional[str] = None,
+        cost: int = 1000,
     ):
         entry = DicEntry(
             surface=surface,
@@ -126,20 +139,23 @@ class MecabDicConfig:
             )
             self.userdic[entry.surface] = entry
 
-    def adjust_costs(self, cost=1000):
+    def adjust_costs(self, cost: int = 1000):
         for surface, entry in self.userdic.items():
             self.userdic[surface] = entry._replace(cost=cost)
 
-    def save_userdic(self, save_path):
+    def save_userdic(self, save_path: str):
         if len(self.userdic) > 0:
             df = pd.DataFrame(self.userdic.values())
             df.to_csv(save_path, header=False, index=False)
             self.userdic_path = save_path
-            print(f"Saved the userdic to {save_path}")
+            logger.info("No. of user dictionary entires saved: %d", len(self.userdic))
+            logger.info("User dictionary saved to %s", save_path)
         else:
-            print("No userdic to save...")
+            logger.warning("No user dictionary entries to save.")
 
-    def build_userdic(self, built_userdic_path, userdic_path=None):
+    def build_userdic(
+        self, built_userdic_path: str, userdic_path: Optional[str] = None
+    ):
         if userdic_path:
             self.userdic_path = userdic_path
         args = f'-d "{self.dicdir}" -u "{built_userdic_path}" {self.userdic_path}'
