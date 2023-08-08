@@ -41,6 +41,7 @@ mypy = "^1.0.0"
 flake8-pyproject = "^1.2.2"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
+cryptography = "^41.0.3"
 
 [tool.black]
 exclude = [
