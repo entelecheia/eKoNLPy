@@ -47,12 +47,12 @@ class KTokenizer(BaseTokenizer):
 
     def __init__(self, vocab=None):
         try:
-            from konlpy.tag import Kkma
-        except ImportError:
+            from konlpy.tag import Kkma  # type: ignore
+        except ImportError as e:
             raise ImportError(
                 "KTokenizer requires konlpy. "
                 "Please install it with `pip install konlpy`."
-            )
+            ) from e
 
         self._tagger = Kkma()
         self._vocab = vocab
@@ -76,10 +76,10 @@ class KTokenizer(BaseTokenizer):
 
     def tokenize(self, text):
         tokens = []
-        if type(text) == list:
+        if isinstance(text, list):
             for t in text:
                 tokens += self.morpheme(t)
-        elif type(text) == str:
+        elif isinstance(text, str):
             tokens = self.morpheme(text)
         else:
             raise ValueError("The dataset has to be string or list of string type.")
@@ -136,13 +136,13 @@ class MPTokenizer(BaseTokenizer):
         self._delimiter = ";"
         self._ngram = self.KINDS[self._kind]
         self._tagger = Mecab()
-        self._vocab = vocab if vocab else self.get_vocab(self.FILES["vocab"])
+        self._vocab = vocab or self.get_vocab(self.FILES["vocab"])
         self._wordset = self.get_wordset(self.FILES["wordset"])
         self._start_tags = {"NNG", "VA", "VAX", "MAG"}
         self._noun_tags = {"NNG"}
 
     def tokenize(self, text):
-        if type(text) == list:
+        if isinstance(text, list):
             ngram_tokens = []
             for t in text:
                 tokens = self._tagger.sent_words(t)
@@ -172,7 +172,9 @@ class MPTokenizer(BaseTokenizer):
                     ngram_tokens, key=lambda item: len(item), reverse=True
                 )
                 for token in ngram_tokens:
-                    existing_token = any(token in check_token for check_token in filtered_tokens)
+                    existing_token = any(
+                        token in check_token for check_token in filtered_tokens
+                    )
                     if not existing_token:
                         filtered_tokens.append(token)
             ngram_tokens = filtered_tokens
@@ -202,11 +204,7 @@ class MPTokenizer(BaseTokenizer):
             check_noun = True
         for i in range(1, gram):
             if tokens[pos + i] != tokens[pos + i - 1]:
-                tag = (
-                    tokens[pos + i].split("/")[1]
-                    if "/" in tokens[pos + i]
-                    else None
-                )
+                tag = tokens[pos + i].split("/")[1] if "/" in tokens[pos + i] else None
                 if tag in self._noun_tags:
                     check_noun = True
                 token += self._delimiter + tokens[pos + i]
@@ -293,12 +291,5 @@ def calc_polarity(scores, by_count=True):
     return (
         (s_pos + s_neg)
         * 1.0
-        / (
-            (
-                (s_pos - s_neg)
-                if by_count
-                else (len(pos_score) + len(pos_score))
-            )
-            + eps
-        )
+        / (((s_pos - s_neg) if by_count else (len(pos_score) + len(pos_score))) + eps)
     )

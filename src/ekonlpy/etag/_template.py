@@ -1,8 +1,22 @@
+from typing import Dict, Set
+
 from ekonlpy.data.tagset import nouns_tags, pass_tags, skip_chk_tags, skip_tags
+from ekonlpy.utils.dictionary import TermDictionary
 
 
 class ExtTagger:
-    def __init__(self, dictionary, max_ngram=7):
+    dictionary: TermDictionary
+    max_ngram: int
+    skip_chk_tags: Dict[str, str]
+    skip_tags: Set[str]
+    nouns_tags: Set[str]
+    pass_tags: Set[str]
+
+    def __init__(
+        self,
+        dictionary: TermDictionary,
+        max_ngram: int = 7,
+    ):
         self.dictionary = dictionary
         self.max_ngram = max_ngram
         self.skip_chk_tags = skip_chk_tags
@@ -11,11 +25,11 @@ class ExtTagger:
         self.pass_tags = set(pass_tags)
 
     def add_skip_chk_tags(self, template):
-        if type(template) == dict:
+        if isinstance(template, dict):
             self.skip_chk_tags.update(template)
 
     def add_skip_tags(self, tags):
-        if type(tags) == list:
+        if isinstance(tags, (list, set)):
             self.skip_tags.update(tags)
 
     def pos(self, tokens):
