@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v2.0.3 (2023-08-25)
+
+### Fix
+
+* **dependencies:** Upgrade fugashi to 1.3.0 ([`5b5cdb1`](https://github.com/entelecheia/eKoNLPy/commit/5b5cdb1d009660fd4e34d2409690b500e1cc4eb0))
+
 ## v2.0.2 (2023-07-24)
 
 ### Fix
