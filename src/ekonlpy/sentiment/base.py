@@ -5,7 +5,7 @@ This module contains base classes for dictionaries.
 
 import abc
 
-from ..utils.io import installpath
+from ekonlpy.utils.io import installpath
 
 LEXICON_PATH = f"{installpath}/data/lexicon"
 
