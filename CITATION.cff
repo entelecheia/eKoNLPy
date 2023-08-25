@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+preferred-citation:
+  type: article
+  message: "If you use eKoNLPy in research, it would be appreciated if you site this."
+  authors:
+  - family-names: "Lee"
+    given-names: "Young Joon"
+  title: "eKoNLPy: A Korean NLP Python Library for Economic Analysis"
+  journal: "GitHub"
+  year: 2018
