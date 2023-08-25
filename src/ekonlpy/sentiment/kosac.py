@@ -36,9 +36,9 @@ class KSA(BaseDict):
 class KOSAC(object):
     def __init__(self):
         try:
-            from konlpy.tag import Kkma
-        except ImportError:
-            raise ImportError("Kkma is required for KOSAC")
+            from konlpy.tag import Kkma  # type: ignore
+        except ImportError as e:
+            raise ImportError("Kkma is required for KOSAC") from e
 
         self._loaddic()
         self._tagger = Kkma()
@@ -80,7 +80,9 @@ class KOSAC(object):
                         headers = line.strip().split(delimiter)
                     elif len(line) > 0:
                         row = line.strip().split(delimiter)
-                        data = {header: row[i] for i, header in enumerate(headers) if i > 0}
+                        data = {
+                            header: row[i] for i, header in enumerate(headers) if i > 0
+                        }
                         vocab[row[0]] = data
         return vocab
 
@@ -154,10 +156,10 @@ class KOSAC(object):
 
     def parse(self, dataset):
         tokens = []
-        if type(dataset) == list:
+        if isinstance(dataset, list):
             for t in dataset:
                 tokens += self.morpheme(t)
-        elif type(dataset) == str:
+        elif isinstance(dataset, str):
             tokens = self.morpheme(dataset)
         else:
             raise ValueError("The dataset has to be string or list of string type.")
