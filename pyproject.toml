@@ -35,7 +35,7 @@ click = "^8.1.6"
 [tool.poetry.group.dev.dependencies]
 python-semantic-release = "^7.33.1"
 isort = "^5.12.0"
-black = ">=23.0.0,<=23.3.0"
+black = ">=23.0.0"
 flake8 = "^6.0.0"
 mypy = "^1.0.0"
 flake8-pyproject = "^1.2.2"
@@ -43,16 +43,20 @@ pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 
 [tool.black]
-exclude = [
-    '_version.py',
-    'node_modules',
-    '_build',
-    'docs',
-    'tests',
-    'venv',
-    '.copier-template',
-    '.refs',
-]
+# 'extend-exclude' excludes files or directories in addition to the defaults
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+(
+  _version.py
+  | .refs
+  | tests
+  | docs
+  | book
+  | _build
+  | node_modules
+)
+'''
 
 [tool.isort]
 profile = "black"
