@@ -55,6 +55,9 @@ extend-exclude = '''
   | book
   | _build
   | node_modules
+  | __pycache__
+  | .txt
+  | .csv
 )
 '''
 
