@@ -101,7 +101,9 @@ class MPCK(object):
                     ngram_tokens, key=lambda item: len(item), reverse=True
                 )
                 for token in ngram_tokens:
-                    existing_token = any(token in check_token for check_token in filtered_tokens)
+                    existing_token = any(
+                        token in check_token for check_token in filtered_tokens
+                    )
                     if not existing_token:
                         filtered_tokens.append(token)
             ngram_tokens = filtered_tokens
@@ -123,11 +125,7 @@ class MPCK(object):
             check_noun = True
         for i in range(1, gram):
             if tokens[pos + i] != tokens[pos + i - 1]:
-                tag = (
-                    tokens[pos + i].split("/")[1]
-                    if "/" in tokens[pos + i]
-                    else None
-                )
+                tag = tokens[pos + i].split("/")[1] if "/" in tokens[pos + i] else None
                 if tag in self._noun_tags:
                     check_noun = True
                 token += self._delimiter + tokens[pos + i]
