@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "eKoNLPy"
-version = "2.0.3"
+version = "2.0.4"
 description = "A Korean natural language processing toolkit for economic analysis"
 authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
 license = "MIT"
