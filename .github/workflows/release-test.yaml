@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - main
+      - master
 
 permissions:
   contents: write
@@ -37,11 +37,12 @@ jobs:
 
       # semantic release
       - name: Python Semantic Release to PyPI
-        uses: relekang/python-semantic-release@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          repository_username: __token__
-          repository_password: ${{ secrets.PYPI_API_TOKEN }}
-          additional_options: --noop --verbosity=DEBUG --define=branch=${{ env.BRANCH }}
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          poetry run semantic-release publish --noop --verbosity=DEBUG --define=branch=${{ env.BRANCH }}
         env:
-          REPOSITORY_URL: https://test.pypi.org/legacy/
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY_USERNAME: __token__
+          REPOSITORY_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          # REPOSITORY_URL: https://test.pypi.org/legacy/
