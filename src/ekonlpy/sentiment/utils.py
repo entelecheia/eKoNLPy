@@ -1,6 +1,7 @@
 """
 This module contains methods to tokenize sentences.
 """
+
 import abc
 import os
 import re

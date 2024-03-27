@@ -2,7 +2,6 @@
 This module contains base classes for dictionaries.
 """
 
-
 import abc
 
 from ekonlpy.utils.io import installpath

@@ -2,7 +2,6 @@
 This module contains classes for monetary policy sentiment classifier.
 """
 
-
 import os
 import pickle
 from collections import defaultdict, namedtuple
