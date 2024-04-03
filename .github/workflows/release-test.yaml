@@ -39,6 +39,10 @@ jobs:
       - name: Install poetry
         run: pipx install poetry>=1.3.2
 
+      # install dependencies
+      - name: Install dependencies
+        run: poetry install --with dev
+
       # semantic release
       - name: Python Semantic Release to PyPI
         run: |
