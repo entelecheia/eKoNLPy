@@ -35,6 +35,10 @@ jobs:
       - name: Set env variable
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
+      # install poetry
+      - name: Install poetry
+        run: pipx install poetry>=1.3.2
+
       # semantic release
       - name: Python Semantic Release to PyPI
         run: |
