@@ -1,5 +1,12 @@
 <!--next-version-placeholder-->
 
+## v2.0.4 (2024-03-27)
+
+### Fix
+
+* **poetry:** Update Python and scipy versions ([`821b8db`](https://github.com/entelecheia/eKoNLPy/commit/821b8db78d528b97be4501bce3764c447017c709))
+* **dependencies:** Update pandas version to allow to 2.2.1 ([`777a889`](https://github.com/entelecheia/eKoNLPy/commit/777a8893387d7025ee82582e02fb2b752ad91190))
+
 ## v2.0.3 (2023-08-25)
 
 ### Fix
