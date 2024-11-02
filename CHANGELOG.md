@@ -1,5 +1,83 @@
 <!--next-version-placeholder-->
 
+## v2.0.6 (2024-11-02)
+
+### Bug Fixes
+
+* fix(deps): bump fugashi from 1.3.0 to 1.3.3 (M1 Wheels! Finally!) ([`fd6cd61`](https://github.com/entelecheia/eKoNLPy/commit/fd6cd6169e14e1393868695e168c16d13cd625aa))
+
+### Build System
+
+* build(deps): bump fugashi from 1.3.2 to 1.3.3
+
+Bumps [fugashi](https://github.com/polm/fugashi) from 1.3.2 to 1.3.3.
+- [Release notes](https://github.com/polm/fugashi/releases)
+- [Commits](https://github.com/polm/fugashi/compare/v1.3.2...v1.3.3)
+
+---
+updated-dependencies:
+- dependency-name: fugashi
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`8c6a8d6`](https://github.com/entelecheia/eKoNLPy/commit/8c6a8d60ce01735942aa0788c2584debf15f75b2))
+
+* build(deps): bump pandas from 2.2.2 to 2.2.3
+
+Bumps [pandas](https://github.com/pandas-dev/pandas) from 2.2.2 to 2.2.3.
+- [Release notes](https://github.com/pandas-dev/pandas/releases)
+- [Commits](https://github.com/pandas-dev/pandas/compare/v2.2.2...v2.2.3)
+
+---
+updated-dependencies:
+- dependency-name: pandas
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`fd7001f`](https://github.com/entelecheia/eKoNLPy/commit/fd7001f3a592e438b362471944432cf20a9cb807))
+
+* build(deps): bump nltk from 3.9 to 3.9.1
+
+Bumps [nltk](https://github.com/nltk/nltk) from 3.9 to 3.9.1.
+- [Changelog](https://github.com/nltk/nltk/blob/develop/ChangeLog)
+- [Commits](https://github.com/nltk/nltk/compare/3.9...3.9.1)
+
+---
+updated-dependencies:
+- dependency-name: nltk
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`8c99b56`](https://github.com/entelecheia/eKoNLPy/commit/8c99b568c72ff23c78f62f62939c97d7fefd6c4e))
+
+### Chores
+
+* chore(dependencies): upgrade python-semantic-release 9.0.0 ([`8141547`](https://github.com/entelecheia/eKoNLPy/commit/814154786293d75c113adde8a1e41d9a7f34d235))
+
+* chore: update poetry lock ([`6d6b098`](https://github.com/entelecheia/eKoNLPy/commit/6d6b098f716a53b5b40b4884c45169b3d20e679d))
+
+### Unknown
+
+* Merge pull request #39 from entelecheia/master ([`903f546`](https://github.com/entelecheia/eKoNLPy/commit/903f54688eea89cf0ff440baea21c7c3575a5828))
+
+* Merge pull request #38 from entelecheia/dependabot/pip/fugashi-1.3.3 ([`e4489b3`](https://github.com/entelecheia/eKoNLPy/commit/e4489b380d3587e75623f20a669dc3ee608072aa))
+
+* Merge pull request #37 from entelecheia/dependabot/pip/pandas-2.2.3
+
+build(deps): bump pandas from 2.2.2 to 2.2.3 ([`f7d71bd`](https://github.com/entelecheia/eKoNLPy/commit/f7d71bdf490e6a4d7b0b5d2ea8aeae792ac13230))
+
+* Merge pull request #36 from entelecheia/dependabot/pip/nltk-3.9.1 ([`f97c08e`](https://github.com/entelecheia/eKoNLPy/commit/f97c08e0044539c82f48b1a983ddf216ab617add))
+
+* Merge pull request #35 from entelecheia/release
+
+Merge pull request #34 from entelecheia/master ([`eb29581`](https://github.com/entelecheia/eKoNLPy/commit/eb29581eab98749298e716a45fe453c6e574c55b))
+
+* Merge pull request #34 from entelecheia/master ([`5a857e8`](https://github.com/entelecheia/eKoNLPy/commit/5a857e816878cb59117db6bf7344cd57446f2f79))
+
+
 ## v2.0.5 (2024-08-18)
 
 ### Fix
