@@ -1,5 +1,11 @@
 <!--next-version-placeholder-->
 
+## v2.0.5 (2024-08-18)
+
+### Fix
+
+* Update dependencies ([`d04bec3`](https://github.com/entelecheia/eKoNLPy/commit/d04bec33de97a22c2d88cb3b11524cc0eaaa0803))
+
 ## v2.0.4 (2024-03-27)
 
 ### Fix
