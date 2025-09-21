@@ -3,7 +3,7 @@
 default_language_version:
   python: python3
 default_install_hook_types: [commit-msg, pre-commit]
-default_stages: [commit, manual]
+default_stages: [pre-commit, manual]
 fail_fast: true
 minimum_pre_commit_version: "1.4.3"
 repos:
@@ -14,7 +14,6 @@ repos:
     rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
-      - id: python-check-blanket-type-ignore
       - id: python-check-mock-methods
       - id: python-no-eval
       - id: python-no-log-warn
@@ -38,9 +37,3 @@ repos:
         stages: [commit-msg]
         language: system
         require_serial: true
-      - id: black
-        name: black
-        entry: black
-        require_serial: true
-        language: system
-        types: [python]

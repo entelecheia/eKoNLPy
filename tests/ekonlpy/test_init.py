@@ -22,7 +22,11 @@ def test_init() -> None:
 
     mecab_fugashi = Mecab(use_original_tagger=True)
     print(mecab_fugashi.pos("안녕하세요"))
-    assert mecab_fugashi.pos("안녕하세요") == [("안녕", "NNG"), ("하", "XSV"), ("세요", "EP+EF")]
+    assert mecab_fugashi.pos("안녕하세요") == [
+        ("안녕", "NNG"),
+        ("하", "XSV"),
+        ("세요", "EP+EF"),
+    ]
 
     mecab = Mecab(use_original_tagger=False)
     print(mecab.pos("안녕하세요"))
