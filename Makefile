@@ -115,8 +115,14 @@ initialize: install-pipx ## initialize the project environment
 	@pipx install pre-commit
 	@pre-commit install
 
-init-project: initialize remove-template ## initialize the project (Warning: do this only once!)
-	@copier copy --answers-file .copier-config.yaml gh:entelecheia/hyperfast-uv-template .
+init-project: initialize ## Initialize the project (Warning: do this only once!)
+	@echo "🚀 Initializing project from template"
+	@copier copy --trust --answers-file .copier-config.yaml gh:entelecheia/hyperfast-uv-template .
 
-reinit-project: install-copier ## reinitialize the project (Warning: this may overwrite existing files!)
-	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier copy "$${args[@]}" --answers-file .copier-config.yaml gh:entelecheia/hyperfast-uv-template .'
+reinit-project: install-copier ## Reinitialize the project (Warning: this may overwrite existing files!)
+	@echo "🚀 Reinitializing project from template"
+	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier copy "$${args[@]}" --answers-file .copier-config.yaml --trust gh:entelecheia/hyperfast-uv-template .'
+
+reinit-project-force: install-copier ## Initialize the project ignoring existing files (Warning: this will overwrite existing files!)
+	@echo "🚀 Force reinitializing project from template"
+	@bash -c 'args=(); while IFS= read -r file; do args+=("--skip" "$$file"); done < .copierignore; copier copy "$${args[@]}" --answers-file .copier-config.yaml --trust --force gh:entelecheia/hyperfast-uv-template .'
