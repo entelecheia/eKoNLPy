@@ -30,17 +30,17 @@
 
 <!-- Links: -->
 
-`eKoNLPy` is a Korean Natural Language Processing (NLP) Python library specifically designed for economic analysis. It extends the functionality of the `Mecab` tagger from KoNLPy to improve the handling of economic terms, financial institutions, and company names, classifying them as single nouns. Additionally, it incorporates sentiment analysis features to determine the tone of monetary policy statements, such as Hawkish or Dovish.
+`eKoNLPy` is a Korean Natural Language Processing (NLP) Python library specifically designed for economic analysis. It extends the functionality of the `Mecab` tagger from KoNLPy to improve the handling of economic terms, financial institutions, and company names by classifying them as single nouns. Additionally, it incorporates sentiment analysis features to determine the tone of monetary policy statements, such as hawkish or dovish.
 
 > **Note**
 >
-> From version 2.0.0, eKoNLPy integrates the extended tagger with the original tagger. If you want to use the original tagger, please set `use_original_tagger=True` when you create the instance of `Mecab` class. Additionally, the `Mecab` class can be directly imported from `ekonlpy` module. The default input text parameter of `Mecab.pos()` is changed from `phrase` to `text` to be consistent with the original tagger.
+> From version 2.0.0, eKoNLPy integrates the extended tagger with the original tagger. If you want to use the original tagger, set `use_original_tagger=True` when creating an instance of the `Mecab` class. Additionally, the `Mecab` class can be directly imported from the `ekonlpy` module. The default input text parameter of `Mecab.pos()` has been changed from `phrase` to `text` to be consistent with the original tagger.
 
 > **Note**
 >
-> eKoNLPy is built on the [fugashi](https://github.com/polm/fugashi) and [mecab-ko-dic](https://github.com/LuminosoInsight/mecab-ko-dic) libraries. For more information on using the `Mecab` tagger, please refer to the [fugashi documentation](https://github.com/polm/fugashi). As eKoNLPy no longer relies on the [KoNLPy](https://konlpy.org) library, Java is not required for its use. This makes eKoNLPy compatible with Windows, Linux, and Mac OS, without the need for Java installation. You can also use eKoNLPy on Google Colab.
+> eKoNLPy is built on the [fugashi](https://github.com/polm/fugashi) and [mecab-ko-dic](https://github.com/LuminosoInsight/mecab-ko-dic) libraries. For more information on using the `Mecab` tagger, refer to the [fugashi documentation](https://github.com/polm/fugashi). Since eKoNLPy no longer relies on the [KoNLPy](https://konlpy.org) library, Java is not required for its use. This makes eKoNLPy compatible with Windows, Linux, and macOS without the need for Java installation. You can also use eKoNLPy on Google Colab.
 
-If you wish to tokenize general Korean text with eKoNLPy, you do not need to install the `KoNLPy` library. Instead, utilize the same `ekonlpy.Mecab` class with the `use_original_tagger=True` option.
+If you wish to tokenize general Korean text with eKoNLPy, you do not need to install the `KoNLPy` library. Instead, use the same `ekonlpy.Mecab` class with the `use_original_tagger=True` option.
 
 However, if you plan to use the [Korean Sentiment Analyzer (KSA)](#korean-sentiment-analyzer-ksa), which employs the `Kkma` morpheme analyzer, you will need to install the [KoNLPy](https://konlpy.org) library.
 
@@ -56,7 +56,7 @@ pip install ekonlpy
 
 ### Part of Speech Tagging
 
-To use the part of speech tagging feature, input `Mecab.pos(phrase)` just like KoNLPy. First, the input is processed using KoNLPy's Mecab morpheme analyzer. Then, if a combination of consecutive tokens matches a term in the user dictionary, the phrase is separated into compound nouns.
+To use the part-of-speech tagging feature, input `Mecab.pos(text)` just like KoNLPy. First, the input is processed using KoNLPy's Mecab morpheme analyzer. Then, if a combination of consecutive tokens matches a term in the user dictionary, the phrase is separated into compound nouns.
 
 ```python
 from ekonlpy import Mecab
@@ -67,7 +67,7 @@ mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의
 
 > [('금', 'MAJ'), ('통', 'MAG'), ('위', 'NNG'), ('는', 'JX'), ('따라서', 'MAJ'), ('물가', 'NNG'), ('안정', 'NNG'), ('과', 'JC'), ('병행', 'NNG'), (',', 'SC'), ('경기', 'NNG'), ('상황', 'NNG'), ('에', 'JKB'), ('유의', 'NNG'), ('하', 'XSV'), ('는', 'ETM'), ('금리', 'NNG'), ('정책', 'NNG'), ('을', 'JKO'), ('펼쳐', 'VV+EC'), ('나가', 'VX'), ('기', 'ETN'), ('로', 'JKB'), ('했', 'VV+EP'), ('다고', 'EC'), ('밝혔', 'VV+EP'), ('다', 'EF'), ('.', 'SF')]
 
-You can also use the Command Line Interface (CLI) to perform part of speech tagging:
+You can also use the Command Line Interface (CLI) to perform part-of-speech tagging:
 
 ```bash
 ekonlpy --input "안녕하세요"
@@ -75,7 +75,7 @@ ekonlpy --input "안녕하세요"
 
 > [('안녕', 'NNG'), ('하', 'XSV'), ('세요', 'EP')]
 
-### cf. Original Mecab POS Tagging (fugashi)
+### Original Mecab POS Tagging (fugashi)
 
 ```python
 from ekonlpy import Mecab
@@ -117,12 +117,12 @@ score = mpko.get_score(tokens)
 
 The `kind` parameter in the `MPKO` class is used to select a lexicon file:
 
-- `0`: A lexicon file generated using a Naive-Bayes classifier with 5-gram tokens as features and changes of call rates as positive/negative labels.
-- `1`: A lexicon file generated by polarity induction and seed propagation method with 5-gram tokens.
+- `0`: A lexicon file generated using a Naive-Bayes classifier with 5-gram tokens as features and changes in call rates as positive/negative labels.
+- `1`: A lexicon file generated using polarity induction and seed propagation methods with 5-gram tokens.
 
 ### Korean Monetary Policy Classifier (MPCK)
 
-To use a classifier for monetary policy sentiment analysis, utilize the `MPCK` class from `ekonlpy.sentiment`:
+To use a classifier for monetary policy sentiment analysis, use the `MPCK` class from `ekonlpy.sentiment`:
 
 ```python
 from ekonlpy.sentiment import MPCK
@@ -133,11 +133,11 @@ ngrams = mpck.ngramize(tokens)
 score = mpck.classify(tokens + ngrams, intensity_cutoff=1.5)
 ```
 
-You can set the `intensity_cutoff` parameter to adjust the intensity for classifying low-accuracy sentences as neutral (default: 1.3).
+You can set the `intensity_cutoff` parameter to adjust the intensity threshold for classifying low-confidence sentences as neutral (default: 1.3).
 
 ### Korean Sentiment Analyzer (KSA)
 
-For general Korean sentiment analysis, use the `KSA` class. The morpheme analyzer used in this class is `Kkma` developed by Seoul National University's IDS Lab. The sentiment dictionary is also from the same lab (reference: http://kkma.snu.ac.kr/).
+For general Korean sentiment analysis, use the `KSA` class. The morpheme analyzer used in this class is `Kkma`, developed by Seoul National University's IDS Lab. The sentiment dictionary is also from the same lab (reference: http://kkma.snu.ac.kr/).
 
 ```python
 from ekonlpy.sentiment import KSA
@@ -181,7 +181,7 @@ Contributions are welcome! Please see the [contributing guidelines] for more inf
 
 ## License
 
-eKoNLPy is an open-source software library for Korean Natural Language Processing (NLP), specifically designed for economic analysis. The library is released under the [MIT License][license-url], allowing developers and researchers to use, modify, and distribute the software as they see fit.
+eKoNLPy is an open-source software library for Korean Natural Language Processing (NLP), specifically designed for economic analysis. The library is released under the [MIT License][license-url], allowing developers and researchers to use, modify, and distribute the software freely.
 
 ## Citation
 
@@ -201,4 +201,4 @@ You can also use the following BibTeX entry for citation:
 }
 ```
 
-By citing eKoNLPy in your work, you acknowledge the efforts and contributions of its creators and help promote further development and research in the field of Korean NLP for economic analysis.
+By citing eKoNLPy in your work, you acknowledge the efforts and contributions of its creators and help promote further development and research in Korean NLP for economic analysis.
