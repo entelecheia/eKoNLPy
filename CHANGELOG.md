@@ -1,5 +1,26 @@
 <!--next-version-placeholder-->
 
+## v2.2.0 (2025-09-21)
+
+### Chores
+
+- Reorganize development dependencies in pyproject.toml
+  ([`b8ae1d6`](https://github.com/entelecheia/eKoNLPy/commit/b8ae1d62ef3045c7b480813257ddea64b91cf1b1))
+
+- Update .gitignore to include new entries
+  ([`28dc46f`](https://github.com/entelecheia/eKoNLPy/commit/28dc46fb672def1f95aabbc0e2d788a21988d94a))
+
+### Documentation
+
+- Update README for clarity and consistency
+  ([`06cb87f`](https://github.com/entelecheia/eKoNLPy/commit/06cb87f446ecb1f1e463b068e0da941de6452515))
+
+### Features
+
+- Enhance sentiment analysis with breakdown API
+  ([`7d159d3`](https://github.com/entelecheia/eKoNLPy/commit/7d159d3663136465040c7abe0db6ae43f43d5c62))
+
+
 ## v2.1.0 (2025-09-21)
 
 ### Build System
