@@ -1,50 +1,54 @@
-[tool.poetry]
+[project]
 name = "eKoNLPy"
 version = "2.0.6"
 description = "A Korean natural language processing toolkit for economic analysis"
-authors = ["Young Joon Lee <entelecheia@hotmail.com>"]
+authors = [{ name = "Young Joon Lee", email = "entelecheia@hotmail.com" }]
 license = "MIT"
 readme = "README.md"
-packages = [{ include = "ekonlpy", from = "src" }]
-homepage = "https://ekonlpy.entelecheia.ai/"
-repository = "https://github.com/entelecheia/eKoNLPy"
-keywords = ["KoNLPy", "Tokenization", "Sentiment analysis", "Monetary policy"]
-include = [
-    "src/ekonlpy/data/*/*.txt",
-    "src/ekonlpy/data/*/*.csv",
-    "src/ekonlpy/data/*/*/*.txt",
-    "src/ekonlpy/data/*/*/*.csv",
-    "src/ekonlpy/data/model/*",
+keywords = ['python']
+requires-python = ">=3.9,<4.0"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = ["click>=8.1.7"]
+
+[project.urls]
+Homepage = "https://ekonlpy.entelecheia.ai"
+Repository = "https://github.com/entelecheia/eKoNLPy"
+Documentation = "https://ekonlpy.entelecheia.ai"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.2.0",
+    "pre-commit>=2.20.0",
+    "tox-uv>=1.11.3",
+    "deptry>=0.20.0",
+    "mypy>=0.991",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.6.9",
+    "mkdocs>=1.4.2",
+    "mkdocs-material>=8.5.10",
+    "mkdocstrings[python]>=0.26.1",
+    "python-semantic-release>=9.0.0",
 ]
 
-[tool.poetry.scripts]
-ekonlpy = "ekonlpy.__cli__:main"
+[tool.hatch.build.targets.wheel]
+packages = ["src/ekonlpy"]
+
+[project.scripts]
+ekonlpy = 'ekonlpy.__cli__:main'
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poe]
-include = [".tasks.toml", ".tasks-extra.toml"]
-
-[tool.poetry.dependencies]
-python = "^3.9, <3.13"
-fugashi = "^1.3.3"
-mecab-ko-dic = "^1.0.0"
-nltk = "^3.8.1"
-scipy = ">1.10.0,<=1.13.1"
-pandas = ">=1.5.3,<=2.3.2"
-click = "^8.1.6"
-
-[tool.poetry.group.dev.dependencies]
-python-semantic-release = "^9.0.0"
-isort = "^5.12.0"
-black = "^24.0.0"
-flake8 = "^6.0.0"
-mypy = "^1.0.0"
-flake8-pyproject = "^1.2.2"
-pytest = "^7.2.1"
-pytest-cov = "^4.0.0"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.black]
 # 'extend-exclude' excludes files or directories in addition to the defaults
@@ -54,56 +58,27 @@ extend-exclude = '''
 (
   _version.py
   | .refs
+  | .copier-template
   | tests
   | docs
   | book
   | _build
   | node_modules
-  | __pycache__
-  | .txt
-  | .csv
 )
 '''
 
 [tool.isort]
 profile = "black"
-skip = [
-    '_version.py',
-    'node_modules',
-    '_build',
-    'docs',
-    'tests',
-    'venv',
-    '.copier-template',
-    '.refs',
-]
+skip = ['_version.py', 'node_modules', '_build', 'docs', 'tests', 'venv', '.copier-template', '.refs']
 
 [tool.flake8]
 ignore = ['F401', 'E501', 'W503']
-exclude = [
-    "node_modules",
-    "_build",
-    "docs",
-    "tests",
-    "venv",
-    ".copier-template",
-    ".refs",
-]
+exclude = ["node_modules", "_build", "docs", "tests", "venv", ".copier-template", ".refs"]
 per-file-ignores = ['__init__.py:F401', '_version.py:W292']
 
 [tool.mypy]
 namespace_packages = true
-exclude = [
-    "node_modules",
-    "build",
-    "_build",
-    "dist",
-    "docs",
-    "tests",
-    "venv",
-    ".copier-template",
-    ".refs",
-]
+exclude = ["node_modules", "build", "_build", "dist", "docs", "tests", "venv", ".copier-template", ".refs"]
 # 3rd party import
 ignore_missing_imports = true
 # dynamic typing
@@ -114,10 +89,10 @@ disallow_any_explicit = true
 disallow_any_generics = false
 disallow_subclassing_any = true
 # platform
-python_version = "3.8"
+python_version = "3.12"
 # untyped
 disallow_untyped_calls = true
-disallow_untyped_defs = true
+disallow_untyped_defs = false
 disallow_incomplete_defs = true
 disallow_untyped_decorators = true
 # None and Optional
@@ -132,13 +107,68 @@ pretty = true
 testpaths = ["tests"]
 addopts = "-p no:cacheprovider" # deactivating pytest caching.
 
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "UP035", "UP006", "S603"]
+
+[tool.ruff.format]
+preview = true
+
 [tool.coverage.report]
 exclude_lines = ['if __name__ == "__main__":']
+skip_empty = true
 
-[tool.commitizen]
-name = "cz_conventional_commits"
-version = "1.0.1"
-tag_format = "v$version"
+[tool.coverage.run]
+branch = true
+source = ["src/ekonlpy"]
+
+[tool.deptry]
+ignore = ["DEP001", "DEP003"]
 
 [tool.semantic_release]
 # General settings
@@ -151,10 +181,10 @@ no_git_verify = false
 version_source = "tag"
 commit_version_number = true
 commit_message = ":rocket: {version}\n\nAutomatically generated by python-semantic-release"
-build_command = "pip install poetry && poetry build --no-cache"
+build_command = "pip3 install uv && make build"
 
 # Version variables
-version_toml = ["pyproject.toml:tool.poetry.version"]
+version_toml = ["pyproject.toml:project.version"]
 version_variables = ["src/ekonlpy/_version.py:__version__"]
 
 # Remote settings
