@@ -10,7 +10,6 @@ on:
     paths:
       - "src/**"
       - "tests/**"
-      - ".github/workflows/lint_and_test.yaml"
 
 jobs:
   build:
@@ -21,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.9]
+        python-version: [3.12]
 
     steps:
       # Checkout the code base #
@@ -30,38 +29,31 @@ jobs:
         with:
           fetch-depth: 0
 
-      # install poetry
-      - name: Install poetry
-        run: pipx install poetry>=1.3.2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
 
-      # set up python
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: "Set up Python"
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: "poetry"
+          python-version-file: ".python-version"
 
-      # initialize
-      - name: Initialize
-        run: make initialize
-
-      # install dependencies
-      - name: Install dependencies for linters
-        run: poe install-dev
-
-      # run linters
-      - name: Run linters
+      - name: Install dependencies
         run: |
           set -o pipefail
-          poe lint
+          make install
 
-      # run unit tests
+      - name: Run checks
+        run: |
+          set -o pipefail
+          make check
+
       - name: Run unit-tests
         run: |
           set -o pipefail
-          poe tests-cov-fail
+          make test
 
-      # add content to GitHub summary
       - name: Pytest coverage GitHub summary
         run: |
           set -o pipefail
@@ -74,8 +66,6 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }} # required
           fail_ci_if_error: false # optional (default = false)
           verbose: true # optional (default = false)
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-

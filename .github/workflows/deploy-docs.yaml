@@ -25,7 +25,11 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: 3.9
+          python-version: 3.12
+
+      # install the source code
+      - name: Install the source code
+        run: pip install .
 
       - uses: actions/cache@v4
         with:

@@ -47,8 +47,6 @@ jobs:
       - name: Publish | Upload package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         if: steps.release.outputs.released == 'true'
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
 
       - name: Publish | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v10.4.1

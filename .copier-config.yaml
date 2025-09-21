@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; do NOT edit manually
-_commit: v0.4.0-7-g31e4a3d
+_commit: v0.4.1
 _src_path: gh:entelecheia/hyperfast-uv-template
 author: Young Joon Lee
 build_and_release: true
@@ -16,7 +16,7 @@ github_repo_name: eKoNLPy
 github_username: entelecheia
 google_analytics_id: ''
 logo_path: https://assets.entelecheia.ai/favicon.png
-main_branch: main
+main_branch: master
 open_link: true
 package_name: ekonlpy
 package_scripts:

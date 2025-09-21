@@ -27,3 +27,5 @@ coverage.xml
 htmlcov/
 pytest-coverage.*
 
+
+uv.lock
