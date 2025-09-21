@@ -107,12 +107,13 @@ class BaseDict(object):
         else:
             return 0
 
-    def get_score(self, terms, by_count=True):
+    def get_score(self, terms, by_count=True, return_breakdown=False):
         """Get score for a list of terms.
 
         :type terms: list
         :param terms: A list of terms to be analyzed.
-        :param by_count; if True, use number of occruences of sentiment tokens
+        :param by_count: if True, use number of occruences of sentiment tokens
+        :param return_breakdown: if True, return detailed breakdown of each term's polarity
 
         :returns: dict
         """
@@ -135,9 +136,56 @@ class BaseDict(object):
             / (len(score_li) + self.EPSILON)
         )
 
-        return {
+        result = {
             self.TAG_POS: s_pos,
             self.TAG_NEG: s_neg,
             self.TAG_POL: s_pol,
             self.TAG_SUB: s_sub,
         }
+
+        if return_breakdown:
+            breakdown = []
+            for term in terms:
+                score = self._get_score(term, by_count)
+                polarity = self._poldict.get(term, 0) if not by_count else score
+                breakdown.append({
+                    'term': term,
+                    'score': score,
+                    'polarity': polarity,
+                    'sentiment': 'positive' if score > 0 else 'negative' if score < 0 else 'neutral'
+                })
+            result['breakdown'] = breakdown
+
+        return result
+
+    def get_phrase_breakdown(self, terms, tokenizer=None):
+        """Get detailed breakdown with human-readable phrases for n-gram tokens.
+
+        :type terms: list
+        :param terms: A list of n-gram terms to be analyzed
+        :param tokenizer: Tokenizer instance with get_phrase method (e.g., MPTokenizer)
+
+        :returns: list of dicts with term, phrase, score, polarity, sentiment
+        """
+        breakdown = []
+        for term in terms:
+            score = self._get_score(term, by_count=True)
+            polarity = self._poldict.get(term, 0)
+
+            # Get human-readable phrase if tokenizer supports it
+            phrase = term
+            if tokenizer and hasattr(tokenizer, 'get_phrase'):
+                try:
+                    phrase = tokenizer.get_phrase(term)
+                except Exception:
+                    phrase = term
+
+            breakdown.append({
+                'term': term,
+                'phrase': phrase,
+                'score': score,
+                'polarity': polarity,
+                'sentiment': 'positive' if score > 0 else 'negative' if score < 0 else 'neutral'
+            })
+
+        return breakdown

@@ -32,8 +32,8 @@ Homepage = "https://ekonlpy.entelecheia.ai"
 Repository = "https://github.com/entelecheia/eKoNLPy"
 Documentation = "https://ekonlpy.entelecheia.ai"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=7.2.1",
     "pytest-cov>=4.0.0",
     "pre-commit>=2.20.0",
