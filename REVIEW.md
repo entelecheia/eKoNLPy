@@ -41,10 +41,14 @@ Report at most 5 nits per review; summarize the rest as a count.
 ## Do not report
 
 - `src/ekonlpy/_version.py`, which semantic-release generates.
-- Anything the toolchain already enforces: ruff, black, isort, flake8, deptry, coverage, and
-  pytest, all invoked by `make check` and `make test`. **mypy is not in that list**: the repo
-  configures `[tool.mypy]` but no gate runs it, so genuine type errors are still worth reporting.
-- Commit-message format, which the commitizen hook rejects before a commit exists.
+- Findings the gates already catch: the `uv lock --locked` consistency check, the configured
+  pre-commit hooks (pygrep checks, Python whitespace and end-of-file fixers, YAML/JSON/large-file
+  checks), `deptry`, and pytest.
+- Commit-message format, which the commitizen `commit-msg` hook rejects before a commit exists.
+
+**Not on that list**: ruff, black, isort, flake8, and mypy are configured in `pyproject.toml` but no
+gate invokes them, and coverage has no failure threshold. Findings those tools would catch,
+including type errors and lint violations, stay in scope for review.
 
 ## Feedback into CLAUDE.md
 

@@ -23,6 +23,10 @@ make check && make test
 
 - **Run both before reporting a task complete, and paste the output.** Run `make install` first in a
   fresh clone, or the hooks `make check` invokes are not present.
+- **`make test` hides a failing pytest run.** The recipe pipes pytest into `tee` in a shell without
+  `pipefail`, so the target exits 0 even when tests fail. Read the pytest summary line in the output
+  (or run `uv run python -m pytest` directly) before calling the run green; do not rely on `make
+  check && make test` returning 0.
 - When a test fails, fix the code, not the test. Do not weaken a gate to make a run pass.
 - **CI coverage is path-scoped, so know which workflow your change wakes.** The lint-and-test push
   trigger fires only on `src/**` and `tests/**`; `deploy-docs.yaml` fires on `README.md`,
@@ -38,9 +42,13 @@ make check && make test
 - Commit messages are gated: the commitizen `commit-msg` pre-commit hook rejects anything that is
   not a conventional commit.
 - Versioning is automated with python-semantic-release; do not bump versions by hand.
-- Tooling lives in `pyproject.toml`: ruff (including bandit `S` rules), black, isort, flake8, mypy,
-  deptry, coverage. `.tasks.toml` exposes an older poe surface for the same formatters; the
-  `Makefile` and pre-commit are the ones CI uses.
+- Tooling is **configured but not all wired into a gate**. `pyproject.toml` holds settings for ruff
+  (including bandit `S` rules), black, isort, flake8, mypy, deptry, and coverage, yet `make check`
+  runs only the lock check, the configured pre-commit hooks, and `deptry`. The pre-commit hooks are
+  pygrep checks, whitespace and end-of-file fixers scoped to Python, YAML/JSON/large-file checks,
+  and the commitizen `commit-msg` gate. Run the formatters and linters yourself (`uv run ruff check
+  .`, `uv run black --check .`, `uv run mypy src`) or through the `.tasks.toml` poe tasks; nothing
+  else will.
 
 ## Things the agent gets wrong
 
