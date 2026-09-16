@@ -3,13 +3,26 @@ This module contains base classes for dictionaries.
 """
 
 import abc
+from typing import Optional, Protocol, Union
 
 from ekonlpy.utils.io import installpath
 
 LEXICON_PATH = f"{installpath}/data/lexicon"
 
 
-class BaseDict(object):
+class SupportsTokenize(Protocol):
+    """Structural type for tokenizer objects accepted by ``BaseDict``."""
+
+    def tokenize(self, text: str) -> list[str]: ...
+
+
+class SupportsPhraseTokenize(SupportsTokenize, Protocol):
+    """A tokenizer that can also render an n-gram token as a phrase."""
+
+    def get_phrase(self, ngram_tokens: str) -> str: ...
+
+
+class BaseDict(abc.ABC):
     """
     A base class for sentiment analysis.
     For now, only 'positive' and 'negative' analysis is supported.
@@ -46,8 +59,6 @@ class BaseDict(object):
 
     """
 
-    __metaclass__ = abc.ABCMeta
-
     TAG_POL = "Polarity"
     TAG_SUB = "Subjectivity"
     TAG_POS = "Positive"
@@ -55,20 +66,26 @@ class BaseDict(object):
 
     EPSILON = 1e-6
 
-    def __init__(self, tokenizer=None, kind=None, intensity_cutoff=None):
-        self._posdict = {}
-        self._negdict = {}
-        self._poldict = {}
-        self._intensity_cutoff = intensity_cutoff
+    def __init__(
+        self,
+        tokenizer: Optional[SupportsTokenize] = None,
+        kind: Optional[int] = None,
+        intensity_cutoff: Optional[float] = None,
+    ):
+        self._posdict: dict[str, int] = {}
+        self._negdict: dict[str, int] = {}
+        self._poldict: dict[str, float] = {}
+        self._intensity_cutoff: Optional[float] = intensity_cutoff
+        self._tokenizer: SupportsTokenize
         self.init_dict(kind, intensity_cutoff)
         if tokenizer is None:
             self.init_tokenizer(kind)
         else:
             self._tokenizer = tokenizer
 
-        assert self._posdict and self._negdict
+        assert self._posdict and self._negdict  # noqa: S101
 
-    def tokenize(self, text):
+    def tokenize(self, text: str) -> list[str]:
         """
         :type text: str
         :returns: list
@@ -83,14 +100,14 @@ class BaseDict(object):
     #     return self._tokenizer.ngramize(tokens)
 
     @abc.abstractmethod
-    def init_tokenizer(self, kind):
+    def init_tokenizer(self, kind: Optional[int]) -> None:
         pass
 
     @abc.abstractmethod
-    def init_dict(self, kind, intensity_cutoff):
+    def init_dict(self, kind: Optional[int], intensity_cutoff: Optional[float]) -> None:
         pass
 
-    def _get_score(self, term, by_count=True):
+    def _get_score(self, term: str, by_count: bool = True) -> float:
         """Get score for a single term.
         - +1 for positive terms.
         - -1 for negative terms.
@@ -99,15 +116,20 @@ class BaseDict(object):
         :returns: int
         """
         if not by_count:
-            return self._poldict[term] if term in self._poldict.keys() else 0
-        if term in self._posdict.keys():
+            return self._poldict.get(term, 0)
+        if term in self._posdict:
             return self._posdict[term]
-        elif term in self._negdict.keys():
+        elif term in self._negdict:
             return self._negdict[term]
         else:
             return 0
 
-    def get_score(self, terms, by_count=True, return_breakdown=False):
+    def get_score(
+        self,
+        terms: Union[list[str], tuple[str, ...]],
+        by_count: bool = True,
+        return_breakdown: bool = False,
+    ) -> dict[str, object]:
         """Get score for a list of terms.
 
         :type terms: list
@@ -117,7 +139,7 @@ class BaseDict(object):
 
         :returns: dict
         """
-        assert isinstance(terms, (list, tuple))
+        assert isinstance(terms, (list, tuple))  # noqa: S101
         score_li = [self._get_score(t, by_count) for t in terms]
         pos_score_li = [s for s in score_li if s > 0]
         neg_score_li = [s for s in score_li if s < 0]
@@ -136,7 +158,7 @@ class BaseDict(object):
             / (len(score_li) + self.EPSILON)
         )
 
-        result = {
+        result: dict[str, object] = {
             self.TAG_POS: s_pos,
             self.TAG_NEG: s_neg,
             self.TAG_POL: s_pol,
@@ -144,21 +166,31 @@ class BaseDict(object):
         }
 
         if return_breakdown:
-            breakdown = []
+            breakdown: list[dict[str, object]] = []
             for term in terms:
                 score = self._get_score(term, by_count)
                 polarity = self._poldict.get(term, 0) if not by_count else score
-                breakdown.append({
-                    'term': term,
-                    'score': score,
-                    'polarity': polarity,
-                    'sentiment': 'positive' if score > 0 else 'negative' if score < 0 else 'neutral'
-                })
-            result['breakdown'] = breakdown
+                breakdown.append(
+                    {
+                        "term": term,
+                        "score": score,
+                        "polarity": polarity,
+                        "sentiment": (
+                            "positive"
+                            if score > 0
+                            else "negative" if score < 0 else "neutral"
+                        ),
+                    }
+                )
+            result["breakdown"] = breakdown
 
         return result
 
-    def get_phrase_breakdown(self, terms, tokenizer=None):
+    def get_phrase_breakdown(
+        self,
+        terms: Union[list[str], tuple[str, ...]],
+        tokenizer: Optional[SupportsPhraseTokenize] = None,
+    ) -> list[dict[str, object]]:
         """Get detailed breakdown with human-readable phrases for n-gram tokens.
 
         :type terms: list
@@ -167,25 +199,31 @@ class BaseDict(object):
 
         :returns: list of dicts with term, phrase, score, polarity, sentiment
         """
-        breakdown = []
+        breakdown: list[dict[str, object]] = []
         for term in terms:
             score = self._get_score(term, by_count=True)
             polarity = self._poldict.get(term, 0)
 
             # Get human-readable phrase if tokenizer supports it
             phrase = term
-            if tokenizer and hasattr(tokenizer, 'get_phrase'):
+            if tokenizer and hasattr(tokenizer, "get_phrase"):
                 try:
                     phrase = tokenizer.get_phrase(term)
                 except Exception:
                     phrase = term
 
-            breakdown.append({
-                'term': term,
-                'phrase': phrase,
-                'score': score,
-                'polarity': polarity,
-                'sentiment': 'positive' if score > 0 else 'negative' if score < 0 else 'neutral'
-            })
+            breakdown.append(
+                {
+                    "term": term,
+                    "phrase": phrase,
+                    "score": score,
+                    "polarity": polarity,
+                    "sentiment": (
+                        "positive"
+                        if score > 0
+                        else "negative" if score < 0 else "neutral"
+                    ),
+                }
+            )
 
         return breakdown

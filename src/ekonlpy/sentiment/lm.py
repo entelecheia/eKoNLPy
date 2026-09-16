@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pandas as pd
 
 from .base import LEXICON_PATH, BaseDict
@@ -14,12 +16,16 @@ class LM(BaseDict):
     The terms for the dictionary are stemmed by the default tokenizer.
     """
 
-    PATH = "%s/LM.csv" % LEXICON_PATH
+    PATH = f"{LEXICON_PATH}/LM.csv"
 
-    def init_tokenizer(self, kind=None, intensity_cutoff=None):
+    def init_tokenizer(
+        self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
+    ) -> None:
         self._tokenizer = Tokenizer()
 
-    def init_dict(self, kind=None, intensity_cutoff=None):
+    def init_dict(
+        self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
+    ) -> None:
         # BaseDict loads the dictionary before assigning the public tokenizer.
         # Keep lexicon stemming independent of a caller-provided tokenizer.
         tokenizer = Tokenizer()

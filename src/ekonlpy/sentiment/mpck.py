@@ -2,9 +2,12 @@
 This module contains classes for monetary policy sentiment classifier.
 """
 
+import logging
 import os
 import pickle
 from collections import defaultdict, namedtuple
+from collections.abc import Callable, Sequence
+from typing import TYPE_CHECKING, ClassVar, Optional
 
 import nltk
 import numpy as np
@@ -20,17 +23,22 @@ from ..tag import Mecab
 from ..utils.io import installpath
 from .base import LEXICON_PATH
 
+if TYPE_CHECKING:
+    import pandas as pd
+
+logger = logging.getLogger(__name__)
+
 MODEL_PATH = f"{installpath}/data/model"
 
 
-class MPCK(object):
+class MPCK:
     """
     A class for monetary policy sentiment classifier.
     """
 
-    FILES = {"vocab": "mpko/mp_polarity_vocab.txt"}
+    FILES: ClassVar[dict[str, str]] = {"vocab": "mpko/mp_polarity_vocab.txt"}
 
-    def __init__(self, classifier: NaiveBayesClassifier = None):
+    def __init__(self, classifier: Optional[NaiveBayesClassifier] = None):  # type: ignore[no-any-unimported]
         if classifier is None:
             self.load_default_classifier()
         else:
@@ -47,33 +55,39 @@ class MPCK(object):
         self._aux_tags = aux_tags
         self._auxwords = {"못하/VX", "아니/VCN", "않/VX", "지만/VCP"}
 
-    def get_vocab(self, file):
-        vocab = {}
+    def get_vocab(self, file: str) -> dict[str, str]:
+        vocab: dict[str, str] = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
         with open(vocab_path, encoding="utf-8") as f:
-            for line in f:
-                w = line.strip().split()
-                if len(w[0]) > 0:
-                    vocab[w[0]] = w[1]
+            for line_number, line in enumerate(f, 1):
+                line = line.strip()
+                if not line:
+                    continue
+                fields = line.split()
+                if len(fields) < 2:
+                    raise ValueError(  # noqa: TRY003
+                        f"Malformed vocabulary entry at {vocab_path}:{line_number}"
+                    )
+                vocab[fields[0]] = fields[1]
         return vocab
 
-    def load_default_classifier(self):
+    def load_default_classifier(self) -> None:
         classifier_path = os.path.join(MODEL_PATH, "MPKC.nbc")
         self.load_classifier(classifier_path)
 
-    def load_classifier(self, file_path):
+    def load_classifier(self, file_path: str) -> None:
         if os.path.isfile(file_path):
             with open(file_path, "rb") as f:
-                self.classifier = pickle.load(f)
+                self.classifier = pickle.load(f)  # noqa: S301
         else:
-            raise ValueError("There is no classifier file.")
+            raise ValueError("There is no classifier file.")  # noqa: TRY003
 
-    def save_classifier(self, file_path):
+    def save_classifier(self, file_path: str) -> None:
         with open(file_path, "wb") as f:
             pickle.dump(self.classifier, f)
-        print(f"Save the classifier to the file: {file_path}")
+        logger.info("Save the classifier to the file: %s", file_path)
 
-    def tokenize(self, text):
+    def tokenize(self, text: str) -> list[str]:
         tokens = self._tokenizer.sent_words(text)
         tokens = [
             w
@@ -85,16 +99,19 @@ class MPCK(object):
         ]
         return tokens
 
-    def ngramize(self, tokens, keep_overlapping_ngram=False):
-        ngram_tokens = []
+    def ngramize(
+        self, tokens: list[str], keep_overlapping_ngram: bool = False
+    ) -> list[str]:
+        ngram_tokens: list[str] = []
 
         for pos in range(len(tokens)):
             for gram in range(self._min_ngram, self._ngram + 1):
-                if token := self.get_ngram(tokens, pos, gram):
-                    if token in self._vocab:
-                        ngram_tokens.append(token)
+                if (
+                    token := self.get_ngram(tokens, pos, gram)
+                ) and token in self._vocab:
+                    ngram_tokens.append(token)
         if not keep_overlapping_ngram:
-            filtered_tokens = []
+            filtered_tokens: list[str] = []
             if ngram_tokens:
                 ngram_tokens = sorted(
                     ngram_tokens, key=lambda item: len(item), reverse=True
@@ -109,7 +126,7 @@ class MPCK(object):
 
         return ngram_tokens
 
-    def get_ngram(self, tokens, pos, gram):
+    def get_ngram(self, tokens: list[str], pos: int, gram: int) -> Optional[str]:
         if pos < 0:
             return None
         if pos + gram > len(tokens):
@@ -130,9 +147,11 @@ class MPCK(object):
                 token += self._delimiter + tokens[pos + i]
         return token if check_noun else None
 
-    def classify(self, tokens, intensity_cutoff=1.3):
+    def classify(
+        self, tokens: list[str], intensity_cutoff: float = 1.3
+    ) -> dict[str, float]:
         eps = 1e-6
-        features = {token: True for token in tokens}
+        features = dict.fromkeys(tokens, True)
         result = self.classifier.prob_classify(features)
         pos_score = result.prob(self._positive_label)
         neg_score = result.prob(self._negative_label)
@@ -150,21 +169,23 @@ class MPCK(object):
             "Neg score": neg_score,
         }
 
-    def get_informative_features(self, cutoff_ratio=1.2):
+    def get_informative_features(self, cutoff_ratio: float = 1.2) -> list:
         cpdist = (
             self.classifier._feature_probdist
         )  # probability distribution for feature values given labels
-        fcnt = len({w for _, w in cpdist.keys()})
-        feature_list = []
+        fcnt = len({w for _, w in cpdist})
+        feature_list: list = []
         epsilon = 1e-6
-        feature = namedtuple("Feature", ["Word", "Label", "Polarity", "Intensity"])
+        Feature = namedtuple("Feature", ["Word", "Label", "Polarity", "Intensity"])
 
         for feature_name, feature_val in self.classifier.most_informative_features(
             n=fcnt
         ):
 
-            def labelprob(label):
-                return cpdist[label, feature_name].prob(feature_val)
+            def labelprob(
+                label: str, fname: str = feature_name, fval: object = feature_val
+            ) -> float:
+                return cpdist[label, fname].prob(fval)
 
             labels = sorted(
                 [
@@ -182,10 +203,10 @@ class MPCK(object):
             if ratio > cutoff_ratio:
                 polar = ratio if l1 == self._positive_label else 1 / ratio
                 label = 1 if l1 == self._positive_label else -1
-                feature_list.append(feature(feature_name, label, polar, ratio))
+                feature_list.append(Feature(feature_name, label, polar, ratio))
 
         p = [f.Polarity for f in feature_list if f.Label > 0]
-        n = [f.Polarity for f in feature_list if f.Label > 0]
+        n = [f.Polarity for f in feature_list if f.Label < 0]
         for i, f in enumerate(feature_list):
             if f.Label > 0:
                 feature_list[i] = f._replace(
@@ -198,30 +219,34 @@ class MPCK(object):
 
         return feature_list
 
-    def bagging_classifier(
+    def bagging_classifier(  # type: ignore[no-any-unimported]
         self,
-        dataset,
-        iterations=20,
-        feature_fn_name="word",
-        train_ratio=0.8,
-        best_words_ratio=0.8,
-        verbose=False,
-        token_column="text",
-        target_column="category",
-        pos_target_val=1,
-        neg_target_val=-1,
-    ):
+        dataset: "pd.DataFrame",
+        iterations: int = 20,
+        feature_fn_name: str = "word",
+        train_ratio: float = 0.8,
+        best_words_ratio: float = 0.8,
+        verbose: bool = False,
+        token_column: str = "text",  # noqa: S107
+        target_column: str = "category",
+        pos_target_val: int = 1,
+        neg_target_val: int = -1,
+    ) -> tuple[int, list[object], list[dict[str, float]], dict[str, float]]:
         """
         Bootstrap aggregating classifiers
         """
 
         if verbose:
-            print(
-                f"\nNo. of iterations: {iterations}. feature function: {feature_fn_name}, train ratio: {train_ratio}, best words ratio: {best_words_ratio}"
+            logger.info(
+                "\nNo. of iterations: %d. feature function: %s, train ratio: %s, best words ratio: %s",
+                iterations,
+                feature_fn_name,
+                train_ratio,
+                best_words_ratio,
             )
 
-        clfs = []
-        mlst = []
+        clfs: list[object] = []
+        mlst: list[dict[str, float]] = []
 
         for _ in range(iterations):
             classifier, metrics = self.train_classifier(
@@ -238,15 +263,15 @@ class MPCK(object):
             clfs.append(classifier)
             mlst.append(metrics)
 
-        mean_metrics = {}
+        mean_metrics: dict[str, float] = {}
         best_index = 0
-        best_accuracy = 0
+        best_accuracy: float = 0
         for i, metrics in enumerate(mlst):
             if metrics["Accuracy"] > best_accuracy:
                 best_accuracy = metrics["Accuracy"]
                 best_index = i
             if i == 0:
-                for key in metrics.keys():
+                for key in metrics:
                     mean_metrics[key] = metrics[key]
             else:
                 for key, value in mean_metrics.items():
@@ -254,57 +279,71 @@ class MPCK(object):
         for key in mean_metrics:
             mean_metrics[key] = mean_metrics[key] / len(mlst)
         if verbose:
-            print(f"Best classifier: {best_index}")
-            print(mlst[best_index])
-            print("- Average metrics of classifiers -")
-            print(mean_metrics)
+            logger.info("Best classifier: %d", best_index)
+            logger.info("%s", mlst[best_index])
+            logger.info("- Average metrics of classifiers -")
+            logger.info("%s", mean_metrics)
 
         return best_index, clfs, mlst, mean_metrics
 
-    def train_classifier(
+    def train_classifier(  # type: ignore[no-any-unimported]  # noqa: C901
         self,
-        dataset,
-        feature_fn_name="word",
-        train_ratio=0.8,
-        verbose=False,
-        token_column="text",
-        target_column="category",
-        best_ratio=0.8,
-        pos_target_val=1,
-        neg_target_val=-1,
-    ):
-        def word_feats(words):
-            return dict([(word, True) for word in words])
+        dataset: "pd.DataFrame",
+        feature_fn_name: str = "word",
+        train_ratio: float = 0.8,
+        verbose: bool = False,
+        token_column: str = "text",  # noqa: S107
+        target_column: str = "category",
+        best_ratio: float = 0.8,
+        pos_target_val: int = 1,
+        neg_target_val: int = -1,
+    ) -> tuple[object, dict[str, float]]:
+        def word_feats(words: list[str]) -> dict[str, bool]:
+            return dict.fromkeys(words, True)
 
-        def best_word_feats(words):
-            return dict([(word, True) for word in words if word in bestwords])
+        def best_word_feats(words: list[str]) -> dict[str, bool]:
+            return {word: True for word in words if word in bestwords}
 
-        def best_bigram_word_feats(words, score_fn=BigramAssocMeasures.chi_sq, n=200):
+        def best_bigram_word_feats(
+            words: list[str],
+            score_fn: Callable[
+                [int, tuple[int, int], int], float
+            ] = BigramAssocMeasures.chi_sq,
+            n: int = 200,
+        ) -> dict[str, bool]:
             bigram_finder = BigramCollocationFinder.from_words(words)
             bigrams = bigram_finder.nbest(score_fn, n)
-            d = dict([(bigram, True) for bigram in bigrams])
+            d = dict.fromkeys(bigrams, True)
             d.update(best_word_feats(words))
             return d
 
-        def best_trigram_word_feats(words, score_fn=TrigramAssocMeasures.chi_sq, n=200):
+        def best_trigram_word_feats(
+            words: list[str],
+            score_fn: Callable[
+                [int, tuple[int, int, int], tuple[int, int, int], int], float
+            ] = TrigramAssocMeasures.chi_sq,
+            n: int = 200,
+        ) -> dict[str, bool]:
             tcf = TrigramCollocationFinder.from_words(words)
             trigrams = tcf.nbest(score_fn, n)
-            d = dict([(trigram, True) for trigram in trigrams])
+            d = dict.fromkeys(trigrams, True)
             d.update(best_bigram_word_feats(words))
             d.update(best_word_feats(words))
             return d
 
         if verbose:
-            print(
-                "\nSelected feature function: {}, token column: {}, train ratio: {}".format(
-                    feature_fn_name, token_column, train_ratio
-                )
+            logger.info(
+                "\nSelected feature function: %s, token column: %s, train ratio: %s",
+                feature_fn_name,
+                token_column,
+                train_ratio,
             )
         df = dataset.sample(frac=1).reset_index(drop=True)
         negids = df[df[target_column] == neg_target_val].index
         posids = df[df[target_column] == pos_target_val].index
         feats = df[token_column]
 
+        feat_fn: Callable[[list[str]], dict[str, bool]]
         if feature_fn_name in ["best_word", "best_bigram", "best_trigram"]:
             word_fd = FreqDist()
             label_word_fd = ConditionalFreqDist()
@@ -321,7 +360,7 @@ class MPCK(object):
             pos_word_count = label_word_fd[self._positive_label].N()
             neg_word_count = label_word_fd[self._negative_label].N()
             total_word_count = pos_word_count + neg_word_count
-            word_scores = {}
+            word_scores: dict[str, float] = {}
             for word, freq in word_fd.items():
                 pos_score = BigramAssocMeasures.chi_sq(
                     label_word_fd[self._positive_label][word],
@@ -353,10 +392,11 @@ class MPCK(object):
         negfeats = [(feat_fn(feats[i].split()), self._negative_label) for i in negids]
         posfeats = [(feat_fn(feats[i].split()), self._positive_label) for i in posids]
         if verbose:
-            print(
-                "No. of samples: {}, Pos: {}, Neg: {}".format(
-                    len(feats), len(posfeats), len(negfeats)
-                )
+            logger.info(
+                "No. of samples: %d, Pos: %d, Neg: %d",
+                len(feats),
+                len(posfeats),
+                len(negfeats),
             )
 
         negcutoff = int(len(negfeats) * train_ratio)
@@ -390,13 +430,18 @@ class MPCK(object):
             ),
         }
         if verbose:
-            print(metrics)
+            logger.info("%s", metrics)
 
         return classifier, metrics
 
     def evaluate_confusion_matrix(
-        self, actual, predicted, actual_pos_val=1, actual_neg_val=-1, verbose=False
-    ):
+        self,
+        actual: Sequence[float],
+        predicted: Sequence[float],
+        actual_pos_val: int = 1,
+        actual_neg_val: int = -1,
+        verbose: bool = False,
+    ) -> dict[str, float]:
         return evaluate_confusion_matrix(
             actual,
             predicted,
@@ -407,8 +452,12 @@ class MPCK(object):
 
 
 def evaluate_confusion_matrix(
-    actual, predicted, actual_pos_val=1, actual_neg_val=-1, verbose=False
-):
+    actual: Sequence[float],
+    predicted: Sequence[float],
+    actual_pos_val: int = 1,
+    actual_neg_val: int = -1,
+    verbose: bool = False,
+) -> dict[str, float]:
     t_pos = 0
     f_pos = 0
     t_neg = 0
@@ -418,27 +467,27 @@ def evaluate_confusion_matrix(
             if a == actual_pos_val:
                 t_pos += 1
             elif a == actual_neg_val:
-                f_neg += 1
+                f_pos += 1
         elif p < 0:
             if a == actual_neg_val:
                 t_neg += 1
             elif a == actual_pos_val:
-                f_pos += 1
+                f_neg += 1
+
+    def ratio(numerator: float, denominator: float) -> float:
+        return numerator / denominator if denominator else 0.0
 
     pr = pearsonr(actual, predicted)
     sr = spearmanr(actual, predicted)
-    all_acc = (t_pos + t_neg) / (t_pos + f_pos + t_neg + f_neg)
-    pos_acc, pos_recall = t_pos / (t_pos + f_pos), t_pos / (t_pos + f_neg)
-    neg_acc, neg_recall = t_neg / (t_neg + f_neg), t_neg / (t_neg + f_pos)
     metrics = {
         "Pearson corr": pr[0],
         "Spearman corr": sr[0],
-        "Accuracy": all_acc,
-        "Pos precision": pos_acc,
-        "Pos recall": pos_recall,
-        "Neg precision": neg_acc,
-        "Neg recall": neg_recall,
+        "Accuracy": ratio(t_pos + t_neg, t_pos + f_pos + t_neg + f_neg),
+        "Pos precision": ratio(t_pos, t_pos + f_pos),
+        "Pos recall": ratio(t_pos, t_pos + f_neg),
+        "Neg precision": ratio(t_neg, t_neg + f_neg),
+        "Neg recall": ratio(t_neg, t_neg + f_pos),
     }
     if verbose:
-        print(metrics)
+        logger.info("%s", metrics)
     return metrics

@@ -1,9 +1,12 @@
 import logging
 import os
+import shutil
 import subprocess
+import sys
 from collections import namedtuple
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Optional
 
 import mecab_ko_dic
 import pandas as pd
@@ -46,23 +49,26 @@ ContextEntry = namedtuple(
 )
 
 
-def iternamedtuples(df):
-    Row = namedtuple("Row", df.columns)
+def iternamedtuples(  # type: ignore[no-any-unimported]
+    df: pd.DataFrame,
+) -> Iterator[DicEntry]:
     for row in df.itertuples():
-        yield Row(*row[1:])
+        yield DicEntry(*row[1:])
 
 
-def has_jongseong(c):
+def has_jongseong(c: str) -> bool:
     return int((ord(c[-1]) - 0xAC00) % 28) != 0
 
 
 class MecabDicConfig:
-    userdic: Dict[str, DicEntry] = {}
+    userdic: dict[str, DicEntry]
     dicdir: str = mecab_ko_dic.DICDIR
-    left_ids: List[ContextEntry] = []
-    right_ids: List[ContextEntry] = []
+    left_ids: list[ContextEntry]
+    right_ids: list[ContextEntry]
+    userdic_path: Optional[str] = None
 
     def __init__(self, userdic_path: Optional[str] = None):
+        self.userdic_path = userdic_path
         if userdic_path:
             self.load_userdic(userdic_path)
         else:
@@ -71,13 +77,13 @@ class MecabDicConfig:
         self.left_ids = self.load_context_ids("left-id.def")
         self.right_ids = self.load_context_ids("right-id.def")
 
-    def load_context_ids(self, id_file: str) -> List[ContextEntry]:
+    def load_context_ids(self, id_file: str) -> list[ContextEntry]:
         id_file = os.path.join(self.dicdir, id_file)
         context_ids = []
-        with open(id_file, "r", encoding="utf-8") as f:
+        with open(id_file, encoding="utf-8") as f:
             for line in f:
-                id, vals = line.split()
-                entry = ContextEntry(id, *vals.split(","))
+                entry_id, vals = line.split()
+                entry = ContextEntry(entry_id, *vals.split(","))
                 context_ids.append(entry)
         return context_ids
 
@@ -85,6 +91,7 @@ class MecabDicConfig:
         for entry in self.left_ids:
             if entry.pos == search.pos and entry.semantic == search.semantic:
                 return entry.id
+        return None
 
     def find_right_context_id(self, search: DicEntry) -> Optional[str]:
         for entry in self.right_ids:
@@ -94,19 +101,20 @@ class MecabDicConfig:
                 and entry.has_jongseong == search.has_jongseong
             ):
                 return entry.id
+        return None
 
-    def load_userdic(self, userdic_path: str):
+    def load_userdic(self, userdic_path: str) -> None:
         userdic_path_ = Path(userdic_path)
 
         if userdic_path_.is_dir():
             self.userdic = {}
             for f in userdic_path_.glob("*.csv"):
                 df = pd.read_csv(f, names=DicEntry._fields)
-                dic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
+                dic = {e.surface: e for e in iternamedtuples(df)}
                 self.userdic = {**self.userdic, **dic}
         else:
             df = pd.read_csv(userdic_path_, names=DicEntry._fields)
-            self.userdic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
+            self.userdic = {e.surface: e for e in iternamedtuples(df)}
         logger.info("No. of user dictionary entires loaded: %d", len(self.userdic))
 
     def add_entry_to_userdic(
@@ -116,7 +124,7 @@ class MecabDicConfig:
         semantic: str = "*",
         reading: Optional[str] = None,
         cost: int = 1000,
-    ):
+    ) -> None:
         entry = DicEntry(
             surface=surface,
             cost=cost,
@@ -131,7 +139,7 @@ class MecabDicConfig:
         )
         self.userdic[surface] = entry
 
-    def adjust_context_ids(self):
+    def adjust_context_ids(self) -> None:
         for entry in self.userdic.values():
             entry = entry._replace(
                 left_id=self.find_left_context_id(entry),
@@ -139,11 +147,11 @@ class MecabDicConfig:
             )
             self.userdic[entry.surface] = entry
 
-    def adjust_costs(self, cost: int = 1000):
+    def adjust_costs(self, cost: int = 1000) -> None:
         for surface, entry in self.userdic.items():
             self.userdic[surface] = entry._replace(cost=cost)
 
-    def save_userdic(self, save_path: str):
+    def save_userdic(self, save_path: str) -> None:
         if len(self.userdic) > 0:
             df = pd.DataFrame(self.userdic.values())
             df.to_csv(save_path, header=False, index=False)
@@ -153,11 +161,35 @@ class MecabDicConfig:
         else:
             logger.warning("No user dictionary entries to save.")
 
+    @staticmethod
+    def _build_dict_executable() -> str:
+        executable = shutil.which("fugashi-build-dict")
+        if executable:
+            return executable
+        binary = "fugashi-build-dict.exe" if os.name == "nt" else "fugashi-build-dict"
+        return os.path.join(os.path.dirname(sys.executable), binary)
+
+    @staticmethod
+    def _build_dict_path(path: str) -> str:
+        # The MeCab dictionary compiler eats backslashes as escape characters
+        # in its arguments, so Windows paths must use forward slashes.
+        return path.replace("\\", "/") if os.name == "nt" else path
+
     def build_userdic(
         self, built_userdic_path: str, userdic_path: Optional[str] = None
-    ):
+    ) -> None:
         if userdic_path:
             self.userdic_path = userdic_path
-        args = f'-d "{self.dicdir}" -u "{built_userdic_path}" {self.userdic_path}'
-        # print(args)
-        subprocess.run(["fugashi-build-dict", args])
+        if not self.userdic_path:
+            raise ValueError(  # noqa: TRY003
+                "userdic_path is not set; call save_userdic() first or pass userdic_path."
+            )
+        cmd = [
+            self._build_dict_executable(),
+            "-d",
+            self._build_dict_path(self.dicdir),
+            "-u",
+            self._build_dict_path(built_userdic_path),
+            self._build_dict_path(self.userdic_path),
+        ]
+        subprocess.run(cmd, check=True)  # noqa: S603

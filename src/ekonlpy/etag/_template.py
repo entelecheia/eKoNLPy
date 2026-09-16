@@ -1,4 +1,4 @@
-from typing import Dict, Set
+from typing import Union
 
 from ekonlpy.data.tagset import nouns_tags, pass_tags, skip_chk_tags, skip_tags
 from ekonlpy.utils.dictionary import TermDictionary
@@ -7,10 +7,10 @@ from ekonlpy.utils.dictionary import TermDictionary
 class ExtTagger:
     dictionary: TermDictionary
     max_ngram: int
-    skip_chk_tags: Dict[str, str]
-    skip_tags: Set[str]
-    nouns_tags: Set[str]
-    pass_tags: Set[str]
+    skip_chk_tags: dict[tuple[str, ...], str]
+    skip_tags: set[str]
+    nouns_tags: set[str]
+    pass_tags: set[tuple[str, str]]
 
     def __init__(
         self,
@@ -24,27 +24,27 @@ class ExtTagger:
         self.nouns_tags = set(nouns_tags)
         self.pass_tags = set(pass_tags)
 
-    def add_skip_chk_tags(self, template):
+    def add_skip_chk_tags(self, template: dict[tuple[str, ...], str]) -> None:
         if isinstance(template, dict):
             self.skip_chk_tags.update(template)
 
-    def add_skip_tags(self, tags):
+    def add_skip_tags(self, tags: Union[list[str], set[str]]) -> None:
         if isinstance(tags, (list, set)):
             self.skip_tags.update(tags)
 
-    def pos(self, tokens):
-        def ctagger(
-            ctokens,
-            max_ngram,
-            cnouns_tags,
-            cpass_tags,
-            cskip_chk_tags,
-            cskip_tags,
-            cdictionary,
-        ):
+    def pos(self, tokens: list[tuple[str, str]]) -> list[tuple[str, str]]:  # noqa: C901
+        def ctagger(  # noqa: C901
+            ctokens: list[tuple[str, str]],
+            max_ngram: int,
+            cnouns_tags: set[str],
+            cpass_tags: set[tuple[str, str]],
+            cskip_chk_tags: dict[tuple[str, ...], str],
+            cskip_tags: set[str],
+            cdictionary: TermDictionary,
+        ) -> list[tuple[str, str]]:
             tokens_org = ctokens
             num_tokens = len(ctokens)
-            tokens_new = []
+            tokens_new: list[tuple[str, str]] = []
             ipos = 0
 
             while ipos < num_tokens:
@@ -53,17 +53,19 @@ class ExtTagger:
                     # if found a word from the dictionary, skip for loop
                     if word_found or ipos + ngram > num_tokens:
                         continue
-                    if any(word.isspace() for word, _ in tokens_org[ipos:ipos + ngram]):
+                    if any(
+                        word.isspace() for word, _ in tokens_org[ipos : ipos + ngram]
+                    ):
                         continue
 
-                    tmp_tags = []
-                    for j in range(ngram):
-                        tmp_tags.append(
+                    tmp_tags = tuple(
+                        (
                             "NNG"
                             if tokens_org[ipos + j][1] in cnouns_tags
                             else tokens_org[ipos + j][1]
                         )
-                    tmp_tags = tuple(tmp_tags)
+                        for j in range(ngram)
+                    )
 
                     if tmp_tags not in cpass_tags:
                         new_word = ""
@@ -75,7 +77,7 @@ class ExtTagger:
                             ipos += ngram
                             word_found = True
 
-                    if not word_found and tmp_tags in cskip_chk_tags.keys():
+                    if not word_found and tmp_tags in cskip_chk_tags:
                         new_word = ""
                         num_word = ""
                         for j in range(ngram):
@@ -107,7 +109,11 @@ class ExtTagger:
             return tokens_new
 
         tokens = [
-            (w, t) if w.isspace() else (w.strip(), self.dictionary.check_tag(w.strip(), t))
+            (
+                (w, t)
+                if w.isspace()
+                else (w.strip(), self.dictionary.check_tag(w.strip(), t))
+            )
             for w, t in tokens
         ]
 
@@ -130,6 +136,9 @@ class ExtTagger:
             self.dictionary,
         )
 
-        tokens = [(w, t if w.isspace() else self.dictionary.check_tag(w, t)) for w, t in tokens]
+        tokens = [
+            (w, t if w.isspace() else self.dictionary.check_tag(w, t))
+            for w, t in tokens
+        ]
 
         return tokens

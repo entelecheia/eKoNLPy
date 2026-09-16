@@ -1,13 +1,16 @@
+import logging
 import os
 from collections import OrderedDict
-from typing import Dict, List, Set
+from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 installpath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
 
 def load_dictionary(
     fname: str, encoding: str = "utf-8", rewrite: bool = False
-) -> Set[str]:
+) -> set[str]:
     """
     Load words from a file and return a set of unique words.
 
@@ -15,36 +18,28 @@ def load_dictionary(
     :param encoding: Encoding of the file
     :param rewrite: If True, rewrite the file with unique words
     :return: Set of unique words
+    :raises OSError: If the file cannot be read
     """
-    words = set()
-    try:
-        with open(fname, encoding=encoding) as f:
-            words_ = {line.strip().lower().replace(" ", "") for line in f}
-            words.update(words_)
-        if rewrite:
-            with open(fname, "w", encoding=encoding) as f:
-                for word in words:
-                    f.write(word + "\n")
-    except Exception as e:
-        print(e)
-
+    with open(fname, encoding=encoding) as f:
+        words = {line.strip().lower().replace(" ", "") for line in f if line.strip()}
+    if rewrite:
+        with open(fname, "w", encoding=encoding) as f:
+            for word in words:
+                f.write(word + "\n")
     return words
 
 
-def load_txt(fname: str, encoding: str = "utf-8") -> List[str]:
+def load_txt(fname: str, encoding: str = "utf-8") -> list[str]:
     """
     Load lines from a text file and return a list of lines.
 
     :param fname: File name to load lines from
     :param encoding: Encoding of the file
     :return: List of lines
+    :raises OSError: If the file cannot be read
     """
-    try:
-        with open(fname, encoding=encoding) as f:
-            return [line.strip() for line in f]
-    except Exception as e:
-        print(e)
-        return []
+    with open(fname, encoding=encoding) as f:
+        return [line.strip() for line in f]
 
 
 def load_vocab(file_path: str, delimiter: str = ",") -> "OrderedDict[str, str]":
@@ -56,23 +51,27 @@ def load_vocab(file_path: str, delimiter: str = ",") -> "OrderedDict[str, str]":
     :param file_path: File name to load vocabulary from
     :param delimiter: Delimiter used to separate words and their values
     :return: OrderedDict of vocabulary
+    :raises OSError: If the file cannot be read
     """
     vocab = OrderedDict()
-    if os.path.isfile(file_path):
-        with open(file_path, encoding="utf-8") as f:
-            for line_number, line in enumerate(f, 1):
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                fields = line.split(delimiter)
-                if len(fields) < 2 or not fields[0].strip() or not fields[1].strip():
-                    raise ValueError(f"Malformed vocabulary entry at {file_path}:{line_number}")
-                vocab[fields[0].lower().replace(" ", "")] = fields[1].lower().replace(" ", "")
+    with open(file_path, encoding="utf-8") as f:
+        for line_number, line in enumerate(f, 1):
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            fields = line.split(delimiter)
+            if len(fields) < 2 or not fields[0].strip() or not fields[1].strip():
+                raise ValueError(  # noqa: TRY003
+                    f"Malformed vocabulary entry at {file_path}:{line_number}"
+                )
+            vocab[fields[0].lower().replace(" ", "")] = (
+                fields[1].lower().replace(" ", "")
+            )
     vocab = OrderedDict((k, v) for k, v in sorted(vocab.items(), key=lambda x: x[0]))
     return vocab
 
 
-def save_vocab(vocab: Dict[str, str], file_path: str, delimiter: str = ",") -> None:
+def save_vocab(vocab: dict[str, str], file_path: str, delimiter: str = ",") -> None:
     """
     Save vocabulary to a file.
 
@@ -80,20 +79,22 @@ def save_vocab(vocab: Dict[str, str], file_path: str, delimiter: str = ",") -> N
     :param file_path: File name to save vocabulary
     :param delimiter: Delimiter used to separate words and their values
     """
-    vocab = list(vocab.items())
+    items = list(vocab.items())
     with open(file_path, "w", encoding="utf-8") as f:
-        for w, c in vocab:
+        for w, c in items:
             f.write(w + delimiter + str(c) + "\n")
 
 
-def save_wordlist(words: List[str], file_path: str) -> None:
+def save_wordlist(words: list[str], file_path: str) -> None:
     """
     Save a list of words to a file.
 
     :param words: List of words to be saved
     :param file_path: File name to save the list of words
     """
-    print(f"Save the list to the file: {file_path}, no. of words: {len(words)}")
+    logger.info(
+        "Save the list to the file: %s, no. of words: %d", file_path, len(words)
+    )
     with open(file_path, "w", encoding="utf-8") as f:
         for word in words:
             f.write(word + "\n")
@@ -102,12 +103,12 @@ def save_wordlist(words: List[str], file_path: str) -> None:
 def load_wordlist(
     file_path: str,
     rewrite: bool = False,
-    max_ngram: int = None,
+    max_ngram: Optional[int] = None,
     remove_tag: bool = False,
     sort: bool = True,
     remove_delimiter: bool = False,
     lowercase: bool = False,
-) -> List[str]:
+) -> list[str]:
     """
     Load a list of words from a file with various processing options.
 
@@ -119,19 +120,17 @@ def load_wordlist(
     :param remove_delimiter: If True, remove delimiters from the words
     :param lowercase: If True, convert words to lowercase
     :return: List of processed words
+    :raises OSError: If the file cannot be read
     """
-    words = []
-
-    if os.path.isfile(file_path):
-        with open(file_path, encoding="utf-8") as f:
-            if remove_tag:
-                words = [
-                    word.strip().split()[0].split("/")[0]
-                    for word in f
-                    if len(word.strip()) > 0
-                ]
-            else:
-                words = [word.strip().split()[0] for word in f if len(word.strip()) > 1]
+    with open(file_path, encoding="utf-8") as f:
+        if remove_tag:
+            words = [
+                word.strip().split()[0].split("/")[0]
+                for word in f
+                if len(word.strip()) > 0
+            ]
+        else:
+            words = [word.strip().split()[0] for word in f if len(word.strip()) > 1]
 
     if remove_delimiter:
         words = [word.replace(";", "") for word in words]
@@ -139,14 +138,16 @@ def load_wordlist(
     if max_ngram:
         words = [word for word in words if len(word.split(";")) <= max_ngram]
 
-    words = sorted(set(words)) if sort else set(words)
-    print(f"Loaded the file: {file_path}, No. of words: {len(words)}")
+    words = sorted(set(words)) if sort else list(set(words))
+    logger.info("Loaded the file: %s, No. of words: %d", file_path, len(words))
 
     if rewrite:
         with open(file_path, "w", encoding="utf-8") as f:
             for word in words:
                 f.write(word + "\n")
-        print(f"Saved the words to the file: {file_path}, No. of words: {len(words)}")
+        logger.info(
+            "Saved the words to the file: %s, No. of words: %d", file_path, len(words)
+        )
 
     words = [word for word in words if not word.startswith("#")]
     words = [
@@ -158,9 +159,9 @@ def load_wordlist(
     return words
 
 
-def check_word_inclusion(
+def check_word_inclusion(  # noqa: C901
     word: str,
-    check_list: List[str],
+    check_list: list[str],
     unit_level: bool = False,
     endswith: bool = False,
     startswith: bool = False,

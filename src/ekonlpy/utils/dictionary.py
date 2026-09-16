@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Set, Union
+from typing import Optional, Union
 
 term_tags = {
     "COUNTRY": "국가",
@@ -14,10 +14,10 @@ term_tags = {
 
 
 class TermDictionary:
-    def __init__(self):
-        self._pos2words: Dict[str, Set[str]] = {}
+    def __init__(self) -> None:
+        self._pos2words: dict[str, set[str]] = {}
 
-    def add_dictionary(self, words: Union[str, List[str], Set[str]], tag: str) -> None:
+    def add_dictionary(self, words: Union[str, list[str], set[str]], tag: str) -> None:
         """
         Add a list of words or a single word to the dictionary under the given tag.
 
@@ -36,19 +36,13 @@ class TermDictionary:
 
         :param fname: File name to load words from
         :param tag: Tag for the words being loaded
+        :raises OSError: If the file cannot be read
         """
-
-        def load(filename: str) -> Set[str]:
-            try:
-                with open(filename, encoding="utf-8") as f:
-                    words = {word.strip().lower() for word in f}
-                    return words
-            except Exception as e:
-                print(f"load_dictionary error: {e}")
-                return set()
+        with open(fname, encoding="utf-8") as f:
+            words = {word.strip().lower() for word in f if word.strip()}
 
         wordset = self._pos2words.get(tag, set())
-        wordset.update(load(fname))
+        wordset.update(words)
         self._pos2words[tag] = wordset
 
     def get_tags(self, word: str) -> Optional[str]:
@@ -61,6 +55,7 @@ class TermDictionary:
         for tag, words in self._pos2words.items():
             if word.lower() in words:
                 return tag
+        return None
 
     def check_tag(self, word: str, tag: str) -> str:
         """

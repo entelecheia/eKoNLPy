@@ -14,6 +14,6 @@ __all__ = [
     "Mecab",
     "MecabDicConfig",
     "TermDictionary",
-    "installpath",
     "get_version",
+    "installpath",
 ]
