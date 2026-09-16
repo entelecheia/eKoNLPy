@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Tuple
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -10,13 +10,13 @@ class BaseMecab:
     def parse(
         self,
         text: str,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         raise NotImplementedError
 
     def pos(
         self,
         text: str,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         return self.parse(text)
 
     def tokenize(
@@ -24,7 +24,7 @@ class BaseMecab:
         text: str,
         strip_pos: bool = False,
         postag_delim: str = "/",
-    ) -> List[str]:
+    ) -> list[str]:
         tokens = self.parse(text)
 
         return [
@@ -32,15 +32,15 @@ class BaseMecab:
             for token_pos in tokens
         ]
 
-    def morphs(self, text: str) -> List[str]:
+    def morphs(self, text: str) -> list[str]:
         return self.tokenize(text, strip_pos=True)
 
     def nouns(
         self,
         text: str,
         flatten: bool = True,
-        noun_pos: Optional[List[str]] = None,
-    ) -> List[str]:
+        noun_pos: Optional[list[str]] = None,
+    ) -> list[str]:
         if not noun_pos:
             noun_pos = []
         return [surface for surface, pos in self.pos(text) if pos in noun_pos]

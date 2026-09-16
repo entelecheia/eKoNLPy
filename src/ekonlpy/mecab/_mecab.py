@@ -1,7 +1,8 @@
 import logging
 import os
 from collections import namedtuple
-from typing import Any, List, Optional, Sequence, Tuple, Union
+from collections.abc import Sequence
+from typing import Optional, Union
 
 import fugashi as _mecab
 
@@ -29,14 +30,14 @@ Feature = namedtuple(
 #           expression='하/XSA/*+ᄇ니다/EF/*')),
 
 
-def _extract_feature(values: Sequence[Any]) -> Feature:
+def _extract_feature(values: Sequence[object]) -> Feature:
     # Reference:
     # - http://taku910.github.io/mecab/learn.html
     # - https://docs.google.com/spreadsheets/d/1-9blXKjtjeKZqsf4NzHeYJCrr49-nXeRF6D80udfcwY
     # - https://bitbucket.org/eunjeon/mecab-ko-dic/src/master/utils/dictionary/lexicon.py
 
     # feature = <pos>,<semantic>,<has_jongseong>,<reading>,<type>,<start_pos>,<end_pos>,<expression>
-    assert len(values) == 8
+    assert len(values) == 8  # noqa: S101
 
     feature_values = [value if value != "*" else None for value in values]
     feature = dict(zip(Feature._fields, feature_values))
@@ -54,14 +55,14 @@ class Mecab(BaseMecab):
     backend = "fugashi"
     verbose: bool = False
 
-    _tagger: _mecab.GenericTagger  # type: ignore
+    _tagger: _mecab.GenericTagger  # type: ignore[no-any-unimported]
 
     def __init__(
         self,
         dicdir: Optional[str] = None,
         userdic_path: Optional[str] = None,
         verbose: bool = False,
-        **kwargs,
+        **kwargs: object,
     ):
         import mecab_ko_dic
 
@@ -85,22 +86,21 @@ class Mecab(BaseMecab):
                 userdic_path,
             )
         try:
-            self._tagger = _mecab.GenericTagger(MECAB_ARGS)  # type: ignore
+            self._tagger = _mecab.GenericTagger(MECAB_ARGS)
             if self.verbose:
                 dictionary_info = self._tagger.dictionary_info
                 sysdic_path = dictionary_info[0]["filename"]
                 logger.debug("Mecab is loaded from %s", sysdic_path)
         except RuntimeError as e:
-            raise MeCabError(
-                'The MeCab dictionary does not exist at "%s". Is the dictionary correctly installed?\nYou can also try entering the dictionary path when initializing the MeCab class: "MeCab(\'/some/dic/path\')"'
-                % dicdir
+            raise MeCabError(  # noqa: TRY003
+                f'The MeCab dictionary does not exist at "{dicdir}". Is the dictionary correctly installed?\nYou can also try entering the dictionary path when initializing the MeCab class: "MeCab(\'/some/dic/path\')"'
             ) from e
         except NameError as e:
-            raise MeCabError(
+            raise MeCabError(  # noqa: TRY003
                 "The fugashi package is not installed. Please install fugashi with: pip install fugashi"
             ) from e
 
-    def _parse(self, text: str) -> List[Tuple[str, Feature]]:
+    def _parse(self, text: str) -> list[tuple[str, Feature]]:
         return [
             (node.surface, _extract_feature(node.feature))
             for node in self._tagger(text)
@@ -111,7 +111,7 @@ class Mecab(BaseMecab):
         text: str,
         flatten: bool = True,
         include_whitespace_token: bool = False,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         """Tag text, optionally preserving original whitespace runs as SP tokens."""
         res = []
         cursor = 0
@@ -138,19 +138,19 @@ class Mecab(BaseMecab):
         text: str,
         flatten: bool = True,
         include_whitespace_token: bool = False,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         return self.parse(
             text, flatten=flatten, include_whitespace_token=include_whitespace_token
         )
 
-    def tokenize(
+    def tokenize(  # type: ignore[override]
         self,
         text: str,
         flatten: bool = True,
         include_whitespace_token: bool = False,
         strip_pos: bool = False,
         postag_delim: str = "/",
-    ) -> List[str]:
+    ) -> list[str]:
         tokens = self.parse(
             text, flatten=flatten, include_whitespace_token=include_whitespace_token
         )
@@ -160,17 +160,17 @@ class Mecab(BaseMecab):
             for token_pos in tokens
         ]
 
-    def morphs(self, text: str, flatten: bool = True) -> List[str]:
+    def morphs(self, text: str, flatten: bool = True) -> list[str]:
         return self.tokenize(
             text, flatten=flatten, strip_pos=True, include_whitespace_token=False
         )
 
     def nouns(
         self,
-        text: Union[str, List[Tuple[str, str]]],
+        text: Union[str, list[tuple[str, str]]],
         flatten: bool = True,
-        noun_pos: Optional[List[str]] = None,
-    ) -> List[str]:
+        noun_pos: Optional[list[str]] = None,
+    ) -> list[str]:
         if not noun_pos:
             noun_pos = ["NNG", "NNP", "XSN", "SL", "XR", "NNB", "NR"]
         tagged = (

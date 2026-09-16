@@ -1,4 +1,5 @@
 import os
+from typing import ClassVar, Optional
 
 from .base import LEXICON_PATH, BaseDict
 from .utils import MPTokenizer
@@ -12,22 +13,24 @@ class MPKO(BaseDict):
     ``Positive`` means ``hawkish`` and ``Negative`` means ``dovish``.
     """
 
-    KINDS = {
+    KINDS: ClassVar[dict[int, str]] = {
         0: "mp_polarity_lexicon_mkt.csv",
         1: "mp_polarity_lexicon_lex.csv",
         3: "mp_polarity_lexicon_mkt_n3.csv",
         7: "mp_polarity_lexicon_mkt_n7.csv",
     }
-    INTENSITY_KINDS = {0: 1.3, 1: 1.1, 3: 1.3, 7: 1.3}
+    INTENSITY_KINDS: ClassVar[dict[int, float]] = {0: 1.3, 1: 1.1, 3: 1.3, 7: 1.3}
 
-    def init_tokenizer(self, kind=None):
+    def init_tokenizer(self, kind: Optional[int] = None) -> None:
         self._tokenizer = MPTokenizer(kind, self._poldict)
 
-    def init_dict(self, kind=None, intensity_cutoff=None):
-        kind = kind if kind in self.KINDS.keys() else 0
+    def init_dict(
+        self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
+    ) -> None:
+        kind = kind if kind is not None and kind in self.KINDS else 0
         if intensity_cutoff is not None:
             self._intensity_cutoff = intensity_cutoff
-        elif kind in self.INTENSITY_KINDS.keys():
+        elif kind in self.INTENSITY_KINDS:
             self._intensity_cutoff = self.INTENSITY_KINDS[kind]
         else:
             self._intensity_cutoff = 1.1

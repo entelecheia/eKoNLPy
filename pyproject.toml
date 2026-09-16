@@ -101,6 +101,7 @@ skip = [
     'docs',
     'tests',
     'venv',
+    '.venv',
     '.copier-template',
     '.refs',
 ]

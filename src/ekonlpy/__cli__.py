@@ -2,11 +2,13 @@
 
 # Importing the libraries
 
+from typing import Optional
+
 import click
 
 from ._version import __version__
 
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
 
 @click.command(context_settings=CONTEXT_SETTINGS)
@@ -18,16 +20,16 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
     default="ekonlpy",
     help="The tagger to use. [ekonlpy|mecab]]",
 )
-@click.option("--input", "-i", help="The input text to tag.")
+@click.option("--input", "-i", "text", help="The input text to tag.")
 @click.pass_context
-def main(ctk, tagger, input):
+def main(ctk: click.Context, tagger: str, text: Optional[str]) -> None:
     """This is the command line interface for eKoNLPy.
 
     It is used to tag Korean text with a Korean morphological analyzer.
     """
     # Print a message to the user.
-    if input:
-        click.echo(tag(tagger, input))
+    if text:
+        click.echo(tag(tagger, text))
     else:
         # Print usage message to the user.
         click.echo(ctk.get_help())

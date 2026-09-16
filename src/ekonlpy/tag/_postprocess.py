@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from ._mecab import Mecab
 
@@ -7,10 +7,12 @@ class Postprocessor:
     def __init__(
         self,
         base_tagger: Mecab,
-        stopwords: Optional[List[str]] = None,
-        passwords: Optional[List[str]] = None,
-        passtags: Optional[List[str]] = None,
-        replace: Optional[Dict[str, Union[str, Tuple[str, str]]]] = None,
+        stopwords: Optional[list[str]] = None,
+        passwords: Optional[list[str]] = None,
+        passtags: Optional[list[str]] = None,
+        replace: Optional[
+            dict[Union[str, tuple[str, str]], Union[str, tuple[str, str]]]
+        ] = None,
     ):
         """
         Initialize the Postprocessor class.
@@ -27,7 +29,7 @@ class Postprocessor:
         self.passtags = passtags
         self.replace = replace
 
-    def tag(self, phrase: str) -> List[Tuple[str, str]]:
+    def tag(self, phrase: str) -> list[tuple[str, str]]:
         """
         Tag the given phrase using the base tagger and apply post-processing filters.
 
@@ -35,11 +37,14 @@ class Postprocessor:
         :return: List of tagged words after applying filters
         """
 
-        def to_replace(w: Tuple[str, str]) -> Tuple[str, str]:
-            if w in self.replace:
-                w_ = self.replace[w]
-            elif w[0] in self.replace:
-                w_ = self.replace[w[0]]
+        def to_replace(
+            w: tuple[str, str],
+            replace: dict[Union[str, tuple[str, str]], Union[str, tuple[str, str]]],
+        ) -> tuple[str, str]:
+            if w in replace:
+                w_ = replace[w]
+            elif w[0] in replace:
+                w_ = replace[w[0]]
             else:
                 return w
             return (w_, w[1]) if isinstance(w_, str) else w_
@@ -58,5 +63,5 @@ class Postprocessor:
         if self.passtags:
             words = [w for w in words if w[1] in self.passtags]
         if self.replace:
-            words = [to_replace(w) for w in words]
+            words = [to_replace(w, self.replace) for w in words]
         return words

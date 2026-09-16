@@ -1,10 +1,15 @@
 import os
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Optional, Union
 
-from ekonlpy.data.tagset import lemma_tags
-from ekonlpy.data.tagset import mecab_tags as tagset
-from ekonlpy.data.tagset import mecab_tags_en as tagset_en
-from ekonlpy.data.tagset import nouns_tags, sent_tags, stop_tags, topic_tags
+from ekonlpy.data.tagset import (
+    lemma_tags,
+    mecab_tags,
+    mecab_tags_en,
+    nouns_tags,
+    sent_tags,
+    stop_tags,
+    topic_tags,
+)
 from ekonlpy.etag import ExtTagger
 from ekonlpy.mecab import Mecab as FugashiMecab
 from ekonlpy.utils.dictionary import TermDictionary, term_tags
@@ -21,18 +26,18 @@ class Mecab(FugashiMecab):
     use_default_dictionary: bool = True
     use_polarity_phrase: bool = False
     use_original_tagger: bool = False
-    tagset: Dict[str, str] = tagset
-    tagset_en: Dict[str, str] = tagset_en
-    stopwords: List[str] = []
+    tagset: dict[str, str] = mecab_tags
+    tagset_en: dict[str, str] = mecab_tags_en
+    stopwords: list[str]
 
-    _term_tags: Dict[str, str] = term_tags
-    _nouns_tags: Set[str] = nouns_tags
-    _topic_tags: Set[str] = topic_tags
-    _stop_tags: Set[str] = stop_tags
-    _sent_tags: Set[str] = sent_tags
-    _lemma_tags: Set[str] = lemma_tags
-    _synonyms: Dict[str, str] = {}
-    _lemmas: Dict[str, str] = {}
+    _term_tags: dict[str, str] = term_tags
+    _nouns_tags: set[str] = nouns_tags
+    _topic_tags: set[str] = topic_tags
+    _stop_tags: set[str] = stop_tags
+    _sent_tags: set[str] = sent_tags
+    _lemma_tags: set[str] = lemma_tags
+    _synonyms: dict[str, str]
+    _lemmas: dict[str, str]
     _dictionary: TermDictionary = TermDictionary()
     _terms: TermDictionary = TermDictionary()
     _extagger: Optional[ExtTagger] = None
@@ -45,7 +50,7 @@ class Mecab(FugashiMecab):
         dicdir: Optional[str] = None,
         userdic_path: Optional[str] = None,
         verbose: bool = False,
-        **kwargs,
+        **kwargs: object,
     ):
         super().__init__(dicdir, userdic_path, verbose, **kwargs)
         self.tagset = dict(type(self).tagset)
@@ -79,11 +84,11 @@ class Mecab(FugashiMecab):
     def _load_ext_tagger(self) -> ExtTagger:
         return ExtTagger(self._dictionary)
 
-    def _load_stopwords(self) -> List[str]:
+    def _load_stopwords(self) -> list[str]:
         directory = os.path.join(installpath, "data", "dictionary")
         return load_txt(os.path.join(directory, "STOPWORDS.txt"))
 
-    def _load_synonyms(self, use_polarity_phrases: bool):
+    def _load_synonyms(self, use_polarity_phrases: bool) -> None:
         directory = os.path.join(installpath, "data", "dictionary")
         self.load_synonyms(os.path.join(directory, "SYNONYM.txt"))
         self.load_synonyms(os.path.join(directory, "SYNONYM_MAG.txt"), tag="MAG")
@@ -91,11 +96,11 @@ class Mecab(FugashiMecab):
         if use_polarity_phrases:
             self.load_synonyms(os.path.join(directory, "SYNONYM_PHRASES.txt"))
 
-    def _load_lemmas(self):
+    def _load_lemmas(self) -> None:
         directory = os.path.join(installpath, "data", "dictionary")
         self.load_lemmas(os.path.join(directory, "LEMMA.txt"))
 
-    def _load_default_dictionary(self, use_polarity_phrases):
+    def _load_default_dictionary(self, use_polarity_phrases: bool) -> None:
         directory = os.path.join(installpath, "data", "dictionary")
         # self._dictionary.add_dictionary(load_dictionary(os.path.join(directory, 'GENERIC.txt')), 'NNG')
         self._dictionary.add_dictionary(
@@ -144,7 +149,7 @@ class Mecab(FugashiMecab):
                 load_dictionary(os.path.join(directory, "POLARITY_PHRASES.txt")), "NNG"
             )
 
-    def _load_term_dictionary(self):
+    def _load_term_dictionary(self) -> None:
         directory = os.path.join(installpath, "data", "dictionary")
         self._terms.add_dictionary(
             load_dictionary(os.path.join(directory, "COUNTRY.txt")), "COUNTRY"
@@ -173,7 +178,7 @@ class Mecab(FugashiMecab):
         text: str,
         flatten: bool = True,
         include_whitespace_token: bool = False,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         tagged = super().parse(text, flatten, include_whitespace_token)
         return self._extagger.pos(tagged) if self._extagger else tagged
 
@@ -182,20 +187,20 @@ class Mecab(FugashiMecab):
         text: str,
         flatten: bool = True,
         include_whitespace_token: bool = False,
-    ) -> List[Tuple[str, str]]:
+    ) -> list[tuple[str, str]]:
         return self.parse(text, flatten, include_whitespace_token)
 
-    def nouns(
+    def nouns(  # type: ignore[override]
         self,
-        text: Union[str, List[Tuple[str, str]]],
+        text: Union[str, list[tuple[str, str]]],
         replace_synonym: bool = True,
         include_industry_terms: bool = False,
         include_generic: bool = False,
         include_sector_name: bool = False,
         include_country_name: bool = True,
         flatten: bool = True,
-        noun_pos: Optional[List[str]] = None,
-    ) -> List[str]:
+        noun_pos: Optional[list[str]] = None,
+    ) -> list[str]:
         if self.use_original_tagger:
             return super().nouns(text, flatten=flatten, noun_pos=noun_pos)
         tagged = self.pos(text, flatten=flatten) if isinstance(text, str) else text
@@ -212,10 +217,10 @@ class Mecab(FugashiMecab):
         ]
 
     def replace_synonyms(
-        self, phrase: Union[str, List[Tuple[str, str]]]
-    ) -> List[Tuple[str, str]]:
+        self, phrase: Union[str, list[tuple[str, str]]]
+    ) -> list[tuple[str, str]]:
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
-        replaced = []
+        replaced: list[tuple[str, str]] = []
         for w, t in tagged:
             if w.lower() in self._synonyms:
                 replaced.append((self._synonyms[w.lower()].lower(), t))
@@ -223,9 +228,11 @@ class Mecab(FugashiMecab):
                 replaced.append((w, t))
         return replaced
 
-    def lemmatize(self, phrase: Union[str, List[Tuple[str, str]]]) -> List[str]:
+    def lemmatize(
+        self, phrase: Union[str, list[tuple[str, str]]]
+    ) -> list[tuple[str, str]]:
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
-        replaced = []
+        replaced: list[tuple[str, str]] = []
         for w, t in tagged:
             if t in self._lemma_tags and w.lower() in self._lemmas:
                 t = "VV" if t == "XSV" else t
@@ -236,12 +243,12 @@ class Mecab(FugashiMecab):
 
     def sent_words(
         self,
-        phrase: Union[str, List[Tuple[str, str]]],
+        phrase: Union[str, list[tuple[str, str]]],
         replace_synonym: bool = True,
         lemmatisation: bool = True,
         exclude_terms: bool = True,
         remove_tag: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
         if replace_synonym:
             tagged = self.replace_synonyms(tagged)
@@ -260,7 +267,7 @@ class Mecab(FugashiMecab):
                 if t in self._sent_tags
             ]
 
-    def morphs(self, text: str, flatten: bool = True) -> List[str]:
+    def morphs(self, text: str, flatten: bool = True) -> list[str]:
         tagged = self.pos(text, flatten=flatten) if isinstance(text, str) else text
         return [s for s, t in tagged]
 
@@ -269,12 +276,12 @@ class Mecab(FugashiMecab):
 
     def add_dictionary(
         self,
-        words: Union[str, List[str]],
+        words: Union[str, list[str]],
         tag: str,
         force: bool = False,
     ) -> None:
         if not force and tag not in self.tagset:
-            raise ValueError(f"{tag} is not available tag")
+            raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._dictionary.add_dictionary(words, tag)
 
     def load_dictionary(
@@ -283,12 +290,12 @@ class Mecab(FugashiMecab):
         tag: str,
     ) -> None:
         if tag not in self.tagset:
-            raise ValueError(f"{tag} is not available tag")
+            raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._dictionary.load_dictionary(fname, tag)
 
     def add_terms(
         self,
-        words: List[str],
+        words: list[str],
         tag: str,
         force: bool = False,
     ) -> None:
@@ -297,7 +304,7 @@ class Mecab(FugashiMecab):
         set, tags not in the dictionary will be added.
         """
         if not force and tag not in self._term_tags:
-            raise ValueError(f"{tag} is not available tag")
+            raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._terms.add_dictionary(words, tag)
 
     def load_terms(
@@ -306,7 +313,7 @@ class Mecab(FugashiMecab):
         tag: str,
     ) -> None:
         if tag not in self._term_tags:
-            raise ValueError(f"{tag} is not available tag")
+            raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._terms.load_dictionary(fname, tag)
 
     def load_synonyms(

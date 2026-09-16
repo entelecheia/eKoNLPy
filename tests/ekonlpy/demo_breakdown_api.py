@@ -56,14 +56,14 @@ def demonstrate_breakdown_api():
 
         # Get detailed breakdown
         breakdown = mpko.get_score(tokens, return_breakdown=True)
-        print(f"   Detailed Breakdown:")
+        print("   Detailed Breakdown:")
         for item in breakdown['breakdown']:
             print(f"     - Term: {item['term']}")
             print(f"       Score: {item['score']}, Polarity: {item['polarity']}, Sentiment: {item['sentiment']}")
 
         # Get phrase breakdown
         phrase_breakdown = mpko.get_phrase_breakdown(tokens, mpko._tokenizer)
-        print(f"   Human-readable Phrases:")
+        print("   Human-readable Phrases:")
         for item in phrase_breakdown:
             print(f"     - '{item['phrase']}' -> {item['sentiment']} (polarity: {item['polarity']})")
 
