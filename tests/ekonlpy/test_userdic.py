@@ -43,6 +43,19 @@ def test_build_dict_executable_falls_back_to_sys_executable_dir():
     assert os.path.basename(executable).startswith("fugashi-build-dict")
 
 
+@pytest.mark.skipif(os.name != "nt", reason="Windows-only path normalization")
+def test_build_dict_path_uses_forward_slashes_on_windows():
+    assert (
+        MecabDicConfig._build_dict_path("C:\\Users\\test\\dicdir")
+        == "C:/Users/test/dicdir"
+    )
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX paths pass through unchanged")
+def test_build_dict_path_passes_posix_through():
+    assert MecabDicConfig._build_dict_path("/usr/lib/dicdir") == "/usr/lib/dicdir"
+
+
 def test_build_userdic_requires_userdic_path(tmp_path):
     config = MecabDicConfig()
 

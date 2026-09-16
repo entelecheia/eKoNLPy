@@ -169,6 +169,12 @@ class MecabDicConfig:
         binary = "fugashi-build-dict.exe" if os.name == "nt" else "fugashi-build-dict"
         return os.path.join(os.path.dirname(sys.executable), binary)
 
+    @staticmethod
+    def _build_dict_path(path: str) -> str:
+        # The MeCab dictionary compiler eats backslashes as escape characters
+        # in its arguments, so Windows paths must use forward slashes.
+        return path.replace("\\", "/") if os.name == "nt" else path
+
     def build_userdic(
         self, built_userdic_path: str, userdic_path: Optional[str] = None
     ) -> None:
@@ -181,9 +187,9 @@ class MecabDicConfig:
         cmd = [
             self._build_dict_executable(),
             "-d",
-            self.dicdir,
+            self._build_dict_path(self.dicdir),
             "-u",
-            built_userdic_path,
-            self.userdic_path,
+            self._build_dict_path(built_userdic_path),
+            self._build_dict_path(self.userdic_path),
         ]
         subprocess.run(cmd, check=True)  # noqa: S603
