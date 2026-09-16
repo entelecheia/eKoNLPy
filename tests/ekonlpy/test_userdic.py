@@ -1,4 +1,6 @@
+import os
 import subprocess
+import sys
 from unittest import mock
 
 import pytest
@@ -19,8 +21,8 @@ def test_build_userdic_invokes_fugashi_build_dict_with_split_args(tmp_path):
 
     run.assert_called_once()
     cmd = run.call_args[0][0]
-    assert cmd == [
-        "fugashi-build-dict",
+    assert os.path.basename(cmd[0]).startswith("fugashi-build-dict")
+    assert cmd[1:] == [
         "-d",
         config.dicdir,
         "-u",
@@ -28,6 +30,17 @@ def test_build_userdic_invokes_fugashi_build_dict_with_split_args(tmp_path):
         str(csv_path),
     ]
     assert run.call_args[1].get("check") is True
+
+
+def test_build_dict_executable_falls_back_to_sys_executable_dir():
+    from ekonlpy.mecab import _userdic
+
+    with mock.patch.object(_userdic.shutil, "which", return_value=None):
+        executable = _userdic.MecabDicConfig._build_dict_executable()
+
+    expected_dir = os.path.dirname(sys.executable)
+    assert os.path.dirname(executable) == expected_dir
+    assert os.path.basename(executable).startswith("fugashi-build-dict")
 
 
 def test_build_userdic_requires_userdic_path(tmp_path):

@@ -1,6 +1,8 @@
 import logging
 import os
+import shutil
 import subprocess
+import sys
 from collections import namedtuple
 from collections.abc import Iterator
 from pathlib import Path
@@ -108,11 +110,11 @@ class MecabDicConfig:
             self.userdic = {}
             for f in userdic_path_.glob("*.csv"):
                 df = pd.read_csv(f, names=DicEntry._fields)
-                dic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
+                dic = {e.surface: e for e in iternamedtuples(df)}
                 self.userdic = {**self.userdic, **dic}
         else:
             df = pd.read_csv(userdic_path_, names=DicEntry._fields)
-            self.userdic = {e.surface: DicEntry(*e) for e in iternamedtuples(df)}
+            self.userdic = {e.surface: e for e in iternamedtuples(df)}
         logger.info("No. of user dictionary entires loaded: %d", len(self.userdic))
 
     def add_entry_to_userdic(
@@ -159,6 +161,14 @@ class MecabDicConfig:
         else:
             logger.warning("No user dictionary entries to save.")
 
+    @staticmethod
+    def _build_dict_executable() -> str:
+        executable = shutil.which("fugashi-build-dict")
+        if executable:
+            return executable
+        binary = "fugashi-build-dict.exe" if os.name == "nt" else "fugashi-build-dict"
+        return os.path.join(os.path.dirname(sys.executable), binary)
+
     def build_userdic(
         self, built_userdic_path: str, userdic_path: Optional[str] = None
     ) -> None:
@@ -169,7 +179,7 @@ class MecabDicConfig:
                 "userdic_path is not set; call save_userdic() first or pass userdic_path."
             )
         cmd = [
-            "fugashi-build-dict",
+            self._build_dict_executable(),
             "-d",
             self.dicdir,
             "-u",

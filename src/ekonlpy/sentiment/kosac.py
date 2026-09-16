@@ -78,18 +78,15 @@ class KOSAC:
         self, file_path: str, delimiter: str = ","
     ) -> dict[str, dict[str, str]]:
         vocab: dict[str, dict[str, str]] = {}
-        if os.path.isfile(file_path):
-            with open(file_path, encoding="utf-8") as f:
-                for lno, line in enumerate(f):
-                    # skip header
-                    if lno == 0:
-                        headers = line.strip().split(delimiter)
-                    elif len(line) > 0:
-                        row = line.strip().split(delimiter)
-                        data = {
-                            header: row[i] for i, header in enumerate(headers) if i > 0
-                        }
-                        vocab[row[0]] = data
+        with open(file_path, encoding="utf-8") as f:
+            for lno, line in enumerate(f):
+                # skip header
+                if lno == 0:
+                    headers = line.strip().split(delimiter)
+                elif len(line) > 0:
+                    row = line.strip().split(delimiter)
+                    data = {header: row[i] for i, header in enumerate(headers) if i > 0}
+                    vocab[row[0]] = data
         return vocab
 
     def morpheme(self, dataset: str) -> list[str]:
