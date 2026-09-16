@@ -23,17 +23,16 @@ make check && make test
 
 - **Run both before reporting a task complete, and paste the output.** Run `make install` first in a
   fresh clone, or the hooks `make check` invokes are not present.
-- **`make test` hides a failing pytest run.** The recipe pipes pytest into `tee` in a shell without
-  `pipefail`, so the target exits 0 even when tests fail. Read the pytest summary line in the output
-  (or run `uv run python -m pytest` directly) before calling the run green; do not rely on `make
-  check && make test` returning 0.
+- Make recipes use Bash; the test recipe explicitly enables `pipefail` (also on macOS Make 3.81).
+  A failing pytest run must fail `make test` while still
+  writing the coverage log. Windows contributors can use Git Bash for Make commands.
 - When a test fails, fix the code, not the test. Do not weaken a gate to make a run pass.
-- **CI coverage is path-scoped, so know which workflow your change wakes.** The lint-and-test push
-  trigger fires only on `src/**` and `tests/**`; `deploy-docs.yaml` fires on `README.md`,
-  `mkdocs.yaml`, `docs/**.md`, `docs/images/**`, and its own file; `release.yaml` fires on
-  `release*` branches for `src/**` and `pyproject.toml`. All three also accept
-  `workflow_dispatch`/`workflow_call`. A change outside every one of those paths (this file, for
-  example) gets no automatic signal, and the local run is the only evidence.
+- CI runs on every PR and on master pushes changing source, tests, dependency metadata, Makefile,
+  Python pin, hooks, or the test workflow. It tests Python 3.12-3.14 on Linux/macOS/Windows
+  and 3.9-3.11 on Linux, including installed wheel tests outside the checkout. The Linux 3.14
+  job also tests the sdist. Quality checks run separately on 3.12.
+- Minimal test setup: `uv sync --no-default-groups --group test`; then
+  `UV_NO_SYNC=true make test`. Set `UV_PYTHON` to override the development interpreter in CI.
 
 ## Conventions
 

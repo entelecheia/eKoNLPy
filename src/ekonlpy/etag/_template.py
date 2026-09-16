@@ -19,7 +19,7 @@ class ExtTagger:
     ):
         self.dictionary = dictionary
         self.max_ngram = max_ngram
-        self.skip_chk_tags = skip_chk_tags
+        self.skip_chk_tags = dict(skip_chk_tags)
         self.skip_tags = set(skip_tags)
         self.nouns_tags = set(nouns_tags)
         self.pass_tags = set(pass_tags)
@@ -51,7 +51,9 @@ class ExtTagger:
                 word_found = False
                 for ngram in range(max_ngram, 1, -1):
                     # if found a word from the dictionary, skip for loop
-                    if word_found or ipos + ngram > num_tokens - 1:
+                    if word_found or ipos + ngram > num_tokens:
+                        continue
+                    if any(word.isspace() for word, _ in tokens_org[ipos:ipos + ngram]):
                         continue
 
                     tmp_tags = []
@@ -105,7 +107,8 @@ class ExtTagger:
             return tokens_new
 
         tokens = [
-            (w.strip(), self.dictionary.check_tag(w.strip(), t)) for w, t in tokens
+            (w, t) if w.isspace() else (w.strip(), self.dictionary.check_tag(w.strip(), t))
+            for w, t in tokens
         ]
 
         tokens = ctagger(
@@ -127,6 +130,6 @@ class ExtTagger:
             self.dictionary,
         )
 
-        tokens = [(w, self.dictionary.check_tag(w, t)) for w, t in tokens]
+        tokens = [(w, t if w.isspace() else self.dictionary.check_tag(w, t)) for w, t in tokens]
 
         return tokens

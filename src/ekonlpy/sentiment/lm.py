@@ -19,12 +19,15 @@ class LM(BaseDict):
     def init_tokenizer(self, kind=None, intensity_cutoff=None):
         self._tokenizer = Tokenizer()
 
-    def init_dict(self, kind=None):
+    def init_dict(self, kind=None, intensity_cutoff=None):
+        # BaseDict loads the dictionary before assigning the public tokenizer.
+        # Keep lexicon stemming independent of a caller-provided tokenizer.
+        tokenizer = Tokenizer()
         data = pd.read_csv(self.PATH, low_memory=False)
         for category in ["Positive", "Negative"]:
             terms = data["Word"][data[category] > 0]
             for t in terms:
-                t = self.tokenize(t)
+                t = tokenizer.tokenize(t)
                 if len(t) > 0:
                     if category == "Positive":
                         self._posdict[t[0]] = 1

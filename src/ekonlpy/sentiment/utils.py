@@ -292,5 +292,5 @@ def calc_polarity(scores, by_count=True):
     return (
         (s_pos + s_neg)
         * 1.0
-        / (((s_pos - s_neg) if by_count else (len(pos_score) + len(pos_score))) + eps)
+        / (((s_pos - s_neg) if by_count else (len(pos_score) + len(neg_score))) + eps)
     )

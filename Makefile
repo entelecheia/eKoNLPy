@@ -1,3 +1,5 @@
+SHELL := bash
+
 .PHONY: install
 install: install-uv ## Install the virtual environment and install the pre-commit hooks
 	@echo "🚀 Creating virtual environment using uv"
@@ -16,7 +18,7 @@ check: ## Run code quality tools.
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt
+	@set -o pipefail; uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml --junitxml=tests/pytest.xml | tee tests/pytest-coverage.txt
 
 .PHONY: build
 build: clean-build ## Build wheel file
