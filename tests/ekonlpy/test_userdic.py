@@ -24,10 +24,10 @@ def test_build_userdic_invokes_fugashi_build_dict_with_split_args(tmp_path):
     assert os.path.basename(cmd[0]).startswith("fugashi-build-dict")
     assert cmd[1:] == [
         "-d",
-        config.dicdir,
+        MecabDicConfig._build_dict_path(config.dicdir),
         "-u",
-        str(built_path),
-        str(csv_path),
+        MecabDicConfig._build_dict_path(str(built_path)),
+        MecabDicConfig._build_dict_path(str(csv_path)),
     ]
     assert run.call_args[1].get("check") is True
 
@@ -71,7 +71,7 @@ def test_build_userdic_uses_path_from_constructor(tmp_path):
     with mock.patch("ekonlpy.mecab._userdic.subprocess.run") as run:
         config.build_userdic(str(tmp_path / "user.dic"))
 
-    assert run.call_args[0][0][-1] == str(csv_path)
+    assert run.call_args[0][0][-1] == MecabDicConfig._build_dict_path(str(csv_path))
 
 
 def test_build_userdic_builds_real_dictionary(tmp_path):
