@@ -1,5 +1,46 @@
 <!--next-version-placeholder-->
 
+## v2.2.1 (2026-09-16)
+
+### Bug Fixes
+
+- Modernize Python compatibility, documentation, and CI
+  ([#124](https://github.com/entelecheia/eKoNLPy/pull/124),
+  [`c07fe16`](https://github.com/entelecheia/eKoNLPy/commit/c07fe16d0b00bbeb0b0f219cf04e22dea2b10815))
+
+- Restore modern Python and notebook reliability
+  ([#124](https://github.com/entelecheia/eKoNLPy/pull/124),
+  [`c07fe16`](https://github.com/entelecheia/eKoNLPy/commit/c07fe16d0b00bbeb0b0f219cf04e22dea2b10815))
+
+### Build System
+
+- **deps**: Bump astral-sh/setup-uv from 6 to 7
+  ([`50dbab6`](https://github.com/entelecheia/eKoNLPy/commit/50dbab651ae9999b136f2f375fc02f4f6b7e325a))
+
+- **deps**: Update pandas requirement
+  ([`66e3713`](https://github.com/entelecheia/eKoNLPy/commit/66e37130d57c7ce5c64b9104b7fe0f17b39f326d))
+
+### Continuous Integration
+
+- Avoid duplicate branch and pull request test runs
+  ([#124](https://github.com/entelecheia/eKoNLPy/pull/124),
+  [`c07fe16`](https://github.com/entelecheia/eKoNLPy/commit/c07fe16d0b00bbeb0b0f219cf04e22dea2b10815))
+
+### Documentation
+
+- Add CLAUDE.md and REVIEW.md for the agent contract
+  ([#121](https://github.com/entelecheia/eKoNLPy/pull/121),
+  [`52f0fb3`](https://github.com/entelecheia/eKoNLPy/commit/52f0fb3cb1934b2de98265559f4aab54e33ecabf))
+
+- Correct CI scope, mypy status, and the ruff test ignores
+  ([#121](https://github.com/entelecheia/eKoNLPy/pull/121),
+  [`52f0fb3`](https://github.com/entelecheia/eKoNLPy/commit/52f0fb3cb1934b2de98265559f4aab54e33ecabf))
+
+- State what the gates actually run and the make test blind spot
+  ([#121](https://github.com/entelecheia/eKoNLPy/pull/121),
+  [`52f0fb3`](https://github.com/entelecheia/eKoNLPy/commit/52f0fb3cb1934b2de98265559f4aab54e33ecabf))
+
+
 ## v2.2.0 (2025-09-21)
 
 ### Chores
