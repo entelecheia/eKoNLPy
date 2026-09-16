@@ -7,9 +7,7 @@ on:
   pull_request:
   push:
     branches:
-      - "**"
-      - "!release*"
-      - "!test-release*"
+      - master
     paths:
       - "src/**"
       - "tests/**"

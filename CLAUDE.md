@@ -27,7 +27,7 @@ make check && make test
   A failing pytest run must fail `make test` while still
   writing the coverage log. Windows contributors can use Git Bash for Make commands.
 - When a test fails, fix the code, not the test. Do not weaken a gate to make a run pass.
-- CI runs on every PR and on pushes changing source, tests, dependency metadata, Makefile,
+- CI runs on every PR and on master pushes changing source, tests, dependency metadata, Makefile,
   Python pin, hooks, or the test workflow. It tests Python 3.12-3.14 on Linux/macOS/Windows
   and 3.9-3.11 on Linux, including installed wheel tests outside the checkout. The Linux 3.14
   job also tests the sdist. Quality checks run separately on 3.12.

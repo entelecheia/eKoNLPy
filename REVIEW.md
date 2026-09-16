@@ -58,5 +58,5 @@ When the same finding appears twice, the correction goes into `CLAUDE.md` in the
 
 Findings do not approve or block on their own. Human approval and the merge-on-instruction gate
 stay as they are (`_meta/rules/development-lifecycle.md` §2, §6). CI runs on every PR and on
-pushes changing source, tests, dependencies, Makefile, Python pin, hooks, or the test workflow.
+master pushes changing source, tests, dependencies, Makefile, Python pin, hooks, or the test workflow.
 Review the actual Python/OS matrix and installed-artifact results alongside local verification.
