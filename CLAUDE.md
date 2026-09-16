@@ -24,9 +24,12 @@ make check && make test
 - **Run both before reporting a task complete, and paste the output.** Run `make install` first in a
   fresh clone, or the hooks `make check` invokes are not present.
 - When a test fails, fix the code, not the test. Do not weaken a gate to make a run pass.
-- **CI does not cover every change.** `.github/workflows/lint_and_test.yaml` triggers only on
-  `src/**` and `tests/**`, so documentation, packaging, and workflow edits get no CI signal and the
-  local run is the only evidence.
+- **CI coverage is path-scoped, so know which workflow your change wakes.** The lint-and-test push
+  trigger fires only on `src/**` and `tests/**`; `deploy-docs.yaml` fires on `README.md`,
+  `mkdocs.yaml`, `docs/**.md`, `docs/images/**`, and its own file; `release.yaml` fires on
+  `release*` branches for `src/**` and `pyproject.toml`. All three also accept
+  `workflow_dispatch`/`workflow_call`. A change outside every one of those paths (this file, for
+  example) gets no automatic signal, and the local run is the only evidence.
 
 ## Conventions
 
@@ -52,8 +55,8 @@ make check && make test
   dependency nothing imports, fails the gate.
 - **pre-commit is `fail_fast`**: the first failing hook stops the run, so fix hooks in order rather
   than assuming one failure is the only one.
-- **Tests live in `tests/ekonlpy/`** and `testpaths = ["tests"]`; flake8 excludes `tests`, while ruff
-  keeps its rules there minus `S101`.
+- **Tests live in `tests/ekonlpy/`** and `testpaths = ["tests"]`; flake8 excludes `tests`, and ruff
+  keeps its rules there minus four per-file ignores: `S101`, `UP035`, `UP006`, `S603`.
 - **Tagger behavior changed in 2.0.0**: the extended tagger is the default and `Mecab` is importable
   from `ekonlpy` directly; `use_original_tagger=True` restores the original path, and `Mecab.pos()`
   takes `text`, not `phrase`. Changing tagger defaults is user-visible and needs a test.

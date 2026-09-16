@@ -41,8 +41,9 @@ Report at most 5 nits per review; summarize the rest as a count.
 ## Do not report
 
 - `src/ekonlpy/_version.py`, which semantic-release generates.
-- Anything the toolchain already enforces: ruff, black, isort, flake8, mypy, deptry, coverage, and
-  pytest, all invoked by `make check` and `make test`.
+- Anything the toolchain already enforces: ruff, black, isort, flake8, deptry, coverage, and
+  pytest, all invoked by `make check` and `make test`. **mypy is not in that list**: the repo
+  configures `[tool.mypy]` but no gate runs it, so genuine type errors are still worth reporting.
 - Commit-message format, which the commitizen hook rejects before a commit exists.
 
 ## Feedback into CLAUDE.md
@@ -52,6 +53,7 @@ When the same finding appears twice, the correction goes into `CLAUDE.md` in the
 ---
 
 Findings do not approve or block on their own. Human approval and the merge-on-instruction gate
-stay as they are (`_meta/rules/development-lifecycle.md` §2, §6). Note that CI only runs for
-`src/**` and `tests/**`, so for other paths the local `make check && make test` output is the
-evidence a reviewer should expect in the PR.
+stay as they are (`_meta/rules/development-lifecycle.md` §2, §6). Note that CI is path-scoped: the
+lint-and-test push trigger covers `src/**` and `tests/**`, docs paths wake `deploy-docs.yaml`, and
+`pyproject.toml` wakes `release.yaml` on `release*` branches. For a change that matches none of
+them, the local `make check && make test` output is the evidence a reviewer should expect.
