@@ -112,30 +112,25 @@ class Mecab(BaseMecab):
         flatten: bool = True,
         include_whitespace_token: bool = False,
     ) -> List[Tuple[str, str]]:
-        if flatten:
-            res = [(surface, feature.pos) for surface, feature in self._parse(text)]
-        else:
-            res = []
-            for surface, feature in self._parse(text):
-                if feature.expression is None:
-                    res.append((surface, feature.pos))
-                else:
-                    for elem in feature.expression.split("+"):
-                        s = elem.split("/")
-                        res.append((s[0], s[1]))
-        if include_whitespace_token:
-            sent_ptr = 0
-            res = []
-
-            for token, pos in res:
-                if text[sent_ptr] == " ":
-                    # Move pointer to whitespace token to reserve whitespace
-                    # cf. to prevent double white-space, move pointer to next eojeol
-                    while text[sent_ptr] == " ":
-                        sent_ptr += 1
-                    res.append((" ", "SP"))
-                res.append((token, pos))
-                sent_ptr += len(token)
+        """Tag text, optionally preserving original whitespace runs as SP tokens."""
+        res = []
+        cursor = 0
+        for surface, feature in self._parse(text):
+            if include_whitespace_token:
+                # Align the original surface before decomposing inflections: the
+                # lengths of decomposed morphemes need not match the input.
+                start = text.index(surface, cursor)
+                if start > cursor:
+                    res.append((text[cursor:start], "SP"))
+                cursor = start + len(surface)
+            if flatten or feature.expression is None:
+                res.append((surface, feature.pos))
+            else:
+                for elem in feature.expression.split("+"):
+                    s = elem.split("/")
+                    res.append((s[0], s[1]))
+        if include_whitespace_token and cursor < len(text):
+            res.append((text[cursor:], "SP"))
         return res
 
     def pos(

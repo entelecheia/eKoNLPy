@@ -3,6 +3,13 @@ name: deploy-docs
 on:
   workflow_call:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - "README.md"
+      - "mkdocs.yaml"
+      - "docs/**"
+      - "pyproject.toml"
+      - ".github/workflows/deploy-docs.yaml"
   push:
     branches:
       - master
@@ -10,31 +17,53 @@ on:
     paths:
       - "README.md"
       - "mkdocs.yaml"
-      - "docs/**.md"
-      - "docs/images/**"
+      - "docs/**"
+      - "pyproject.toml"
       - ".github/workflows/deploy-docs.yaml"
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: deploy-docs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: 3.12
 
-      # install the source code
-      - name: Install the source code
-        run: pip install .
-
-      - uses: actions/cache@v4
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          key: ${{ github.ref }}
+          key: docs-${{ runner.os }}-${{ hashFiles('docs/requirements.txt') }}
           path: .cache
-      - run: |
+      - name: Build documentation strictly
+        run: |
+          pip install .
           pip install -r docs/requirements.txt
-          mkdocs gh-deploy --force
+          mkdocs build --strict
+
+  deploy:
+    if: >-
+      github.workflow == 'deploy-docs' && github.ref == 'refs/heads/master' &&
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install documentation dependencies
+        run: |
+          pip install .
+          pip install -r docs/requirements.txt
+      - name: Deploy documentation
+        run: mkdocs gh-deploy --strict --force

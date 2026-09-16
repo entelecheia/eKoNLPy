@@ -1,204 +1,74 @@
-# eKoNLPy: Korean NLP Python Library for Economic Analysis
+# eKoNLPy
 
-[![pypi-image]][pypi-url]
-[![version-image]][release-url]
-[![release-date-image]][release-url]
-[![pypi-downloads-image]][pypi-url]
-[![license-image]][license-url]
-[![codecov][codecov-image]][codecov-url]
-[![zenodo-image]][zenodo-url]
+[![PyPI](https://img.shields.io/pypi/v/ekonlpy.svg)](https://pypi.org/project/ekonlpy/)
+[![License](https://img.shields.io/github/license/entelecheia/eKoNLPy)](https://github.com/entelecheia/eKoNLPy/blob/master/LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-ekonlpy.entelecheia.ai-4c7)](https://ekonlpy.entelecheia.ai)
 
-<!-- Links: -->
+eKoNLPy is a Python library for Korean text processing in economic and financial
+research. It provides a MeCab based tagger with an economic vocabulary and
+lexicon based sentiment analyzers for Korean and English text.
 
-[pypi-image]: https://badge.fury.io/py/ekonlpy.svg
-[pypi-url]: https://badge.fury.io/py/ekonlpy
-[license-image]: https://img.shields.io/github/license/entelecheia/eKoNLPy
-[license-url]: https://github.com/entelecheia/eKoNLPy/blob/master/LICENSE
-[version-image]: https://img.shields.io/github/v/release/entelecheia/eKoNLPy?sort=semver
-[release-date-image]: https://img.shields.io/github/release-date/entelecheia/eKoNLPy
-[release-url]: https://github.com/entelecheia/eKoNLPy/releases
-[pypi-downloads-image]: https://img.shields.io/pypi/dm/ekonlpy
-[codecov-image]: https://codecov.io/gh/entelecheia/eKoNLPy/branch/master/graph/badge.svg?token=8I4ORHRREL
-[codecov-url]: https://codecov.io/gh/entelecheia/eKoNLPy
-[zenodo-image]: https://zenodo.org/badge/DOI/10.5281/zenodo.7809447.svg
-[zenodo-url]: https://doi.org/10.5281/zenodo.7809447
-[repo-url]: https://github.com/entelecheia/eKoNLPy
-[pypi-url]: https://pypi.org/project/ekonlpy
-[docs-url]: https://ekonlpy.entelecheia.ai
-[changelog]: https://github.com/entelecheia/eKoNLPy/blob/master/CHANGELOG.md
-[contributing guidelines]: https://github.com/entelecheia/eKoNLPy/blob/master/CONTRIBUTING.md
+This documentation follows the repository source, which may include unreleased
+changes. Published versions are listed on [PyPI](https://pypi.org/project/ekonlpy/).
 
-<!-- Links: -->
-
-`eKoNLPy` is a Korean Natural Language Processing (NLP) Python library specifically designed for economic analysis. It extends the functionality of the `Mecab` tagger from KoNLPy to improve the handling of economic terms, financial institutions, and company names by classifying them as single nouns. Additionally, it incorporates sentiment analysis features to determine the tone of monetary policy statements, such as hawkish or dovish.
-
-> **Note**
->
-> From version 2.0.0, eKoNLPy integrates the extended tagger with the original tagger. If you want to use the original tagger, set `use_original_tagger=True` when creating an instance of the `Mecab` class. Additionally, the `Mecab` class can be directly imported from the `ekonlpy` module. The default input text parameter of `Mecab.pos()` has been changed from `phrase` to `text` to be consistent with the original tagger.
-
-> **Note**
->
-> eKoNLPy is built on the [fugashi](https://github.com/polm/fugashi) and [mecab-ko-dic](https://github.com/LuminosoInsight/mecab-ko-dic) libraries. For more information on using the `Mecab` tagger, refer to the [fugashi documentation](https://github.com/polm/fugashi). Since eKoNLPy no longer relies on the [KoNLPy](https://konlpy.org) library, Java is not required for its use. This makes eKoNLPy compatible with Windows, Linux, and macOS without the need for Java installation. You can also use eKoNLPy on Google Colab.
-
-If you wish to tokenize general Korean text with eKoNLPy, you do not need to install the `KoNLPy` library. Instead, use the same `ekonlpy.Mecab` class with the `use_original_tagger=True` option.
-
-However, if you plan to use the [Korean Sentiment Analyzer (KSA)](#korean-sentiment-analyzer-ksa), which employs the `Kkma` morpheme analyzer, you will need to install the [KoNLPy](https://konlpy.org) library.
-
-## Installation
-
-To install eKoNLPy, run the following command:
+## Install
 
 ```bash
-pip install ekonlpy
+python -m pip install ekonlpy
 ```
 
-## Usage
+eKoNLPy supports Python 3.9 or newer, below Python 4. The main CI matrix tests
+Python 3.12-3.14 on Linux, macOS, and Windows, and Python 3.9-3.11 on Linux.
+For Jupyter or Colab, install into the active kernel:
 
-### Part of Speech Tagging
+```python
+%pip install ekonlpy
+```
 
-To use the part-of-speech tagging feature, input `Mecab.pos(text)` just like KoNLPy. First, the input is processed using KoNLPy's Mecab morpheme analyzer. Then, if a combination of consecutive tokens matches a term in the user dictionary, the phrase is separated into compound nouns.
+## Quick start
 
 ```python
 from ekonlpy import Mecab
 
-mecab = Mecab()
-mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다.')
+tagger = Mecab()
+print(tagger.pos("금통위는 금리정책을 결정했다."))
 ```
 
-> [('금', 'MAJ'), ('통', 'MAG'), ('위', 'NNG'), ('는', 'JX'), ('따라서', 'MAJ'), ('물가', 'NNG'), ('안정', 'NNG'), ('과', 'JC'), ('병행', 'NNG'), (',', 'SC'), ('경기', 'NNG'), ('상황', 'NNG'), ('에', 'JKB'), ('유의', 'NNG'), ('하', 'XSV'), ('는', 'ETM'), ('금리', 'NNG'), ('정책', 'NNG'), ('을', 'JKO'), ('펼쳐', 'VV+EC'), ('나가', 'VX'), ('기', 'ETN'), ('로', 'JKB'), ('했', 'VV+EP'), ('다고', 'EC'), ('밝혔', 'VV+EP'), ('다', 'EF'), ('.', 'SF')]
+The default tagger applies eKoNLPy's extended vocabulary. Use
+`Mecab(use_original_tagger=True)` for the underlying fugashi/MeCab tagger.
+Instances keep their dictionaries, synonyms, and lemmas separate from one
+another. See the [documentation](https://ekonlpy.entelecheia.ai) for tagging,
+custom vocabularies, sentiment analyzers, and the CLI.
 
-You can also use the Command Line Interface (CLI) to perform part-of-speech tagging:
-
-```bash
-ekonlpy --input "안녕하세요"
-```
-
-> [('안녕', 'NNG'), ('하', 'XSV'), ('세요', 'EP')]
-
-### Original Mecab POS Tagging (fugashi)
-
-```python
-from ekonlpy import Mecab
-
-mecab = Mecab(use_original_tagger=True) # set use_original_tagger=True
-mecab.pos('금통위는 따라서 물가안정과 병행, 경기상황에 유의하는 금리정책을 펼쳐나가기로 했다고 밝혔다.')
-```
-
-> [('금', 'MAJ'), ('통', 'MAG'), ('위', 'NNG'), ('는', 'JX'), ('따라서', 'MAJ'), ('물가', 'NNG'), ('안정', 'NNG'), ('과', 'JC'), ('병행', 'NNG'), (',', 'SC'), ('경기', 'NNG'), ('상황', 'NNG'), ('에', 'JKB'), ('유의', 'NNG'), ('하', 'XSV'), ('는', 'ETM'), ('금리', 'NNG'), ('정책', 'NNG'), ('을', 'JKO'), ('펼쳐', 'VV+EC'), ('나가', 'VX'), ('기', 'ETN'), ('로', 'JKB'), ('했', 'VV+EP'), ('다고', 'EC'), ('밝혔', 'VV+EP'), ('다', 'EF'), ('.', 'SF')]
-
-### Lemmatization and Synonyms
-
-To enhance the accuracy of sentiment analysis, eKoNLPy offers lemmatization and synonym handling features.
-
-### Adding Words to Dictionary
-
-You can add words to the dictionary in the `ekonlpy.tag` module's Mecab class, either as a string or a list of strings, using the `add_dictionary` method.
-
-```python
-from ekonlpy.tag import Mecab
-
-mecab = Mecab()
-mecab.add_dictionary('금통위', 'NNG')
-```
-
-## Sentiment Analysis
-
-### Korean Monetary Policy Dictionary (MPKO)
-
-To perform sentiment analysis using the Korean Monetary Policy dictionary, create an instance of the `MPKO` class in `ekonlpy.sentiment`:
+## Sentiment example
 
 ```python
 from ekonlpy.sentiment import MPKO
 
-mpko = MPKO(kind=1)
-tokens = mpko.tokenize(text)
-score = mpko.get_score(tokens)
+analyzer = MPKO(kind=1)
+tokens = analyzer.tokenize("금리 인상이 필요하다")
+print(analyzer.get_score(tokens))
 ```
 
-The `kind` parameter in the `MPKO` class is used to select a lexicon file:
+The sentiment package also exports `EUKO`, `KSA`, `HIV4`, `LM`, and `MPCK`.
+`KSA` uses KoNLPy's Java backed `Kkma` tokenizer and is optional. The separate
+`KOSAC` analyzer is another optional KoNLPy integration.
 
-- `0`: A lexicon file generated using a Naive-Bayes classifier with 5-gram tokens as features and changes in call rates as positive/negative labels.
-- `1`: A lexicon file generated using polarity induction and seed propagation methods with 5-gram tokens.
+## Development
 
-### Korean Monetary Policy Classifier (MPCK)
-
-To use a classifier for monetary policy sentiment analysis, use the `MPCK` class from `ekonlpy.sentiment`:
-
-```python
-from ekonlpy.sentiment import MPCK
-
-mpck = MPCK()
-tokens = mpck.tokenize(text)
-ngrams = mpck.ngramize(tokens)
-score = mpck.classify(tokens + ngrams, intensity_cutoff=1.5)
+```bash
+make install
+make check
+make test
+make docs-test
 ```
 
-You can set the `intensity_cutoff` parameter to adjust the intensity threshold for classifying low-confidence sentences as neutral (default: 1.3).
+Contributions and issue reports are welcome on [GitHub](https://github.com/entelecheia/eKoNLPy).
+For project documentation and verification steps, see the
+[contributing guide](https://ekonlpy.entelecheia.ai/contributing/).
 
-### Korean Sentiment Analyzer (KSA)
+## License and citation
 
-For general Korean sentiment analysis, use the `KSA` class. The morpheme analyzer used in this class is `Kkma`, developed by Seoul National University's IDS Lab. The sentiment dictionary is also from the same lab (reference: http://kkma.snu.ac.kr/).
-
-```python
-from ekonlpy.sentiment import KSA
-
-ksa = KSA()
-tokens = ksa.tokenize(text)
-score = ksa.get_score(tokens)
-```
-
-### Harvard IV-4 Dictionary
-
-For general English sentiment analysis, use the Harvard IV-4 dictionary:
-
-```python
-from ekonlpy.sentiment import HIV4
-
-hiv = HIV4()
-tokens = hiv.tokenize(text)
-score = hiv.get_score(tokens)
-```
-
-### Loughran and McDonald Dictionary
-
-For sentiment analysis in the financial domain, use the Loughran and McDonald dictionary:
-
-```python
-from ekonlpy.sentiment import LM
-
-lm = LM()
-tokens = lm.tokenize(text)
-score = lm.get_score(tokens)
-```
-
-## Changelog
-
-See the [CHANGELOG] for more information.
-
-## Contributing
-
-Contributions are welcome! Please see the [contributing guidelines] for more information.
-
-## License
-
-eKoNLPy is an open-source software library for Korean Natural Language Processing (NLP), specifically designed for economic analysis. The library is released under the [MIT License][license-url], allowing developers and researchers to use, modify, and distribute the software freely.
-
-## Citation
-
-If you use eKoNLPy in your work or research, please cite the following sources:
-
-- Lee, Young Joon, eKoNLPy: A Korean NLP Python Library for Economic Analysis, 2018. Available at: https://github.com/entelecheia/eKoNLPy.
-- Lee, Young Joon, Soohyon Kim, and Ki Young Park. "Deciphering Monetary Policy Board Minutes with Text Mining: The Case of South Korea." Korean Economic Review 35 (2019): 471-511.
-
-You can also use the following BibTeX entry for citation:
-
-```bibtex
-@misc{lee2018ekonlpy,
-    author= {Lee, Young Joon},
-    year  = {2018},
-    title = {{eKoNLPy: A Korean NLP Python Library for Economic Analysis}},
-    note  = {\url{https://github.com/entelecheia/eKoNLPy}}
-}
-```
-
-By citing eKoNLPy in your work, you acknowledge the efforts and contributions of its creators and help promote further development and research in Korean NLP for economic analysis.
+eKoNLPy is released under the [MIT License](LICENSE). Research users can cite
+the project and the monetary policy text mining paper listed in the
+[contributing and citation notes](https://ekonlpy.entelecheia.ai/contributing/).

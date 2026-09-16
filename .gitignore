@@ -30,3 +30,6 @@ pytest-coverage.*
 
 uv.lock
 workspace
+
+# MkDocs output
+/site/

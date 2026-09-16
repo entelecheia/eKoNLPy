@@ -2,7 +2,7 @@
 name = "eKoNLPy"
 version = "2.2.0"
 description = "A Korean natural language processing toolkit for economic analysis"
-authors = [{ name = "Young Joon Lee", email = "entelecheia@hotmail.com" }]
+authors = [{ name = "Young Joon Lee", email = "yj.lee@chu.ac.kr" }]
 license = "MIT"
 readme = "README.md"
 keywords = ["KoNLPy", "Tokenization", "Sentiment analysis", "Monetary policy"]
@@ -16,6 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
@@ -23,8 +24,9 @@ dependencies = [
     "fugashi>=1.3.3",
     "mecab-ko-dic>=1.0.0",
     "nltk>=3.8.1",
-    "scipy>1.10.0,<=1.13.1",
-    "pandas>=1.5.3,<=2.3.3",
+    "scipy>1.10.0",
+    "pandas>=1.5.3",
+    "numpy>=1.23.5",
 ]
 
 [project.urls]
@@ -33,9 +35,9 @@ Repository = "https://github.com/entelecheia/eKoNLPy"
 Documentation = "https://ekonlpy.entelecheia.ai"
 
 [dependency-groups]
+test = ["pytest>=7.2.1", "pytest-cov>=4.0.0"]
 dev = [
-    "pytest>=7.2.1",
-    "pytest-cov>=4.0.0",
+    { include-group = "test" },
     "pre-commit>=2.20.0",
     "tox-uv>=1.11.3",
     "deptry>=0.20.0",
@@ -44,7 +46,7 @@ dev = [
     "mkdocs>=1.4.2",
     "mkdocs-material>=8.5.10",
     "mkdocstrings[python]>=0.26.1",
-    "python-semantic-release>=9.0.0",
+    "python-semantic-release>=10.6.2,<11",
     "isort>=5.12.0",
     "black>=24.0.0",
     "flake8>=6.0.0",
@@ -215,7 +217,7 @@ ignore = ["DEP001", "DEP003"]
 [tool.semantic_release]
 # General settings
 tag_format = "v{version}"
-commit_parser = "angular"
+commit_parser = "conventional"
 major_on_zero = true
 allow_zero_version = true
 tag_commit = true
@@ -262,9 +264,18 @@ default_bump_level = 0
 
 # Branch settings
 [tool.semantic_release.branches.main]
-match = "(main|master|release)"
+match = "^(main|master)$"
 prerelease_token = "rc"
 prerelease = false
+
+[tool.semantic_release.branches.release]
+match = "^release.*$"
+prerelease = false
+
+[tool.semantic_release.branches.test_release]
+match = "^test-release.*$"
+prerelease_token = "rc"
+prerelease = true
 
 # Commit author settings
 [tool.semantic_release.commit_author]

@@ -49,7 +49,9 @@ def load_txt(fname: str, encoding: str = "utf-8") -> List[str]:
 
 def load_vocab(file_path: str, delimiter: str = ",") -> "OrderedDict[str, str]":
     """
-    Load vocabulary from a file and return an ordered dictionary.
+    Load vocabulary without modifying the file, skipping blank lines and comments.
+
+    Malformed nonempty rows raise ValueError with the file name and line number.
 
     :param file_path: File name to load vocabulary from
     :param delimiter: Delimiter used to separate words and their values
@@ -58,12 +60,14 @@ def load_vocab(file_path: str, delimiter: str = ",") -> "OrderedDict[str, str]":
     vocab = OrderedDict()
     if os.path.isfile(file_path):
         with open(file_path, encoding="utf-8") as f:
-            for line in f:
-                if delimiter in line:
-                    w = line.strip().split(delimiter)
-                    vocab[w[0].lower().replace(" ", "")] = w[1].lower().replace(" ", "")
-                else:
-                    save_vocab(vocab, file_path)
+            for line_number, line in enumerate(f, 1):
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                fields = line.split(delimiter)
+                if len(fields) < 2 or not fields[0].strip() or not fields[1].strip():
+                    raise ValueError(f"Malformed vocabulary entry at {file_path}:{line_number}")
+                vocab[fields[0].lower().replace(" ", "")] = fields[1].lower().replace(" ", "")
     vocab = OrderedDict((k, v) for k, v in sorted(vocab.items(), key=lambda x: x[0]))
     return vocab
 

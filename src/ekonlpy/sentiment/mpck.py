@@ -50,7 +50,7 @@ class MPCK(object):
     def get_vocab(self, file):
         vocab = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
-        with open(vocab_path) as f:
+        with open(vocab_path, encoding="utf-8") as f:
             for line in f:
                 w = line.strip().split()
                 if len(w[0]) > 0:

@@ -48,8 +48,22 @@ class Mecab(FugashiMecab):
         **kwargs,
     ):
         super().__init__(dicdir, userdic_path, verbose, **kwargs)
+        self.tagset = dict(type(self).tagset)
+        self.tagset_en = dict(type(self).tagset_en)
+        self._term_tags = dict(type(self)._term_tags)
+        self._nouns_tags = set(type(self)._nouns_tags)
+        self._topic_tags = set(type(self)._topic_tags)
+        self._stop_tags = set(type(self)._stop_tags)
+        self._sent_tags = set(type(self)._sent_tags)
+        self._lemma_tags = set(type(self)._lemma_tags)
+        self._synonyms = {}
+        self._lemmas = {}
+        self._dictionary = TermDictionary()
+        self._terms = TermDictionary()
+        self._extagger = None
+        self.stopwords = []
         self.use_default_dictionary = use_default_dictionary
-        self.use_polarity_phras = use_polarity_phrase
+        self.use_polarity_phrase = use_polarity_phrase
         self.use_original_tagger = use_original_tagger
         if use_original_tagger:
             return
@@ -284,7 +298,7 @@ class Mecab(FugashiMecab):
         """
         if not force and tag not in self._term_tags:
             raise ValueError(f"{tag} is not available tag")
-        self._dictionary.add_dictionary(words, tag)
+        self._terms.add_dictionary(words, tag)
 
     def load_terms(
         self,
@@ -293,7 +307,7 @@ class Mecab(FugashiMecab):
     ) -> None:
         if tag not in self._term_tags:
             raise ValueError(f"{tag} is not available tag")
-        self._dictionary.load_dictionary(fname, tag)
+        self._terms.load_dictionary(fname, tag)
 
     def load_synonyms(
         self,
