@@ -26,6 +26,9 @@ def test_cli_with_mecab_tagger_uses_original_tagger():
 
 
 def test_cli_version_option():
+    from ekonlpy import __version__
+
     result = CliRunner().invoke(main, ["--version"])
 
     assert result.exit_code == 0
+    assert __version__ in result.output

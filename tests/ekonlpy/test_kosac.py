@@ -17,6 +17,10 @@ def _make_kosac():
 
 
 def test_kosac_init_requires_konlpy():
+    import importlib.util
+
+    if importlib.util.find_spec("konlpy") is not None:
+        pytest.skip("konlpy is installed in this environment")
     with pytest.raises(ImportError, match="Kkma"):
         KOSAC()
 
