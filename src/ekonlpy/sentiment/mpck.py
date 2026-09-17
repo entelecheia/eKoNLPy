@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 
 MODEL_PATH = f"{installpath}/data/model"
 
+Feature = namedtuple("Feature", ["Word", "Label", "Polarity", "Intensity"])
+
 
 class MPCK:
     """
@@ -216,7 +218,7 @@ class MPCK:
             "Neg score": neg_score,
         }
 
-    def get_informative_features(self, cutoff_ratio: float = 1.2) -> list:
+    def get_informative_features(self, cutoff_ratio: float = 1.2) -> list[Feature]:
         """Return the classifier's informative features with polarity and intensity.
 
         :param cutoff_ratio: Minimum likelihood ratio for a feature to be included
@@ -226,9 +228,8 @@ class MPCK:
             self.classifier._feature_probdist
         )  # probability distribution for feature values given labels
         fcnt = len({w for _, w in cpdist})
-        feature_list: list = []
+        feature_list: list[Feature] = []
         epsilon = 1e-6
-        Feature = namedtuple("Feature", ["Word", "Label", "Polarity", "Intensity"])
 
         for feature_name, feature_val in self.classifier.most_informative_features(
             n=fcnt
@@ -262,13 +263,13 @@ class MPCK:
         n = [f.Polarity for f in feature_list if f.Label < 0]
         for i, f in enumerate(feature_list):
             if f.Label > 0:
-                feature_list[i] = f._replace(
-                    Polarity=(f.Polarity - np.min(p)) / (np.max(p) - np.min(p))
-                )
+                lo, hi = np.min(p), np.max(p)
+                polar = 1.0 if hi == lo else (f.Polarity - lo) / (hi - lo)
+                feature_list[i] = f._replace(Polarity=polar)
             elif f.Label < 0:
-                feature_list[i] = f._replace(
-                    Polarity=(f.Polarity - np.max(n)) / (np.max(n) - np.min(n))
-                )
+                lo, hi = np.min(n), np.max(n)
+                polar = -1.0 if hi == lo else (f.Polarity - hi) / (hi - lo)
+                feature_list[i] = f._replace(Polarity=polar)
 
         return feature_list
 
