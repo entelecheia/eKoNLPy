@@ -237,7 +237,7 @@ class Mecab(FugashiMecab):
         :param include_country_name: Whether to keep country names
         :param flatten: Whether to decompose inflected expressions into their morphemes
         :param noun_pos: POS tags considered as nouns; defaults to common noun tags
-        :return: A list of lowercased noun surfaces
+        :return: A list of noun surfaces; lowercased unless `use_original_tagger` is set
         """
         if self.use_original_tagger:
             return super().nouns(text, flatten=flatten, noun_pos=noun_pos)

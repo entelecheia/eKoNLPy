@@ -208,7 +208,10 @@ class MPTokenizer(BaseTokenizer):
         return ngram_tokens
 
     def ngramize(self, tokens: list[str]) -> list[str]:
-        """Generate n-grams of the tokens, keeping only in-vocabulary, non-overlapping ones.
+        """Generate n-grams of the tokens, keeping only in-vocabulary ones.
+
+        Overlapping n-grams are dropped unless the tokenizer was created with
+        `keep_overlapping_ngram=True`.
 
         :param tokens: A list of "surface/tag" tokens
         :return: A list of n-gram tokens joined by the delimiter
