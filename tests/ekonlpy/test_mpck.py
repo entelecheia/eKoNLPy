@@ -158,6 +158,27 @@ def test_evaluate_confusion_matrix_method(mpck):
     assert metrics["Accuracy"] == pytest.approx(1.0)
 
 
+def test_get_informative_features_degenerate_groups_no_nan():
+    import numpy as np
+
+    train = [
+        ({"good": True}, "pos"),
+        ({"good": True}, "pos"),
+        ({"good": True}, "pos"),
+        ({"good": True}, "neg"),
+        ({"bad": True}, "neg"),
+        ({"bad": True}, "neg"),
+        ({"bad": True}, "neg"),
+        ({"bad": True}, "pos"),
+    ]
+    mpck = MPCK(classifier=NaiveBayesClassifier.train(train))
+
+    features = mpck.get_informative_features(cutoff_ratio=1.0)
+
+    assert features
+    assert all(np.isfinite(f.Polarity) for f in features)
+
+
 def test_mptokenizer_get_phrase_joins_surfaces():
     tokenizer = MPTokenizer.__new__(MPTokenizer)
     tokenizer._delimiter = ";"
