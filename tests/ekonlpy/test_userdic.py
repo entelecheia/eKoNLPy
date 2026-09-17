@@ -88,3 +88,71 @@ def test_build_userdic_builds_real_dictionary(tmp_path):
         config.build_userdic(
             str(tmp_path / "out.dic"), userdic_path=str(tmp_path / "missing.csv")
         )
+
+
+def test_load_userdic_from_csv_file(tmp_path):
+    csv_path = tmp_path / "user.csv"
+    csv_path.write_text(USERDIC_ROW, encoding="utf-8")
+    config = MecabDicConfig(userdic_path=str(csv_path))
+
+    entry = config.userdic["한국은행"]
+    assert entry.pos == "NNP"
+    assert int(entry.left_id) == 1795
+    assert entry.cost == 1000
+
+
+def test_load_userdic_from_directory(tmp_path):
+    (tmp_path / "a.csv").write_text(USERDIC_ROW, encoding="utf-8")
+    (tmp_path / "b.csv").write_text(
+        "금통위,1795,3558,1000,NNP,*,T,금통위,*,*,*,*\n", encoding="utf-8"
+    )
+    config = MecabDicConfig(userdic_path=str(tmp_path))
+
+    assert set(config.userdic) == {"한국은행", "금통위"}
+
+
+def test_add_entry_to_userdic_resolves_context_ids_and_jongseong():
+    config = MecabDicConfig()
+
+    config.add_entry_to_userdic("한국은행", pos="NNP")
+    config.add_entry_to_userdic("사과", pos="NNG", reading="사과")
+
+    bank = config.userdic["한국은행"]
+    assert bank.has_jongseong == "T"
+    assert bank.reading == "한국은행"
+    assert bank.left_id is not None
+    assert bank.right_id is not None
+    assert config.userdic["사과"].has_jongseong == "F"
+
+
+def test_adjust_context_ids_recomputes_ids(tmp_path):
+    csv_path = tmp_path / "user.csv"
+    csv_path.write_text(USERDIC_ROW, encoding="utf-8")
+    config = MecabDicConfig(userdic_path=str(csv_path))
+
+    config.adjust_context_ids()
+
+    entry = config.userdic["한국은행"]
+    assert entry.left_id == config.find_left_context_id(entry)
+    assert entry.right_id == config.find_right_context_id(entry)
+
+
+def test_adjust_costs_replaces_all_costs(tmp_path):
+    csv_path = tmp_path / "user.csv"
+    csv_path.write_text(USERDIC_ROW, encoding="utf-8")
+    config = MecabDicConfig(userdic_path=str(csv_path))
+
+    config.adjust_costs(cost=500)
+
+    assert config.userdic["한국은행"].cost == 500
+
+
+def test_save_userdic_without_entries_logs_warning(tmp_path, caplog):
+    config = MecabDicConfig()
+    save_path = tmp_path / "empty.csv"
+
+    with caplog.at_level("WARNING"):
+        config.save_userdic(str(save_path))
+
+    assert "No user dictionary entries to save." in caplog.text
+    assert not save_path.exists()
