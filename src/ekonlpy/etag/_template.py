@@ -5,6 +5,8 @@ from ekonlpy.utils.dictionary import TermDictionary
 
 
 class ExtTagger:
+    """A template-based tagger that merges token n-grams into dictionary terms."""
+
     dictionary: TermDictionary
     max_ngram: int
     skip_chk_tags: dict[tuple[str, ...], str]
@@ -17,6 +19,11 @@ class ExtTagger:
         dictionary: TermDictionary,
         max_ngram: int = 7,
     ):
+        """Initialize the tagger with a term dictionary and the tag templates.
+
+        :param dictionary: The term dictionary to look up words in
+        :param max_ngram: The maximum n-gram length to consider when merging tokens
+        """
         self.dictionary = dictionary
         self.max_ngram = max_ngram
         self.skip_chk_tags = dict(skip_chk_tags)
@@ -25,14 +32,28 @@ class ExtTagger:
         self.pass_tags = set(pass_tags)
 
     def add_skip_chk_tags(self, template: dict[tuple[str, ...], str]) -> None:
+        """Add tag-sequence templates whose tokens are merged after skipping certain tags.
+
+        :param template: Mapping of POS tag sequences to replacement tags
+        """
         if isinstance(template, dict):
             self.skip_chk_tags.update(template)
 
     def add_skip_tags(self, tags: Union[list[str], set[str]]) -> None:
+        """Add POS tags that are skipped when merging tokens.
+
+        :param tags: The POS tags to skip
+        """
         if isinstance(tags, (list, set)):
             self.skip_tags.update(tags)
 
     def pos(self, tokens: list[tuple[str, str]]) -> list[tuple[str, str]]:  # noqa: C901
+        """Merge token n-grams matching the dictionary or templates into single terms.
+
+        :param tokens: A list of (surface, pos) tuples
+        :return: The re-tagged list of (surface, pos) tuples
+        """
+
         def ctagger(  # noqa: C901
             ctokens: list[tuple[str, str]],
             max_ngram: int,
@@ -42,6 +63,7 @@ class ExtTagger:
             cskip_tags: set[str],
             cdictionary: TermDictionary,
         ) -> list[tuple[str, str]]:
+            """Merge n-grams in ctokens found in the dictionary or templates into single tokens."""
             tokens_org = ctokens
             num_tokens = len(ctokens)
             tokens_new: list[tuple[str, str]] = []

@@ -39,6 +39,10 @@ class MPCK:
     FILES: ClassVar[dict[str, str]] = {"vocab": "mpko/mp_polarity_vocab.txt"}
 
     def __init__(self, classifier: Optional[NaiveBayesClassifier] = None):  # type: ignore[no-any-unimported]
+        """Initialize the classifier, tokenizer, and vocabulary.
+
+        :param classifier: A trained NaiveBayesClassifier; the default model is loaded if None
+        """
         if classifier is None:
             self.load_default_classifier()
         else:
@@ -56,6 +60,12 @@ class MPCK:
         self._auxwords = {"못하/VX", "아니/VCN", "않/VX", "지만/VCP"}
 
     def get_vocab(self, file: str) -> dict[str, str]:
+        """Load the n-gram vocabulary from the given lexicon file.
+
+        :param file: A lexicon file path relative to the lexicon directory
+        :return: A dictionary mapping n-grams to their values
+        :raises ValueError: If a vocabulary entry is malformed
+        """
         vocab: dict[str, str] = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
         with open(vocab_path, encoding="utf-8") as f:
@@ -72,10 +82,16 @@ class MPCK:
         return vocab
 
     def load_default_classifier(self) -> None:
+        """Load the bundled default Naive Bayes classifier."""
         classifier_path = os.path.join(MODEL_PATH, "MPKC.nbc")
         self.load_classifier(classifier_path)
 
     def load_classifier(self, file_path: str) -> None:
+        """Load a pickled classifier from a file.
+
+        :param file_path: Path to the pickled classifier file
+        :raises ValueError: If the file does not exist
+        """
         if os.path.isfile(file_path):
             with open(file_path, "rb") as f:
                 self.classifier = pickle.load(f)  # noqa: S301
@@ -83,11 +99,20 @@ class MPCK:
             raise ValueError("There is no classifier file.")  # noqa: TRY003
 
     def save_classifier(self, file_path: str) -> None:
+        """Pickle the classifier to a file.
+
+        :param file_path: Path of the file to write
+        """
         with open(file_path, "wb") as f:
             pickle.dump(self.classifier, f)
         logger.info("Save the classifier to the file: %s", file_path)
 
     def tokenize(self, text: str) -> list[str]:
+        """Tag the text with Mecab and filter out auxiliary tags.
+
+        :param text: The input text to tokenize
+        :return: A list of "surface/tag" tokens
+        """
         tokens = self._tokenizer.sent_words(text)
         tokens = [
             w
@@ -102,6 +127,12 @@ class MPCK:
     def ngramize(
         self, tokens: list[str], keep_overlapping_ngram: bool = False
     ) -> list[str]:
+        """Generate in-vocabulary n-grams of the tokens.
+
+        :param tokens: A list of "surface/tag" tokens
+        :param keep_overlapping_ngram: Whether to keep n-grams that overlap longer n-grams
+        :return: A list of n-gram tokens joined by the delimiter
+        """
         ngram_tokens: list[str] = []
 
         for pos in range(len(tokens)):
@@ -127,6 +158,16 @@ class MPCK:
         return ngram_tokens
 
     def get_ngram(self, tokens: list[str], pos: int, gram: int) -> Optional[str]:
+        """Return the n-gram starting at the given position if it forms a valid phrase.
+
+        The n-gram must start with an allowed tag, contain a noun, and have no repeated
+        adjacent tokens.
+
+        :param tokens: A list of "surface/tag" tokens
+        :param pos: The starting position of the n-gram
+        :param gram: The length of the n-gram
+        :return: The n-gram token joined by the delimiter, or None if invalid or out of range
+        """
         if pos < 0:
             return None
         if pos + gram > len(tokens):
@@ -150,6 +191,12 @@ class MPCK:
     def classify(
         self, tokens: list[str], intensity_cutoff: float = 1.3
     ) -> dict[str, float]:
+        """Classify the tokens and compute polarity and intensity scores.
+
+        :param tokens: A list of n-gram tokens to use as features
+        :param intensity_cutoff: Minimum intensity for a non-zero polarity
+        :return: A dictionary with Polarity, Intensity, Pos score, and Neg score
+        """
         eps = 1e-6
         features = dict.fromkeys(tokens, True)
         result = self.classifier.prob_classify(features)
@@ -170,6 +217,11 @@ class MPCK:
         }
 
     def get_informative_features(self, cutoff_ratio: float = 1.2) -> list:
+        """Return the classifier's informative features with polarity and intensity.
+
+        :param cutoff_ratio: Minimum likelihood ratio for a feature to be included
+        :return: A list of Feature namedtuples (Word, Label, Polarity, Intensity)
+        """
         cpdist = (
             self.classifier._feature_probdist
         )  # probability distribution for feature values given labels
@@ -185,6 +237,7 @@ class MPCK:
             def labelprob(
                 label: str, fname: str = feature_name, fval: object = feature_val
             ) -> float:
+                """Return the probability of the feature value given the label."""
                 return cpdist[label, fname].prob(fval)
 
             labels = sorted(
@@ -298,10 +351,26 @@ class MPCK:
         pos_target_val: int = 1,
         neg_target_val: int = -1,
     ) -> tuple[object, dict[str, float]]:
+        """Train a Naive Bayes classifier on the dataset and evaluate it on a held-out split.
+
+        :param dataset: A DataFrame with token and target columns
+        :param feature_fn_name: Feature function to use ("word", "best_word", "best_bigram", "best_trigram")
+        :param train_ratio: Fraction of the data used for training
+        :param verbose: Whether to log training details
+        :param token_column: Name of the column holding the tokenized text
+        :param target_column: Name of the column holding the labels
+        :param best_ratio: Fraction of best-scoring words kept for the "best_*" feature functions
+        :param pos_target_val: The label value for positive samples
+        :param neg_target_val: The label value for negative samples
+        :return: A tuple of the trained classifier and its evaluation metrics
+        """
+
         def word_feats(words: list[str]) -> dict[str, bool]:
+            """Return a feature dict with all words present."""
             return dict.fromkeys(words, True)
 
         def best_word_feats(words: list[str]) -> dict[str, bool]:
+            """Return a feature dict with the best-scoring words present."""
             return {word: True for word in words if word in bestwords}
 
         def best_bigram_word_feats(
@@ -311,6 +380,7 @@ class MPCK:
             ] = BigramAssocMeasures.chi_sq,
             n: int = 200,
         ) -> dict[str, bool]:
+            """Return a feature dict with the best bigrams and best words present."""
             bigram_finder = BigramCollocationFinder.from_words(words)
             bigrams = bigram_finder.nbest(score_fn, n)
             d = dict.fromkeys(bigrams, True)
@@ -324,6 +394,7 @@ class MPCK:
             ] = TrigramAssocMeasures.chi_sq,
             n: int = 200,
         ) -> dict[str, bool]:
+            """Return a feature dict with the best trigrams, bigrams, and words present."""
             tcf = TrigramCollocationFinder.from_words(words)
             trigrams = tcf.nbest(score_fn, n)
             d = dict.fromkeys(trigrams, True)
@@ -442,6 +513,15 @@ class MPCK:
         actual_neg_val: int = -1,
         verbose: bool = False,
     ) -> dict[str, float]:
+        """Evaluate predictions against actual labels with a confusion matrix.
+
+        :param actual: The actual labels
+        :param predicted: The predicted scores
+        :param actual_pos_val: The label value for positive samples
+        :param actual_neg_val: The label value for negative samples
+        :param verbose: Whether to log the metrics
+        :return: A dictionary of evaluation metrics
+        """
         return evaluate_confusion_matrix(
             actual,
             predicted,
@@ -458,6 +538,15 @@ def evaluate_confusion_matrix(
     actual_neg_val: int = -1,
     verbose: bool = False,
 ) -> dict[str, float]:
+    """Evaluate predictions against actual labels with a confusion matrix.
+
+    :param actual: The actual labels
+    :param predicted: The predicted scores
+    :param actual_pos_val: The label value for positive samples
+    :param actual_neg_val: The label value for negative samples
+    :param verbose: Whether to log the metrics
+    :return: A dictionary of evaluation metrics including correlations, accuracy, precision, and recall
+    """
     t_pos = 0
     f_pos = 0
     t_neg = 0
@@ -475,6 +564,7 @@ def evaluate_confusion_matrix(
                 f_neg += 1
 
     def ratio(numerator: float, denominator: float) -> float:
+        """Return numerator / denominator, or 0.0 if the denominator is zero."""
         return numerator / denominator if denominator else 0.0
 
     pr = pearsonr(actual, predicted)

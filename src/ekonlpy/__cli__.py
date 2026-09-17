@@ -36,6 +36,12 @@ def main(ctk: click.Context, tagger: str, text: Optional[str]) -> None:
 
 
 def tag(tagger: str, text: str) -> list:
+    """Tag the input text with the selected tagger and return POS-tagged tokens.
+
+    :param tagger: The tagger to use ("ekonlpy" for the extended tagger, "mecab" for the original)
+    :param text: The input text to tag
+    :return: A list of (surface, pos) tuples
+    """
     from ekonlpy import Mecab
 
     mecab = Mecab(use_original_tagger=tagger == "mecab")

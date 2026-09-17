@@ -19,11 +19,21 @@ class HIV4(BaseDict):
     def init_tokenizer(
         self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
     ) -> None:
+        """Initialize the default stemming tokenizer.
+
+        :param kind: Unused; kept for interface compatibility
+        :param intensity_cutoff: Unused; kept for interface compatibility
+        """
         self._tokenizer = Tokenizer()
 
     def init_dict(
         self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
     ) -> None:
+        """Load the Harvard IV-4 lexicon and initialize the polarity dictionaries.
+
+        :param kind: Unused; kept for interface compatibility
+        :param intensity_cutoff: Unused; kept for interface compatibility
+        """
         # BaseDict loads the dictionary before assigning the public tokenizer.
         # Keep lexicon stemming independent of a caller-provided tokenizer.
         tokenizer = Tokenizer()

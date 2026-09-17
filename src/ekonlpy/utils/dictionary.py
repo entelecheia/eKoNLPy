@@ -14,7 +14,10 @@ term_tags = {
 
 
 class TermDictionary:
+    """A dictionary mapping custom tags to sets of words, used to tag domain-specific terms."""
+
     def __init__(self) -> None:
+        """Initialize an empty term dictionary."""
         self._pos2words: dict[str, set[str]] = {}
 
     def add_dictionary(self, words: Union[str, list[str], set[str]], tag: str) -> None:

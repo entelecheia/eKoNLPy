@@ -20,11 +20,20 @@ class EUKO(BaseDict):
     INTENSITY_KINDS: ClassVar[dict[int, float]] = {0: 2.0, 1: 1.3}
 
     def init_tokenizer(self, kind: Optional[int] = None) -> None:
+        """Initialize the n-gram tokenizer for the selected lexicon kind.
+
+        :param kind: A parameter to select a lexicon file
+        """
         self._tokenizer = MPTokenizer(kind, self._poldict, keep_overlapping_ngram=True)
 
     def init_dict(
         self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
     ) -> None:
+        """Load the EUKO uncertainty lexicon and initialize the polarity dictionaries.
+
+        :param kind: A parameter to select a lexicon file; defaults to 0
+        :param intensity_cutoff: Minimum intensity for a lexicon entry to be included
+        """
         kind = kind if kind is not None and kind in self.KINDS else 0
         if intensity_cutoff is not None:
             self._intensity_cutoff = intensity_cutoff
