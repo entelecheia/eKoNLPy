@@ -1,5 +1,28 @@
 <!--next-version-placeholder-->
 
+## v2.2.2 (2026-09-17)
+
+### Bug Fixes
+
+- Harden data loading, correct classifier metric bugs, and modernize typing
+  ([#125](https://github.com/entelecheia/eKoNLPy/pull/125),
+  [`a6144e1`](https://github.com/entelecheia/eKoNLPy/commit/a6144e18f09f680874648dd3e5f1f152e34b8833))
+
+- Resolve fugashi-build-dict via PATH fallback and tighten loader consistency
+  ([#125](https://github.com/entelecheia/eKoNLPy/pull/125),
+  [`a6144e1`](https://github.com/entelecheia/eKoNLPy/commit/a6144e18f09f680874648dd3e5f1f152e34b8833))
+
+- Use forward slashes for dictionary compiler paths on Windows
+  ([#125](https://github.com/entelecheia/eKoNLPy/pull/125),
+  [`a6144e1`](https://github.com/entelecheia/eKoNLPy/commit/a6144e18f09f680874648dd3e5f1f152e34b8833))
+
+### Testing
+
+- Expect normalized dictionary compiler paths in build_userdic assertions
+  ([#125](https://github.com/entelecheia/eKoNLPy/pull/125),
+  [`a6144e1`](https://github.com/entelecheia/eKoNLPy/commit/a6144e18f09f680874648dd3e5f1f152e34b8833))
+
+
 ## v2.2.1 (2026-09-16)
 
 ### Bug Fixes
