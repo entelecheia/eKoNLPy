@@ -177,6 +177,8 @@ def test_get_informative_features_degenerate_groups_no_nan():
 
     assert features
     assert all(np.isfinite(f.Polarity) for f in features)
+    assert all(f.Polarity >= 0 for f in features if f.Label > 0)
+    assert all(f.Polarity <= 0 for f in features if f.Label < 0)
 
 
 def test_mptokenizer_get_phrase_joins_surfaces():

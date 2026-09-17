@@ -268,7 +268,7 @@ class MPCK:
                 feature_list[i] = f._replace(Polarity=polar)
             elif f.Label < 0:
                 lo, hi = np.min(n), np.max(n)
-                polar = 1.0 if hi == lo else (f.Polarity - hi) / (hi - lo)
+                polar = -1.0 if hi == lo else (f.Polarity - hi) / (hi - lo)
                 feature_list[i] = f._replace(Polarity=polar)
 
         return feature_list
