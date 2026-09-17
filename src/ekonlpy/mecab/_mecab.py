@@ -48,10 +48,14 @@ def _extract_feature(values: Sequence[object]) -> Feature:
 
 
 class MeCabError(Exception):
+    """An exception raised when MeCab or its dictionary is not available."""
+
     pass
 
 
 class Mecab(BaseMecab):
+    """The original MeCab Korean morphological analyzer, backed by fugashi."""
+
     backend = "fugashi"
     verbose: bool = False
 
@@ -64,6 +68,14 @@ class Mecab(BaseMecab):
         verbose: bool = False,
         **kwargs: object,
     ):
+        """Initialize the MeCab tagger with the system and user dictionaries.
+
+        :param dicdir: Path to the system dictionary directory; defaults to the mecab-ko-dic path
+        :param userdic_path: Path to a compiled user dictionary, if any
+        :param verbose: Whether to log detailed loading information
+        :param kwargs: Additional keyword arguments (ignored)
+        :raises MeCabError: If the dictionary is not found or fugashi is not installed
+        """
         import mecab_ko_dic
 
         self.verbose = verbose
@@ -139,6 +151,13 @@ class Mecab(BaseMecab):
         flatten: bool = True,
         include_whitespace_token: bool = False,
     ) -> list[tuple[str, str]]:
+        """Return POS-tagged tokens for the given text.
+
+        :param text: The input text to tag
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param include_whitespace_token: Whether to preserve whitespace runs as SP tokens
+        :return: A list of (surface, pos) tuples
+        """
         return self.parse(
             text, flatten=flatten, include_whitespace_token=include_whitespace_token
         )
@@ -151,6 +170,15 @@ class Mecab(BaseMecab):
         strip_pos: bool = False,
         postag_delim: str = "/",
     ) -> list[str]:
+        """Tokenize the text into "surface/pos" strings or bare surfaces.
+
+        :param text: The input text to tokenize
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param include_whitespace_token: Whether to preserve whitespace runs as SP tokens
+        :param strip_pos: Whether to drop the POS tags from the tokens
+        :param postag_delim: Delimiter between a surface and its POS tag
+        :return: A list of token strings
+        """
         tokens = self.parse(
             text, flatten=flatten, include_whitespace_token=include_whitespace_token
         )
@@ -161,6 +189,12 @@ class Mecab(BaseMecab):
         ]
 
     def morphs(self, text: str, flatten: bool = True) -> list[str]:
+        """Return the morphemes (surfaces without POS tags) of the given text.
+
+        :param text: The input text to analyze
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :return: A list of morpheme strings
+        """
         return self.tokenize(
             text, flatten=flatten, strip_pos=True, include_whitespace_token=False
         )
@@ -171,6 +205,13 @@ class Mecab(BaseMecab):
         flatten: bool = True,
         noun_pos: Optional[list[str]] = None,
     ) -> list[str]:
+        """Return the nouns of the given text or pre-tagged tokens.
+
+        :param text: The input text, or a list of (surface, pos) tuples already tagged
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param noun_pos: POS tags considered as nouns; defaults to common noun tags
+        :return: A list of noun surfaces
+        """
         if not noun_pos:
             noun_pos = ["NNG", "NNP", "XSN", "SL", "XR", "NNB", "NR"]
         tagged = (

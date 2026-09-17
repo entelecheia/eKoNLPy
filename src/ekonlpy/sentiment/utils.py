@@ -47,6 +47,11 @@ class KTokenizer(BaseTokenizer):
     """
 
     def __init__(self, vocab: Optional[Mapping[str, object]] = None) -> None:
+        """Initialize the tokenizer with the Kkma tagger and an optional vocabulary.
+
+        :param vocab: A vocabulary mapping; only n-grams in it are kept when given
+        :raises ImportError: If konlpy is not installed
+        """
         try:
             from konlpy.tag import Kkma
         except ImportError as e:
@@ -76,6 +81,12 @@ class KTokenizer(BaseTokenizer):
         ]
 
     def tokenize(self, text: Union[str, list[str]]) -> list[str]:
+        """Tag the text with Kkma and convert it into n-gram tokens.
+
+        :param text: The input text or list of sentences
+        :return: A list of n-gram tokens
+        :raises TypeError: If the input is neither a string nor a list of strings
+        """
         tokens: list[str] = []
         if isinstance(text, list):
             for t in text:
@@ -90,6 +101,11 @@ class KTokenizer(BaseTokenizer):
         return self.ngramize(tokens)
 
     def ngramize(self, tokens: list[str]) -> list[str]:
+        """Generate n-grams of the tokens, dropping skip tags and out-of-vocabulary n-grams.
+
+        :param tokens: A list of "surface/tag" tokens
+        :return: A list of n-gram tokens joined by the delimiter
+        """
         ngram_tokens: list[str] = []
         tokens = [w for w in tokens if w.split("/")[1] not in self._skiptags]
         for pos in range(len(tokens)):
@@ -102,6 +118,13 @@ class KTokenizer(BaseTokenizer):
         return ngram_tokens
 
     def get_ngram(self, tokens: list[str], pos: int, gram: int) -> Optional[str]:
+        """Return the n-gram of the given length starting at the given position.
+
+        :param tokens: A list of tokens
+        :param pos: The starting position of the n-gram
+        :param gram: The length of the n-gram
+        :return: The n-gram token joined by the delimiter, or None if out of range
+        """
         if pos < 0:
             return None
         if pos + gram > len(tokens):
@@ -112,9 +135,19 @@ class KTokenizer(BaseTokenizer):
         return token
 
     def morpheme(self, dataset: str) -> list[str]:
+        """Tag the text with Kkma and return aligned morphemes.
+
+        :param dataset: The input text to tag
+        :return: A list of "surface/tag" strings
+        """
         return self.align_morpheme(self._tagger.pos(dataset))
 
     def align_morpheme(self, morpheme: list[tuple[str, str]]) -> list[str]:
+        """Convert (surface, tag) tuples into "surface/tag" strings.
+
+        :param morpheme: A list of (surface, tag) tuples
+        :return: A list of "surface/tag" strings
+        """
         return [f"{w}/{t}" for w, t in morpheme]
 
 
@@ -141,6 +174,12 @@ class MPTokenizer(BaseTokenizer):
         vocab: Optional[Mapping[str, object]] = None,
         keep_overlapping_ngram: bool = False,
     ):
+        """Initialize the tokenizer with the Mecab tagger, vocabulary, and word set.
+
+        :param kind: A parameter to select the n-gram length; defaults to 0 (5-gram)
+        :param vocab: A vocabulary mapping; the default vocabulary file is loaded if None
+        :param keep_overlapping_ngram: Whether to keep n-grams that overlap longer n-grams
+        """
         self._kind = kind if kind is not None and kind in self.KINDS else 0
         self._keep_overlapping_ngram = keep_overlapping_ngram
         self._min_ngram = 1
@@ -153,6 +192,11 @@ class MPTokenizer(BaseTokenizer):
         self._noun_tags = {"NNG"}
 
     def tokenize(self, text: Union[str, list[str]]) -> list[str]:
+        """Tag the text with Mecab and convert it into n-gram tokens.
+
+        :param text: The input text or list of sentences
+        :return: A list of n-gram tokens
+        """
         if isinstance(text, list):
             ngram_tokens: list[str] = []
             for t in text:
@@ -164,6 +208,11 @@ class MPTokenizer(BaseTokenizer):
         return ngram_tokens
 
     def ngramize(self, tokens: list[str]) -> list[str]:
+        """Generate n-grams of the tokens, keeping only in-vocabulary, non-overlapping ones.
+
+        :param tokens: A list of "surface/tag" tokens
+        :return: A list of n-gram tokens joined by the delimiter
+        """
         ngram_tokens: list[str] = []
         tokens = [w for w in tokens if w in self._wordset]
 
@@ -191,6 +240,11 @@ class MPTokenizer(BaseTokenizer):
         return ngram_tokens
 
     def get_phrase(self, ngram_tokens: str) -> str:
+        """Render an n-gram token as a phrase by concatenating its surfaces.
+
+        :param ngram_tokens: The n-gram token to render
+        :return: The phrase string
+        """
         tokens = ngram_tokens.split(self._delimiter)
         phrase = ""
         for token in tokens:
@@ -199,6 +253,16 @@ class MPTokenizer(BaseTokenizer):
         return phrase
 
     def get_ngram(self, tokens: list[str], pos: int, gram: int) -> Optional[str]:
+        """Return the n-gram starting at the given position if it forms a valid phrase.
+
+        The n-gram must start with an allowed tag, contain a noun, and have no repeated
+        adjacent tokens.
+
+        :param tokens: A list of "surface/tag" tokens
+        :param pos: The starting position of the n-gram
+        :param gram: The length of the n-gram
+        :return: The n-gram token joined by the delimiter, or None if invalid or out of range
+        """
         if pos < 0:
             return None
         if pos + gram > len(tokens):
@@ -220,6 +284,11 @@ class MPTokenizer(BaseTokenizer):
         return token if check_noun else None
 
     def get_wordset(self, files: list[str]) -> set[str]:
+        """Load the word set used to filter tokens from the given lexicon files.
+
+        :param files: Lexicon file paths relative to the lexicon directory
+        :return: A set of words
+        """
         wordset: set[str] = set()
         for file in files:
             with open(os.path.join(LEXICON_PATH, file), encoding="utf-8") as fin:
@@ -232,6 +301,12 @@ class MPTokenizer(BaseTokenizer):
         return wordset
 
     def get_vocab(self, file: str) -> dict[str, str]:
+        """Load the n-gram vocabulary from the given lexicon file.
+
+        :param file: A lexicon file path relative to the lexicon directory
+        :return: A dictionary mapping n-grams to their values
+        :raises ValueError: If a vocabulary entry is malformed
+        """
         vocab: dict[str, str] = {}
         vocab_path = os.path.join(LEXICON_PATH, file)
         with open(vocab_path, encoding="utf-8") as f:
@@ -258,10 +333,16 @@ class Tokenizer(BaseTokenizer):
     """
 
     def __init__(self) -> None:
+        """Initialize the tokenizer with the Porter stemmer and the stoplist."""
         self._stemmer = nltk.PorterStemmer()
         self._stopset = self.get_stopset()
 
     def tokenize(self, text: str) -> list[str]:
+        """Tokenize the text into stemmed lowercase words, excluding stopwords.
+
+        :param text: The input text to tokenize
+        :return: A list of stemmed tokens
+        """
         tokens: list[str] = []
         for t in nltk.regexp_tokenize(text.lower(), "[a-z]+"):
             t = self._stemmer.stem(t)
@@ -273,6 +354,10 @@ class Tokenizer(BaseTokenizer):
     #     return tokens
 
     def get_stopset(self) -> set[str]:
+        """Load and stem the stopwords from the Loughran-McDonald stoplist files.
+
+        :return: A set of stemmed stopwords
+        """
         files = [
             "Currencies.txt",
             "DatesandNumbers.txt",
@@ -294,6 +379,12 @@ class Tokenizer(BaseTokenizer):
 
 
 def calc_polarity(scores: Sequence[float], by_count: bool = True) -> float:
+    """Calculate the polarity of a sequence of sentiment scores.
+
+    :param scores: A sequence of sentiment scores
+    :param by_count: If True, count occurrences of positive/negative scores instead of summing them
+    :return: The polarity score in [-1, 1]
+    """
     eps = 1e-6
     pos_score: list[float]
     neg_score: list[float]

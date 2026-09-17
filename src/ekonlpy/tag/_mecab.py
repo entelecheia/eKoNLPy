@@ -23,6 +23,8 @@ from ekonlpy.utils.io import (
 
 
 class Mecab(FugashiMecab):
+    """The extended MeCab tagger for economic text, with custom dictionaries and an n-gram tagger."""
+
     use_default_dictionary: bool = True
     use_polarity_phrase: bool = False
     use_original_tagger: bool = False
@@ -52,6 +54,16 @@ class Mecab(FugashiMecab):
         verbose: bool = False,
         **kwargs: object,
     ):
+        """Initialize the extended tagger and load the dictionaries, synonyms, and lemmas.
+
+        :param use_default_dictionary: Whether to load the default eKoNLPy dictionaries
+        :param use_polarity_phrase: Whether to include polarity phrases in the dictionaries
+        :param use_original_tagger: Whether to use the original MeCab tagger without extensions
+        :param dicdir: Path to the system dictionary directory; defaults to the mecab-ko-dic path
+        :param userdic_path: Path to a compiled user dictionary, if any
+        :param verbose: Whether to log detailed loading information
+        :param kwargs: Additional keyword arguments passed to the base tagger
+        """
         super().__init__(dicdir, userdic_path, verbose, **kwargs)
         self.tagset = dict(type(self).tagset)
         self.tagset_en = dict(type(self).tagset_en)
@@ -179,6 +191,13 @@ class Mecab(FugashiMecab):
         flatten: bool = True,
         include_whitespace_token: bool = False,
     ) -> list[tuple[str, str]]:
+        """Tag text and merge token n-grams into dictionary terms with the extended tagger.
+
+        :param text: The input text to tag
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param include_whitespace_token: Whether to preserve whitespace runs as SP tokens
+        :return: A list of (surface, pos) tuples
+        """
         tagged = super().parse(text, flatten, include_whitespace_token)
         return self._extagger.pos(tagged) if self._extagger else tagged
 
@@ -188,6 +207,13 @@ class Mecab(FugashiMecab):
         flatten: bool = True,
         include_whitespace_token: bool = False,
     ) -> list[tuple[str, str]]:
+        """Return POS-tagged tokens for the given text.
+
+        :param text: The input text to tag
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param include_whitespace_token: Whether to preserve whitespace runs as SP tokens
+        :return: A list of (surface, pos) tuples
+        """
         return self.parse(text, flatten, include_whitespace_token)
 
     def nouns(  # type: ignore[override]
@@ -201,6 +227,18 @@ class Mecab(FugashiMecab):
         flatten: bool = True,
         noun_pos: Optional[list[str]] = None,
     ) -> list[str]:
+        """Return the topical nouns of the given text or pre-tagged tokens.
+
+        :param text: The input text, or a list of (surface, pos) tuples already tagged
+        :param replace_synonym: Whether to replace synonyms with their canonical forms
+        :param include_industry_terms: Whether to keep industry terms
+        :param include_generic: Whether to keep generic terms
+        :param include_sector_name: Whether to keep sector names
+        :param include_country_name: Whether to keep country names
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :param noun_pos: POS tags considered as nouns; defaults to common noun tags
+        :return: A list of lowercased noun surfaces
+        """
         if self.use_original_tagger:
             return super().nouns(text, flatten=flatten, noun_pos=noun_pos)
         tagged = self.pos(text, flatten=flatten) if isinstance(text, str) else text
@@ -219,6 +257,11 @@ class Mecab(FugashiMecab):
     def replace_synonyms(
         self, phrase: Union[str, list[tuple[str, str]]]
     ) -> list[tuple[str, str]]:
+        """Replace words with their canonical synonyms.
+
+        :param phrase: The input text, or a list of (surface, pos) tuples already tagged
+        :return: The tagged tokens with synonyms replaced
+        """
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
         replaced: list[tuple[str, str]] = []
         for w, t in tagged:
@@ -231,6 +274,11 @@ class Mecab(FugashiMecab):
     def lemmatize(
         self, phrase: Union[str, list[tuple[str, str]]]
     ) -> list[tuple[str, str]]:
+        """Replace inflected words with their lemmas.
+
+        :param phrase: The input text, or a list of (surface, pos) tuples already tagged
+        :return: The tagged tokens with lemmas applied
+        """
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
         replaced: list[tuple[str, str]] = []
         for w, t in tagged:
@@ -249,6 +297,18 @@ class Mecab(FugashiMecab):
         exclude_terms: bool = True,
         remove_tag: bool = False,
     ) -> list[str]:
+        """Return sentiment-bearing words of the given text or pre-tagged tokens.
+
+        Synonyms are replaced and words are lemmatized by default, and only words with
+        sentiment tags are kept.
+
+        :param phrase: The input text, or a list of (surface, pos) tuples already tagged
+        :param replace_synonym: Whether to replace synonyms with their canonical forms
+        :param lemmatisation: Whether to lemmatize the words
+        :param exclude_terms: Whether to exclude dictionary terms from the output
+        :param remove_tag: Whether to drop the POS tags from the output
+        :return: A list of "word/tag" strings, or bare words if remove_tag is True
+        """
         tagged = self.pos(phrase) if isinstance(phrase, str) else phrase
         if replace_synonym:
             tagged = self.replace_synonyms(tagged)
@@ -268,6 +328,12 @@ class Mecab(FugashiMecab):
             ]
 
     def morphs(self, text: str, flatten: bool = True) -> list[str]:
+        """Return the morphemes (surfaces without POS tags) of the given text.
+
+        :param text: The input text to analyze
+        :param flatten: Whether to decompose inflected expressions into their morphemes
+        :return: A list of morpheme strings
+        """
         tagged = self.pos(text, flatten=flatten) if isinstance(text, str) else text
         return [s for s, t in tagged]
 
@@ -280,6 +346,13 @@ class Mecab(FugashiMecab):
         tag: str,
         force: bool = False,
     ) -> None:
+        """Add words to the tagging dictionary under the given POS tag.
+
+        :param words: A word or a list of words to add
+        :param tag: The POS tag for the words
+        :param force: Whether to allow tags not in the tagset
+        :raises ValueError: If the tag is not in the tagset and force is False
+        """
         if not force and tag not in self.tagset:
             raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._dictionary.add_dictionary(words, tag)
@@ -289,6 +362,12 @@ class Mecab(FugashiMecab):
         fname: str,
         tag: str,
     ) -> None:
+        """Load words from a file into the tagging dictionary under the given POS tag.
+
+        :param fname: Path of the dictionary file to load
+        :param tag: The POS tag for the loaded words
+        :raises ValueError: If the tag is not in the tagset
+        """
         if tag not in self.tagset:
             raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._dictionary.load_dictionary(fname, tag)
@@ -312,6 +391,12 @@ class Mecab(FugashiMecab):
         fname: str,
         tag: str,
     ) -> None:
+        """Load terms from a file into the term dictionary under the given tag.
+
+        :param fname: Path of the term file to load
+        :param tag: The term tag for the loaded words
+        :raises ValueError: If the tag is not a valid term tag
+        """
         if tag not in self._term_tags:
             raise ValueError(f"{tag} is not available tag")  # noqa: TRY003
         self._terms.load_dictionary(fname, tag)
@@ -321,6 +406,11 @@ class Mecab(FugashiMecab):
         fname: str,
         tag: str = "NNG",
     ) -> None:
+        """Load synonym pairs from a file and register them in the tagging dictionary.
+
+        :param fname: Path of the synonym file to load
+        :param tag: The POS tag for the synonyms
+        """
         vocab = load_vocab(fname)
         self._synonyms.update(vocab)
         self.add_dictionary(list(vocab.keys()), tag)
@@ -332,22 +422,39 @@ class Mecab(FugashiMecab):
         synonym: str,
         tag: str = "NNG",
     ) -> None:
+        """Add a synonym pair and register both words in the tagging dictionary.
+
+        :param word: The word to be replaced
+        :param synonym: The canonical synonym of the word
+        :param tag: The POS tag for both words
+        """
         self._synonyms[word.lower()] = synonym.lower()
         self.add_dictionary(word, tag)
         self.add_dictionary(synonym, tag)
 
     def persist_synonyms(self) -> None:
+        """Save the current synonyms to the default SYNONYM.txt file."""
         directory = os.path.join(installpath, "data", "dictionary")
         return save_vocab(self._synonyms, os.path.join(directory, "SYNONYM.txt"))
 
     def load_lemmas(self, fname: str) -> None:
+        """Load lemma pairs from a file.
+
+        :param fname: Path of the lemma file to load
+        """
         vocab = load_vocab(fname)
         self._lemmas.update(vocab)
 
     def add_lemma(self, word: str, lemma: str) -> None:
+        """Add a lemma pair.
+
+        :param word: The inflected word
+        :param lemma: The lemma of the word
+        """
         self._lemmas[word] = lemma
 
     def persist_lemmas(self) -> None:
+        """Save the current lemmas to the default LEMMA.txt file."""
         directory = os.path.join(installpath, "data", "dictionary")
         return save_vocab(self._lemmas, os.path.join(directory, "LEMMA.txt"))
 

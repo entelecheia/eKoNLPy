@@ -13,13 +13,25 @@ LEXICON_PATH = f"{installpath}/data/lexicon"
 class SupportsTokenize(Protocol):
     """Structural type for tokenizer objects accepted by ``BaseDict``."""
 
-    def tokenize(self, text: str) -> list[str]: ...
+    def tokenize(self, text: str) -> list[str]:
+        """Tokenize the given text into a list of tokens.
+
+        :param text: The input text to tokenize
+        :return: A list of tokens
+        """
+        ...
 
 
 class SupportsPhraseTokenize(SupportsTokenize, Protocol):
     """A tokenizer that can also render an n-gram token as a phrase."""
 
-    def get_phrase(self, ngram_tokens: str) -> str: ...
+    def get_phrase(self, ngram_tokens: str) -> str:
+        """Render an n-gram token as a human-readable phrase.
+
+        :param ngram_tokens: The n-gram token to render
+        :return: The phrase string
+        """
+        ...
 
 
 class BaseDict(abc.ABC):
@@ -72,6 +84,13 @@ class BaseDict(abc.ABC):
         kind: Optional[int] = None,
         intensity_cutoff: Optional[float] = None,
     ):
+        """Initialize the dictionary and the tokenizer.
+
+        :param tokenizer: An object which provides the ``tokenize`` interface; a default
+            tokenizer is assigned if None
+        :param kind: A parameter to select a lexicon file
+        :param intensity_cutoff: Minimum intensity for a lexicon entry to be included
+        """
         self._posdict: dict[str, int] = {}
         self._negdict: dict[str, int] = {}
         self._poldict: dict[str, float] = {}
@@ -101,10 +120,19 @@ class BaseDict(abc.ABC):
 
     @abc.abstractmethod
     def init_tokenizer(self, kind: Optional[int]) -> None:
+        """Initialize the default tokenizer for the selected lexicon kind.
+
+        :param kind: A parameter to select a lexicon file
+        """
         pass
 
     @abc.abstractmethod
     def init_dict(self, kind: Optional[int], intensity_cutoff: Optional[float]) -> None:
+        """Load the lexicon file and initialize the polarity dictionaries.
+
+        :param kind: A parameter to select a lexicon file
+        :param intensity_cutoff: Minimum intensity for a lexicon entry to be included
+        """
         pass
 
     def _get_score(self, term: str, by_count: bool = True) -> float:

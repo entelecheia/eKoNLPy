@@ -4,6 +4,8 @@ from ._mecab import Mecab
 
 
 class Postprocessor:
+    """Post-process tagged tokens by filtering stopwords, pass words/tags, and replacements."""
+
     def __init__(
         self,
         base_tagger: Mecab,
@@ -41,6 +43,7 @@ class Postprocessor:
             w: tuple[str, str],
             replace: dict[Union[str, tuple[str, str]], Union[str, tuple[str, str]]],
         ) -> tuple[str, str]:
+            """Replace a token using the replace dictionary, by pair or by surface."""
             if w in replace:
                 w_ = replace[w]
             elif w[0] in replace:
