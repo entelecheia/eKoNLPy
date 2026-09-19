@@ -52,7 +52,7 @@ ripwire src --clones --legend=compact      # duplication, concentrated in src/ek
   them, the graph cannot see that) and `short-horizon-churn` rows (a git-history signal on recently
   edited files) are not actionable.
 - **The data files are invisible to the graph.** The 35 `.txt` dictionaries and lexicons and
-  `data/model/MPKC.nbc` are unindexed, and `data/lexicon/LM.csv` is skipped as oversize. Tags,
+  `src/ekonlpy/data/model/MPKC.nbc` are unindexed, and `src/ekonlpy/data/lexicon/LM.csv` is skipped as oversize. Tags,
   synonyms, lemmas, and vocabularies drive tagger and sentiment behavior, so an empty `--impact`
   does not mean a dictionary edit is safe; run the tests.
 - **`pos` and `parse` are ambiguous names.** `tag/_mecab.py::Mecab`, `mecab/_mecab.py::Mecab`, and
