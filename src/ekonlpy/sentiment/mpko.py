@@ -1,11 +1,10 @@
-import os
 from typing import ClassVar, Optional
 
-from .base import LEXICON_PATH, BaseDict
+from .base import IntensityLexiconDict
 from .utils import MPTokenizer
 
 
-class MPKO(BaseDict):
+class MPKO(IntensityLexiconDict):
     """
     Dictionary class for
     Korean Monetary Policy Sentiment Analysis.
@@ -13,6 +12,8 @@ class MPKO(BaseDict):
     ``Positive`` means ``hawkish`` and ``Negative`` means ``dovish``.
     """
 
+    LEXICON_DIR: ClassVar[str] = "mpko"
+    MAX_INTENSITY_CUTOFF: ClassVar[float] = 2
     KINDS: ClassVar[dict[int, str]] = {
         0: "mp_polarity_lexicon_mkt.csv",
         1: "mp_polarity_lexicon_lex.csv",
@@ -27,37 +28,3 @@ class MPKO(BaseDict):
         :param kind: A parameter to select a lexicon file
         """
         self._tokenizer = MPTokenizer(kind, self._poldict)
-
-    def init_dict(
-        self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
-    ) -> None:
-        """Load the MPKO polarity lexicon and initialize the polarity dictionaries.
-
-        :param kind: A parameter to select a lexicon file; defaults to 0
-        :param intensity_cutoff: Minimum intensity for a lexicon entry to be included
-        """
-        kind = kind if kind is not None and kind in self.KINDS else 0
-        if intensity_cutoff is not None:
-            self._intensity_cutoff = intensity_cutoff
-        elif kind in self.INTENSITY_KINDS:
-            self._intensity_cutoff = self.INTENSITY_KINDS[kind]
-        else:
-            self._intensity_cutoff = 1.1
-        self._intensity_cutoff = min(2, self._intensity_cutoff)
-        # print('Initialize the dictionary using a lexicon file: {}'.format(self.KINDS[kind]))
-        path = os.path.join(LEXICON_PATH, "mpko", self.KINDS[kind])
-        with open(path, encoding="utf-8") as f:
-            for line in f:
-                word = line.split(",")
-                w = word[0]
-                if w == "word":
-                    continue
-                p = float(word[1].strip())
-                s = float(word[2].strip())
-                i = float(word[5].strip())
-                if len(w) > 1 and i > self._intensity_cutoff:
-                    self._poldict[w] = s
-                    if p > 0:
-                        self._posdict[w] = 1
-                    elif p < 0:
-                        self._negdict[w] = -1

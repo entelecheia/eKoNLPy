@@ -3,7 +3,7 @@ from collections.abc import Callable
 from typing import Optional, Union
 
 from .base import LEXICON_PATH, BaseDict
-from .utils import KTokenizer
+from .utils import KKMA_SKIP_TAGS, KTokenizer, join_ngram
 
 
 class KSA(BaseDict):
@@ -63,20 +63,7 @@ class KOSAC:
         self._tagger = Kkma()
         self._ngram = 3
         self._delimiter = ";"
-        self._skiptags = [
-            "SF",
-            "SP",
-            "SS",
-            "SE",
-            "SO",
-            "SW",
-            "UN",
-            "UV",
-            "UE",
-            "OL",
-            "OH",
-            "ON",
-        ]
+        self._skiptags = list(KKMA_SKIP_TAGS)
 
     def _loaddic(self) -> None:
         self._polarity = self._loadfile(
@@ -277,11 +264,4 @@ class KOSAC:
         :param gram: The length of the n-gram
         :return: The n-gram token joined by the delimiter, or None if out of range
         """
-        if pos < 0:
-            return None
-        if pos + gram > len(tokens):
-            return None
-        token = tokens[pos]
-        for i in range(1, gram):
-            token += self._delimiter + tokens[pos + i]
-        return token
+        return join_ngram(tokens, pos, gram, self._delimiter)
