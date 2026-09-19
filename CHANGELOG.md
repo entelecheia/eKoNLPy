@@ -1,5 +1,76 @@
 <!--next-version-placeholder-->
 
+## v2.2.3 (2026-09-19)
+
+### Bug Fixes
+
+- Keep degenerate negative polarity in the negative range
+  ([#130](https://github.com/entelecheia/eKoNLPy/pull/130),
+  [`0176c63`](https://github.com/entelecheia/eKoNLPy/commit/0176c63dd8df2bb262435d45ff83ebd7a5246a6f))
+
+- KOSAC empty-match crash and unreachable best_trigram feature
+  ([#134](https://github.com/entelecheia/eKoNLPy/pull/134),
+  [`13cd2b1`](https://github.com/entelecheia/eKoNLPy/commit/13cd2b1d256de3a391eb28cc4f792cee7764cdd4))
+
+- Normalize informative feature polarity safely and raise coverage to 88%
+  ([#130](https://github.com/entelecheia/eKoNLPy/pull/130),
+  [`0176c63`](https://github.com/entelecheia/eKoNLPy/commit/0176c63dd8df2bb262435d45ff83ebd7a5246a6f))
+
+- Preserve single-token result for non-positive gram in join_ngram
+  ([#135](https://github.com/entelecheia/eKoNLPy/pull/135),
+  [`b2c1cba`](https://github.com/entelecheia/eKoNLPy/commit/b2c1cbab9ae225d6ce70197daf0a6d63c27fff09))
+
+- Safe polarity normalization in MPCK and coverage raise to 88%
+  ([#130](https://github.com/entelecheia/eKoNLPy/pull/130),
+  [`0176c63`](https://github.com/entelecheia/eKoNLPy/commit/0176c63dd8df2bb262435d45ff83ebd7a5246a6f))
+
+### Build System
+
+- **deps**: Update mkdocs-material-extensions requirement
+  ([#129](https://github.com/entelecheia/eKoNLPy/pull/129),
+  [`4e4fe82`](https://github.com/entelecheia/eKoNLPy/commit/4e4fe821ace9d8350180547f00035a58360e7499))
+
+- **deps**: Update pymdown-extensions requirement
+  ([#128](https://github.com/entelecheia/eKoNLPy/pull/128),
+  [`86220d3`](https://github.com/entelecheia/eKoNLPy/commit/86220d3c7ff928fa55a82b8943eff6c0d250dc6e))
+
+### Documentation
+
+- Add missing docstrings across the public API
+  ([#126](https://github.com/entelecheia/eKoNLPy/pull/126),
+  [`7b475b0`](https://github.com/entelecheia/eKoNLPy/commit/7b475b0c3c95014e9f142020416c6fffa348e755))
+
+- Add ripwire workflow to CLAUDE.md ([#136](https://github.com/entelecheia/eKoNLPy/pull/136),
+  [`48e980e`](https://github.com/entelecheia/eKoNLPy/commit/48e980ee4c54fefbd35226712e846436d331d76d))
+
+- Correct docstring claims flagged in review
+  ([#126](https://github.com/entelecheia/eKoNLPy/pull/126),
+  [`7b475b0`](https://github.com/entelecheia/eKoNLPy/commit/7b475b0c3c95014e9f142020416c6fffa348e755))
+
+- Use repository-relative paths for data files in ripwire notes
+  ([#136](https://github.com/entelecheia/eKoNLPy/pull/136),
+  [`48e980e`](https://github.com/entelecheia/eKoNLPy/commit/48e980ee4c54fefbd35226712e846436d331d76d))
+
+### Refactoring
+
+- Share n-gram and lexicon loading helpers in sentiment
+  ([#135](https://github.com/entelecheia/eKoNLPy/pull/135),
+  [`b2c1cba`](https://github.com/entelecheia/eKoNLPy/commit/b2c1cbab9ae225d6ce70197daf0a6d63c27fff09))
+
+### Testing
+
+- Address review feedback on CLI and KOSAC tests
+  ([#127](https://github.com/entelecheia/eKoNLPy/pull/127),
+  [`908c671`](https://github.com/entelecheia/eKoNLPy/commit/908c671ffbecbcbc358bbd777496f0ae6308f247))
+
+- Raise code coverage from 63% to 84% ([#127](https://github.com/entelecheia/eKoNLPy/pull/127),
+  [`908c671`](https://github.com/entelecheia/eKoNLPy/commit/908c671ffbecbcbc358bbd777496f0ae6308f247))
+
+- Raise coverage from 63% to 84% with targeted unit tests
+  ([#127](https://github.com/entelecheia/eKoNLPy/pull/127),
+  [`908c671`](https://github.com/entelecheia/eKoNLPy/commit/908c671ffbecbcbc358bbd777496f0ae6308f247))
+
+
 ## v2.2.2 (2026-09-17)
 
 ### Bug Fixes
