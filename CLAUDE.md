@@ -34,6 +34,31 @@ make check && make test
 - Minimal test setup: `uv sync --no-default-groups --group test`; then
   `UV_NO_SYNC=true make test`. Set `UV_PYTHON` to override the development interpreter in CI.
 
+## Code navigation (ripwire)
+
+[ripwire](https://github.com/redhat-et/ripwire) is an optional local CLI for call-graph questions;
+query it before reading whole files. It is not installed in CI and is not a gate.
+
+```bash
+ripwire . --for="<the change in words>"    # entry points for a task
+ripwire . --impact=SYM                     # blast radius before editing SYM
+ripwire . --situ                           # tests to run for the files you changed
+ripwire . --quality-delta --legend=compact # what your change made worse; run before calling it done
+ripwire src --clones --legend=compact      # duplication, concentrated in src/ekonlpy/sentiment/
+```
+
+- **`--quality-delta` complements `make check && make test`, it does not replace them.** Fix its
+  `duplication` and `complexity` findings. Its `dead-code` rows on `test_*` functions (pytest calls
+  them, the graph cannot see that) and `short-horizon-churn` rows (a git-history signal on recently
+  edited files) are not actionable.
+- **The data files are invisible to the graph.** The 35 `.txt` dictionaries and lexicons and
+  `src/ekonlpy/data/model/MPKC.nbc` are unindexed, and `src/ekonlpy/data/lexicon/LM.csv` is skipped as oversize. Tags,
+  synonyms, lemmas, and vocabularies drive tagger and sentiment behavior, so an empty `--impact`
+  does not mean a dictionary edit is safe; run the tests.
+- **`pos` and `parse` are ambiguous names.** `tag/_mecab.py::Mecab`, `mecab/_mecab.py::Mecab`, and
+  `base/base.py::BaseMecab` all define them, so bare-name queries are split or declined. Use the
+  full id, e.g. `--callers='src/ekonlpy/tag/_mecab.py::Mecab::pos'`.
+
 ## Conventions
 
 - Python 3.12 is pinned for development (`.python-version`); the package supports >=3.9,<4.0, and
