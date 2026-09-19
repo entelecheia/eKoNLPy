@@ -36,10 +36,13 @@ def join_ngram(tokens: list[str], pos: int, gram: int, delimiter: str) -> Option
     :param pos: The starting position of the n-gram
     :param gram: The length of the n-gram
     :param delimiter: The string joining the tokens of the n-gram
-    :return: The n-gram token joined by the delimiter, or None if out of range
+    :return: The n-gram token joined by the delimiter, or None if out of range.
+        For a non-positive gram, the single token at the given position is returned.
     """
     if pos < 0 or pos + gram > len(tokens):
         return None
+    if gram <= 0:
+        return tokens[pos] if pos < len(tokens) else None
     return delimiter.join(tokens[pos : pos + gram])
 
 
