@@ -72,6 +72,16 @@ def test_match_ignores_unknown_terms():
     assert result["pos"] == pytest.approx(1.0)
 
 
+@pytest.mark.parametrize("tokens", [[], ["알수없는토큰/NNG"]])
+def test_match_without_any_hit_returns_zeros(tokens):
+    kosac = _make_kosac()
+
+    for analysis in (kosac.polarity, kosac.intensity, kosac.expressive):
+        result = analysis(tokens)
+        assert result
+        assert set(result.values()) == {0.0}
+
+
 def test_calc_applies_func_to_matching_keys():
     kosac = _make_kosac()
     keypairs = [["POS", "pos"], ["NEG", "neg"]]

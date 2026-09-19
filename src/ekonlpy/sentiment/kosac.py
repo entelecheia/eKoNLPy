@@ -124,9 +124,12 @@ class KOSAC:
         """Normalize the values of a dictionary to percentages.
 
         :param obj: A dictionary of counts
-        :return: A dictionary of proportions summing to 1
+        :return: A dictionary of proportions summing to 1, or all zeros if the counts sum to zero
         """
-        return {k: v / sum(obj.values()) for k, v in obj.items()}
+        total = sum(obj.values())
+        if not total:
+            return dict.fromkeys(obj, 0.0)
+        return {k: v / total for k, v in obj.items()}
 
     def calc(
         self,

@@ -451,7 +451,7 @@ class MPCK:
                 :best_cnt
             ]
             bestwords = {w for w, s in best}
-            if feature_fn_name == "best_trigram_word_feats":
+            if feature_fn_name == "best_trigram":
                 feat_fn = best_trigram_word_feats
             elif feature_fn_name == "best_bigram":
                 feat_fn = best_bigram_word_feats
