@@ -21,7 +21,7 @@ from scipy.stats import pearsonr, spearmanr
 from ..data.tagset import aux_tags
 from ..tag import Mecab
 from ..utils.io import installpath
-from .base import LEXICON_PATH
+from .utils import drop_overlapping, load_ngram_vocab, phrase_ngram
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -68,20 +68,7 @@ class MPCK:
         :return: A dictionary mapping n-grams to their values
         :raises ValueError: If a vocabulary entry is malformed
         """
-        vocab: dict[str, str] = {}
-        vocab_path = os.path.join(LEXICON_PATH, file)
-        with open(vocab_path, encoding="utf-8") as f:
-            for line_number, line in enumerate(f, 1):
-                line = line.strip()
-                if not line:
-                    continue
-                fields = line.split()
-                if len(fields) < 2:
-                    raise ValueError(  # noqa: TRY003
-                        f"Malformed vocabulary entry at {vocab_path}:{line_number}"
-                    )
-                vocab[fields[0]] = fields[1]
-        return vocab
+        return load_ngram_vocab(file)
 
     def load_default_classifier(self) -> None:
         """Load the bundled default Naive Bayes classifier."""
@@ -144,18 +131,7 @@ class MPCK:
                 ) and token in self._vocab:
                     ngram_tokens.append(token)
         if not keep_overlapping_ngram:
-            filtered_tokens: list[str] = []
-            if ngram_tokens:
-                ngram_tokens = sorted(
-                    ngram_tokens, key=lambda item: len(item), reverse=True
-                )
-                for token in ngram_tokens:
-                    existing_token = any(
-                        token in check_token for check_token in filtered_tokens
-                    )
-                    if not existing_token:
-                        filtered_tokens.append(token)
-            ngram_tokens = filtered_tokens
+            ngram_tokens = drop_overlapping(ngram_tokens)
 
         return ngram_tokens
 
@@ -170,25 +146,9 @@ class MPCK:
         :param gram: The length of the n-gram
         :return: The n-gram token joined by the delimiter, or None if invalid or out of range
         """
-        if pos < 0:
-            return None
-        if pos + gram > len(tokens):
-            return None
-        token = tokens[pos]
-        check_noun = False
-
-        tag = token.split("/")[1] if "/" in token else None
-        if tag not in self._start_tags:
-            return None
-        if tag in self._noun_tags:
-            check_noun = True
-        for i in range(1, gram):
-            if tokens[pos + i] != tokens[pos + i - 1]:
-                tag = tokens[pos + i].split("/")[1] if "/" in tokens[pos + i] else None
-                if tag in self._noun_tags:
-                    check_noun = True
-                token += self._delimiter + tokens[pos + i]
-        return token if check_noun else None
+        return phrase_ngram(
+            tokens, pos, gram, self._start_tags, self._noun_tags, self._delimiter
+        )
 
     def classify(
         self, tokens: list[str], intensity_cutoff: float = 1.3

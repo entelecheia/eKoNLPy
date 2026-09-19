@@ -13,6 +13,113 @@ import nltk
 from ..tag import Mecab
 from .base import LEXICON_PATH
 
+KKMA_SKIP_TAGS = (
+    "SF",
+    "SP",
+    "SS",
+    "SE",
+    "SO",
+    "SW",
+    "UN",
+    "UV",
+    "UE",
+    "OL",
+    "OH",
+    "ON",
+)
+
+
+def join_ngram(tokens: list[str], pos: int, gram: int, delimiter: str) -> Optional[str]:
+    """Return the n-gram of the given length starting at the given position.
+
+    :param tokens: A list of tokens
+    :param pos: The starting position of the n-gram
+    :param gram: The length of the n-gram
+    :param delimiter: The string joining the tokens of the n-gram
+    :return: The n-gram token joined by the delimiter, or None if out of range
+    """
+    if pos < 0 or pos + gram > len(tokens):
+        return None
+    return delimiter.join(tokens[pos : pos + gram])
+
+
+def phrase_ngram(
+    tokens: list[str],
+    pos: int,
+    gram: int,
+    start_tags: set[str],
+    noun_tags: set[str],
+    delimiter: str,
+) -> Optional[str]:
+    """Return the n-gram starting at the given position if it forms a valid phrase.
+
+    The n-gram must start with an allowed tag, contain a noun, and have no repeated
+    adjacent tokens.
+
+    :param tokens: A list of "surface/tag" tokens
+    :param pos: The starting position of the n-gram
+    :param gram: The length of the n-gram
+    :param start_tags: Tags allowed for the first token
+    :param noun_tags: Tags counted as nouns
+    :param delimiter: The string joining the tokens of the n-gram
+    :return: The n-gram token joined by the delimiter, or None if invalid or out of range
+    """
+    if pos < 0:
+        return None
+    if pos + gram > len(tokens):
+        return None
+    token = tokens[pos]
+    check_noun = False
+
+    tag = token.split("/")[1] if "/" in token else None
+    if tag not in start_tags:
+        return None
+    if tag in noun_tags:
+        check_noun = True
+    for i in range(1, gram):
+        if tokens[pos + i] != tokens[pos + i - 1]:
+            tag = tokens[pos + i].split("/")[1] if "/" in tokens[pos + i] else None
+            if tag in noun_tags:
+                check_noun = True
+            token += delimiter + tokens[pos + i]
+    return token if check_noun else None
+
+
+def drop_overlapping(ngram_tokens: list[str]) -> list[str]:
+    """Drop n-grams contained in a longer kept n-gram, longest first.
+
+    :param ngram_tokens: A list of n-gram tokens
+    :return: The n-gram tokens that are not substrings of a longer one
+    """
+    filtered_tokens: list[str] = []
+    for token in sorted(ngram_tokens, key=len, reverse=True):
+        if not any(token in check_token for check_token in filtered_tokens):
+            filtered_tokens.append(token)
+    return filtered_tokens
+
+
+def load_ngram_vocab(file: str) -> dict[str, str]:
+    """Load the n-gram vocabulary from the given lexicon file.
+
+    :param file: A lexicon file path relative to the lexicon directory
+    :return: A dictionary mapping n-grams to their values
+    :raises ValueError: If a vocabulary entry is malformed
+    """
+    vocab: dict[str, str] = {}
+    vocab_path = os.path.join(LEXICON_PATH, file)
+    with open(vocab_path, encoding="utf-8") as f:
+        for line_number, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            fields = line.split()
+            if len(fields) < 2:
+                raise ValueError(  # noqa: TRY003
+                    f"Malformed vocabulary entry at {vocab_path}:{line_number}"
+                )
+            vocab[fields[0]] = fields[1]
+    return vocab
+
 
 class BaseTokenizer(abc.ABC):
     """
@@ -65,20 +172,7 @@ class KTokenizer(BaseTokenizer):
         self._min_ngram = 1
         self._ngram = 3
         self._delimiter = ";"
-        self._skiptags = [
-            "SF",
-            "SP",
-            "SS",
-            "SE",
-            "SO",
-            "SW",
-            "UN",
-            "UV",
-            "UE",
-            "OL",
-            "OH",
-            "ON",
-        ]
+        self._skiptags = list(KKMA_SKIP_TAGS)
 
     def tokenize(self, text: Union[str, list[str]]) -> list[str]:
         """Tag the text with Kkma and convert it into n-gram tokens.
@@ -125,14 +219,7 @@ class KTokenizer(BaseTokenizer):
         :param gram: The length of the n-gram
         :return: The n-gram token joined by the delimiter, or None if out of range
         """
-        if pos < 0:
-            return None
-        if pos + gram > len(tokens):
-            return None
-        token = tokens[pos]
-        for i in range(1, gram):
-            token += self._delimiter + tokens[pos + i]
-        return token
+        return join_ngram(tokens, pos, gram, self._delimiter)
 
     def morpheme(self, dataset: str) -> list[str]:
         """Tag the text with Kkma and return aligned morphemes.
@@ -227,18 +314,7 @@ class MPTokenizer(BaseTokenizer):
                 ):
                     ngram_tokens.append(token)
         if not self._keep_overlapping_ngram:
-            filtered_tokens: list[str] = []
-            if ngram_tokens:
-                ngram_tokens = sorted(
-                    ngram_tokens, key=lambda item: len(item), reverse=True
-                )
-                for token in ngram_tokens:
-                    existing_token = any(
-                        token in check_token for check_token in filtered_tokens
-                    )
-                    if not existing_token:
-                        filtered_tokens.append(token)
-            ngram_tokens = filtered_tokens
+            ngram_tokens = drop_overlapping(ngram_tokens)
 
         return ngram_tokens
 
@@ -266,25 +342,9 @@ class MPTokenizer(BaseTokenizer):
         :param gram: The length of the n-gram
         :return: The n-gram token joined by the delimiter, or None if invalid or out of range
         """
-        if pos < 0:
-            return None
-        if pos + gram > len(tokens):
-            return None
-        token = tokens[pos]
-        check_noun = False
-
-        tag = token.split("/")[1] if "/" in token else None
-        if tag not in self._start_tags:
-            return None
-        if tag in self._noun_tags:
-            check_noun = True
-        for i in range(1, gram):
-            if tokens[pos + i] != tokens[pos + i - 1]:
-                tag = tokens[pos + i].split("/")[1] if "/" in tokens[pos + i] else None
-                if tag in self._noun_tags:
-                    check_noun = True
-                token += self._delimiter + tokens[pos + i]
-        return token if check_noun else None
+        return phrase_ngram(
+            tokens, pos, gram, self._start_tags, self._noun_tags, self._delimiter
+        )
 
     def get_wordset(self, files: list[str]) -> set[str]:
         """Load the word set used to filter tokens from the given lexicon files.
@@ -310,20 +370,7 @@ class MPTokenizer(BaseTokenizer):
         :return: A dictionary mapping n-grams to their values
         :raises ValueError: If a vocabulary entry is malformed
         """
-        vocab: dict[str, str] = {}
-        vocab_path = os.path.join(LEXICON_PATH, file)
-        with open(vocab_path, encoding="utf-8") as f:
-            for line_number, line in enumerate(f, 1):
-                line = line.strip()
-                if not line:
-                    continue
-                fields = line.split()
-                if len(fields) < 2:
-                    raise ValueError(  # noqa: TRY003
-                        f"Malformed vocabulary entry at {vocab_path}:{line_number}"
-                    )
-                vocab[fields[0]] = fields[1]
-        return vocab
+        return load_ngram_vocab(file)
 
 
 class Tokenizer(BaseTokenizer):

@@ -3,7 +3,8 @@ This module contains base classes for dictionaries.
 """
 
 import abc
-from typing import Optional, Protocol, Union
+import os
+from typing import ClassVar, Optional, Protocol, Union
 
 from ekonlpy.utils.io import installpath
 
@@ -255,3 +256,50 @@ class BaseDict(abc.ABC):
             )
 
         return breakdown
+
+
+class IntensityLexiconDict(BaseDict):
+    """
+    A base class for dictionaries backed by ``word,polarity,score,...,intensity`` lexicon files,
+    where entries below an intensity cutoff are dropped.
+
+    Subclasses set ``LEXICON_DIR``, ``KINDS``, ``INTENSITY_KINDS``, and ``MAX_INTENSITY_CUTOFF``.
+    """
+
+    LEXICON_DIR: ClassVar[str]
+    KINDS: ClassVar[dict[int, str]]
+    INTENSITY_KINDS: ClassVar[dict[int, float]]
+    MAX_INTENSITY_CUTOFF: ClassVar[float]
+
+    def init_dict(
+        self, kind: Optional[int] = None, intensity_cutoff: Optional[float] = None
+    ) -> None:
+        """Load the lexicon file for the selected kind and initialize the polarity dictionaries.
+
+        :param kind: A parameter to select a lexicon file; defaults to 0
+        :param intensity_cutoff: Minimum intensity for a lexicon entry to be included
+        """
+        kind = kind if kind is not None and kind in self.KINDS else 0
+        if intensity_cutoff is not None:
+            self._intensity_cutoff = intensity_cutoff
+        elif kind in self.INTENSITY_KINDS:
+            self._intensity_cutoff = self.INTENSITY_KINDS[kind]
+        else:
+            self._intensity_cutoff = 1.1
+        self._intensity_cutoff = min(self.MAX_INTENSITY_CUTOFF, self._intensity_cutoff)
+        path = os.path.join(LEXICON_PATH, self.LEXICON_DIR, self.KINDS[kind])
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                word = line.split(",")
+                w = word[0]
+                if w == "word":
+                    continue
+                p = float(word[1].strip())
+                s = float(word[2].strip())
+                i = float(word[5].strip())
+                if len(w) > 1 and i > self._intensity_cutoff:
+                    self._poldict[w] = s
+                    if p > 0:
+                        self._posdict[w] = 1
+                    elif p < 0:
+                        self._negdict[w] = -1
