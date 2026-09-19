@@ -126,6 +126,36 @@ def test_train_classifier_with_best_word_features(mpck):
     assert 0.0 <= metrics["Accuracy"] <= 1.0
 
 
+def _feature_name_lengths(classifier):
+    # most_informative_features() cannot sort mixed str/tuple names, so read the names directly.
+    names = {name for _, name in classifier._feature_probdist}
+    return {len(name) for name in names if isinstance(name, tuple)}
+
+
+@pytest.mark.parametrize(
+    ("feature_fn_name", "ngram_lengths"),
+    [("best_bigram", {2}), ("best_trigram", {2, 3})],
+)
+def test_train_classifier_with_best_ngram_features(mpck, feature_fn_name, ngram_lengths):
+    # Every row has three words, so any shuffled train split contains bigrams and trigrams.
+    dataset = _tiny_dataset().assign(
+        text=[
+            "good nice great",
+            "nice great good",
+            "great good nice",
+            "bad awful terrible",
+            "awful terrible bad",
+            "terrible bad awful",
+        ]
+    )
+
+    classifier, _ = mpck.train_classifier(
+        dataset, feature_fn_name=feature_fn_name, train_ratio=0.7
+    )
+
+    assert _feature_name_lengths(classifier) == ngram_lengths
+
+
 def test_bagging_classifier_returns_best_and_mean_metrics(mpck):
     best_index, clfs, mlst, mean_metrics = mpck.bagging_classifier(
         _tiny_dataset(), iterations=2, feature_fn_name="word", train_ratio=0.7
