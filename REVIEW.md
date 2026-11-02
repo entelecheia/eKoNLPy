@@ -7,6 +7,7 @@ Read by `/codex:review`, `/code-review`, and human reviewers alike.
 Run these passes and tag every finding with its pass:
 
 - **Bugs**: logic errors, broken edge cases, regressions in tokenization, tagging, or scoring.
+- Error messages: a new or changed error, refusal or failure message a person or agent sees names the cause (what failed and why) and the next step (the command, setting or target that fixes it). When secrets, ids or paths must stay out, it names the cause class and how to check it. A message missing either is a finding; Important when it is the only signal of a blocked action (a CLI exit, a refused tool call), otherwise a nit.
 - **Security**: unsafe deserialization, `eval`-like execution, shell calls built from input, and
   file reads that escape the package data directory. Ruff's bandit (`S`) rules cover the obvious
   cases, so look for what they cannot see.
